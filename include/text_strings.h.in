@@ -22,7 +22,7 @@
 #define NC_INVERTX_DE			_("Invert X Axis")
 #define NC_INVERTY_EN			_("Invert Y Axis")
 #define NC_CAMC_EN 				_("Camera Centre Speed")
-#define NC_ANALOGUE_EN			_("Analogue Camera")
+#define WIDESCREEN  			_("Widescreen")
 #define NC_SCHEME_EN			_("Control Scheme")
 #define OPTION_ENABLED_EN 		_("Enabled")
 #define OPTION_DISABLED_EN 		_("Disabled")

@@ -52,7 +52,7 @@ static s8 sSelectableStarIndex = 0;
 
 // Act Selector menu timer that keeps counting until you choose an act.
 static s32 sActSelectorMenuTimer = 0;
-extern u8 widescreen;
+//extern u8 widescreen;
 /**
  * Act Selector Star Type Loop Action
  * Defines a select type for a star in the act selector.

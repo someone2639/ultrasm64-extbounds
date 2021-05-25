@@ -63,6 +63,7 @@ UNUSED u8 filler80339D30[0x90];
 s32 unused8032C690 = 0;
 u32 gGlobalTimer = 0;
 u8 gIsConsole;
+u8 widescreen;
 
 u16 sCurrFBNum = 0;
 u16 frameBufferIndex = 0;

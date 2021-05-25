@@ -40,7 +40,7 @@ u8 textCurrRatio43[] = { TEXT_HUD_CURRENT_RATIO_43 };
 u8 textCurrRatio169[] = { TEXT_HUD_CURRENT_RATIO_169 };
 u8 textWideInfo[] = { TEXT_HUD_WIDE_INFO };
 u8 textWideInfo2[] = { TEXT_HUD_WIDE_INFO2 };
-u8 widescreen = 0;
+//u8 widescreen = 0;
 
 extern u8 gLastCompletedCourseNum;
 extern u8 gLastCompletedStarNum;

@@ -237,7 +237,7 @@ static void geo_process_ortho_projection(struct GraphNodeOrthoProjection *node) 
 /**
  * Process a perspective projection node.
  */
-extern u8 widescreen;
+//extern u8 widescreen;
 static void geo_process_perspective(struct GraphNodePerspective *node) {
     if (node->fnNode.func != NULL) {
         node->fnNode.func(GEO_CONTEXT_RENDER, &node->fnNode.node, gMatStack[gMatStackIndex]);
