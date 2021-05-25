@@ -22,6 +22,7 @@
 #include "sm64.h"
 #include "text_strings.h"
 #include "types.h"
+#include "puppy_menu.h"
 #define wide // DELETE THIS DEFINE IF YOU DON'T WANT WIDESCREEN SUPPORT IN YOUR HACK (why tho)
 
 u16 gDialogColorFadeTimer;
@@ -2642,11 +2643,9 @@ s8 gHudFlash = 0;
 
 s16 render_pause_courses_and_castle(void) {
     s16 num;
-
-#ifdef VERSION_EU
-    gInGameLanguage = eu_get_language();
-#endif
-
+puppycam_check_pause_buttons();
+    if (!gPCOptionOpen)
+    {
     switch (gDialogBoxState) {
         case DIALOG_STATE_OPENING:
             gDialogLineNum = 1;
@@ -2670,14 +2669,6 @@ s16 render_pause_courses_and_castle(void) {
             shade_screen();
             render_pause_my_score_coins();
             render_pause_red_coins();
-        if (gPlayer1Controller->buttonPressed & L_TRIG){
-                if (widescreen == 0){
-                    widescreen = 1;
-                }
-                else{
-                    widescreen = 0;
-                }
-            }
 
             if (gMarioStates[0].action & ACT_FLAG_PAUSE_EXIT) {
                 render_pause_course_options(99, 93, &gDialogLineNum, 15);
@@ -2730,7 +2721,14 @@ s16 render_pause_courses_and_castle(void) {
     if (gDialogTextAlpha < 250) {
         gDialogTextAlpha += 25;
     }
+}
+    else
+    {
+        shade_screen();
+        puppycam_display_options();
+    }
 
+    puppycam_render_option_text();
     return 0;
 }
 

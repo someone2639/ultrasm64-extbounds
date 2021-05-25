@@ -14,6 +14,28 @@
 #define TEXT_VARIABLE_X _("×")
 #define TEXT_UNFILLED_STAR _("☆")
 
+//Puppy
+#define NC_CAMX_EN 				_("Camera X Sensitivity")
+#define NC_CAMY_EN 				_("Camera Y Sensitivity")
+#define NC_INVERTX_EN			_("Invert X Axis")
+#define NC_INVERTX_FR			_("Invertir Axe X")
+#define NC_INVERTX_DE			_("Invert X Axis")
+#define NC_INVERTY_EN			_("Invert Y Axis")
+#define NC_CAMC_EN 				_("Camera Centre Speed")
+#define NC_ANALOGUE_EN			_("Analogue Camera")
+#define NC_SCHEME_EN			_("Control Scheme")
+#define OPTION_ENABLED_EN 		_("Enabled")
+#define OPTION_DISABLED_EN 		_("Disabled")
+#define OPTION_SCHEME1_EN 		_("Double Tap")
+#define OPTION_SCHEME2_EN 		_("Single Press")
+#define OPTION_SCHEME3_EN 		_("Classic")
+#define NC_HIGHLIGHT_L 			_(">")
+#define NC_HIGHLIGHT_R 			_("<")
+#define NC_BUTTON_EN 			_("[R]: Options")
+#define NC_BUTTON2_EN 			_("[R]: Return")
+#define NC_OPTION_EN 			_("PUPPYCAM OPTIONS")
+
+
 /**
  * Global Text
  */
