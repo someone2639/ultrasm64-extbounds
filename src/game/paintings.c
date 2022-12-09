@@ -19,6 +19,9 @@
 #include "save_file.h"
 #include "segment2.h"
 
+extern s16 gMatStackIndex;
+extern ALIGNED16 Mat4 gMatStack[32];
+
 /**
  * @file paintings.c
  *
@@ -176,6 +179,70 @@ struct Painting *sInsideCastlePaintings[] = {
     &ssl_painting, &hmc_painting, &ddd_painting, &wdw_painting,      &thi_tiny_painting,
     &ttm_painting, &ttc_painting, &sl_painting,  &thi_huge_painting, NULL,
 };
+
+
+static int latched = 0;
+void reset_paintings() {
+    latched = 0;
+}
+
+void randomize_paintings(int resetLatch) {
+    static struct Painting *sPaintingWork[] = {
+        &bob_painting, &ccm_painting, &wf_painting,  &jrb_painting,      &lll_painting,
+        &ssl_painting, &hmc_painting, &ddd_painting, &wdw_painting,      &thi_tiny_painting,
+        &ttm_painting, &ttc_painting, &sl_painting,  &thi_huge_painting, NULL,
+    };
+
+    if (resetLatch) latched = 0;
+
+    for (int i = 0; i < 14; i++) {
+        u16 r = random_u16() % 14;
+        while (r == i) r = random_u16() % 14;
+
+        struct Painting *p = segmented_to_virtual(sInsideCastlePaintings[i]);
+        struct Painting *p2 = segmented_to_virtual(sPaintingWork[r]);
+        
+        const Texture *const *buf = NULL;
+        s8 typ_buf;
+
+        if (latched == 0) {
+            buf = p->textureArray;
+            p->textureArray = p2->textureArray;
+            p->textureType = p2->textureType;
+            p2->textureArray = buf;
+            p2->textureType = typ_buf;
+
+            latched = 1;
+        }
+    }
+}
+
+int painting_is_in_view(struct Painting *p, Mat4 matrix) {
+    s32 result[3];
+    result[0] = p->screenCoords[0];
+    result[1] = p->screenCoords[1];
+    result[2] = p->screenCoords[2];
+
+    #define SCALEFACTORX 2.0f
+    #define SCALEFACTORY (6.0f / result[2])
+
+    #define PWD() (((p->size / 2.0f) + 200) * (SCALEFACTORX/result[2]))
+    #define PHT() (((p->size / 2.0f) + 200) * SCALEFACTORY)
+
+    if (result[0] + (p->size) < 0) {
+        return FALSE;
+    }
+    if (result[0] - PWD() > SCREEN_WIDTH) {
+        return FALSE;
+    }
+
+    if (result[1] + (p->size) < 0) {
+        return FALSE;
+    }
+    if (result[1] - PHT() > SCREEN_HEIGHT) {
+        return FALSE;
+    }
+}
 
 struct Painting *sTtmPaintings[] = {
     &ttm_slide_painting,
@@ -1033,17 +1100,7 @@ Gfx *display_painting_rippling(struct Painting *painting) {
  * Render a normal painting.
  */
 Gfx *display_painting_not_rippling(struct Painting *painting) {
-    Gfx *dlist = alloc_display_list(4 * sizeof(Gfx));
-    Gfx *gfx = dlist;
-
-    if (dlist == NULL) {
-        return dlist;
-    }
-    gSPDisplayList(gfx++, painting_model_view_transform(painting));
-    gSPDisplayList(gfx++, painting->normalDisplayList);
-    gSPPopMatrix(gfx++, G_MTX_MODELVIEW);
-    gSPEndDisplayList(gfx);
-    return dlist;
+    return display_painting_rippling(painting);
 }
 
 /**
@@ -1227,6 +1284,11 @@ Gfx *geo_painting_draw(s32 callContext, struct GraphNode *node, UNUSED void *con
         reset_painting(painting);
     } else if (callContext == GEO_CONTEXT_RENDER) {
 
+        if (!painting_is_in_view(painting, gMatStack[gMatStackIndex])) {
+            randomize_paintings(0);
+        } else {
+            reset_paintings();
+        }
         // Update the ddd painting before drawing
         if (group == 1 && id == PAINTING_ID_DDD) {
             move_ddd_painting(painting, 3456.0f, 5529.6f, 20.0f);
