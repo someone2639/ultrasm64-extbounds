@@ -123,6 +123,7 @@ struct Painting {
     /// Uniformly scales the painting to a multiple of PAINTING_SIZE.
     /// By default a painting is 614.0 x 614.0
     f32 size;
+    s32 screenCoords[3];
 };
 
 /**
