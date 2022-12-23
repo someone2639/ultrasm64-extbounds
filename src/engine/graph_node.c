@@ -381,6 +381,26 @@ struct GraphNodeBone *init_graph_node_bone(struct AllocOnlyPool *pool,
 /**
  * Allocates and returns a newly created billboard node
  */
+
+extern struct Object *gCurrentObject;
+#define o gCurrentObject
+void scaleMe() {
+    f32 d = -o->header.gfx.cameraToObject[2];
+
+
+    o->header.gfx.scale[2] = 0.3f;
+
+
+
+    o->header.gfx.scale[1] = d / 1000;
+    o->header.gfx.scale[0] = d / 1000;
+
+    char d2[50];
+    sprintf(d2, "D %f", d);
+    print_text(50, 50, d2);
+}
+
+
 struct GraphNodeBillboard *init_graph_node_billboard(struct AllocOnlyPool *pool,
                                                      struct GraphNodeBillboard *graphNode,
                                                      s32 drawingLayer, void *displayList,
