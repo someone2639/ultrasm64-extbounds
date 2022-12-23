@@ -555,6 +555,7 @@ void geo_process_switch(struct GraphNodeSwitchCase *node) {
 /**
  * Process a camera node.
  */
+extern struct Painting *sInsideCastlePaintings[];
 void geo_process_camera(struct GraphNodeCamera *node) {
     Mat4 cameraTransform;
     Mtx *rollMtx = alloc_display_list(sizeof(*rollMtx));
@@ -575,6 +576,29 @@ void geo_process_camera(struct GraphNodeCamera *node) {
         node->matrixPtr = &gMatStack[gMatStackIndex];
         geo_process_node_and_siblings(node->fnNode.node.children);
         gCurGraphNodeCamera = NULL;
+    }
+
+    for (int i = 0; i < 14; i++) {
+        #include "paintings.h"
+        struct Painting *p = segmented_to_virtual(sInsideCastlePaintings[i]);
+        Vec3s paintingPos;
+        paintingPos[0] = p->posX;
+        paintingPos[1] = p->posY;
+        paintingPos[2] = p->posZ;
+        s32 screenX, screenY;
+
+        // Convert Mario's coordinates into vec3s so they can be used in mtxf_mul_vec3s
+        vec3f_to_vec3s(paintingPos, &p->posX);
+
+        // Transform Mario's coordinates into view frustrum
+        mtxf_mul_vec3s(gMatStack[gMatStackIndex], paintingPos);
+
+        // Perspective divide
+        screenX = 2 * (0.5f - paintingPos[0] / (f32)paintingPos[2]) * (gCurGraphNodeRoot->width);
+        screenY = 2 * (0.5f - paintingPos[1] / (f32)paintingPos[2]) * (gCurGraphNodeRoot->height);
+        p->screenCoords[0] = screenX;
+        p->screenCoords[1] = screenY;
+        p->screenCoords[2] = paintingPos[2];
     }
     gMatStackIndex--;
 }

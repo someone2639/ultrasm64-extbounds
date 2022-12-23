@@ -3140,11 +3140,13 @@ const BehaviorScript bhvUnusedFakeStar[] = {
         ADD_INT(oFaceAngleYaw,   0x100),
     END_LOOP(),
 };
-
+void scaleMe();
 const BehaviorScript bhvStaticObject[] = {
     BEGIN(OBJ_LIST_DEFAULT),
-    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE)),
-    BREAK(),
+    OR_INT(oFlags, (OBJ_FLAG_UPDATE_GFX_POS_AND_ANGLE | OBJ_FLAG_COMPUTE_DIST_TO_MARIO)),
+    BEGIN_LOOP(),
+        CALL_NATIVE(scaleMe),
+    END_LOOP(),
 };
 
 const BehaviorScript bhvCastleFloorTrap[] = {

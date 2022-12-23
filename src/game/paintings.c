@@ -1029,18 +1029,86 @@ Gfx *display_painting_rippling(struct Painting *painting) {
     return dlist;
 }
 
+
+Gfx s2d_init_dl[] = {
+    gsDPPipeSync(),
+    gsDPSetTexturePersp(G_TP_NONE),
+    gsDPSetTextureLOD(G_TL_TILE),
+    gsDPSetTextureLUT(G_TT_NONE),
+    gsDPSetTextureConvert(G_TC_FILT),
+    gsDPSetAlphaCompare(G_AC_THRESHOLD),
+    gsDPSetBlendColor(0, 0, 0, 0x01),
+    gsSPEndDisplayList(),
+};
+
+
+#include <PR/gs2dex.h>
+Gfx *makeBrokenPainting(struct Painting *p) {
+    Gfx *ret = alloc_display_list(sizeof(Gfx) * 20);
+    Gfx *g = ret;
+    // gSPLoadUcode(g++, (&gspS2DEX2_fifoTextStart),
+    //               (&gspS2DEX2_fifoDataStart));
+
+    // gSPDisplayList(g++, s2d_init_dl);
+
+
+    uObjBg *b = alloc_display_list(sizeof(uObjBg));
+    bzero(b, sizeof(*b));
+
+
+    gDPPipeSync(g++);
+    gDPSetTextureFilter(g++, G_TF_POINT);
+    gDPSetCycleType(g++, G_CYC_1CYCLE);
+    gDPSetRenderMode(g++, G_RM_XLU_SPRITE, G_RM_XLU_SPRITE2);
+    // gSPObjRenderMode(g++, G_OBJRM_XLU);
+
+    b->s.imagePtr = p->textureArray;
+    b->s.imageLoad = G_BGLT_LOADBLOCK;
+    b->s.imageFmt = G_IM_FMT_RGBA;
+    b->s.imageSiz = G_IM_SIZ_16b;
+
+    b->s.imageX = p->screenCoords[0] << 5;
+    b->s.frameX = p->screenCoords[0] << 2;
+    b->s.imageW = b->s.frameW= 64 << 2;
+
+    b->s.imageY = p->screenCoords[1] << 5;
+    b->s.frameY = p->screenCoords[1] << 2;
+    b->s.imageH = b->s.frameH = 64 << 2;
+
+
+    #define qs510(n) ((s16)((n)*0x0400))
+    b->s.scaleW = qs510(0.5);
+    b->s.scaleH = qs510(0.5);
+
+    guS2D2EmuBgRect1Cyc(&g, b);
+
+
+
+    // gSPLoadUcode(g++, (&gspF3DEX2_fifoTextStart),
+    //               (&gspF3DEX2_fifoDataStart));
+    // extern Gfx init_rdp[], init_rsp[];
+    // gSPDisplayList(g++, init_rsp);
+    // gSPDisplayList(g++, init_rdp);
+    gDPPipeSync(g++);
+    gDPSetRenderMode(g++, G_RM_AA_ZB_OPA_SURF, G_RM_AA_ZB_OPA_SURF2);
+    gSPEndDisplayList(g++);
+    return ret;
+}
+
 /**
  * Render a normal painting.
  */
-Gfx *display_painting_not_rippling(struct Painting *painting) {
+Gfx *display_painting_not_rippling(struct GraphNode *node, struct Painting *painting) {
     Gfx *dlist = alloc_display_list(4 * sizeof(Gfx));
     Gfx *gfx = dlist;
 
     if (dlist == NULL) {
         return dlist;
     }
-    gSPDisplayList(gfx++, painting_model_view_transform(painting));
-    gSPDisplayList(gfx++, painting->normalDisplayList);
+    // gSPDisplayList(gfx++, painting_model_view_transform(painting));
+
+    gSPDisplayList(gfx++, makeBrokenPainting(painting));
+    // gSPDisplayList(gfx++, painting->normalDisplayList);
     gSPPopMatrix(gfx++, G_MTX_MODELVIEW);
     gSPEndDisplayList(gfx);
     return dlist;
@@ -1146,15 +1214,15 @@ void set_painting_layer(struct GraphNodeGenerated *gen, struct Painting *paintin
 /**
  * Display either a normal painting or a rippling one depending on the painting's ripple status
  */
-Gfx *display_painting(struct Painting *painting) {
-    switch (painting->state) {
-        case PAINTING_IDLE:
-            return display_painting_not_rippling(painting);
-            break;
-        default:
-            return display_painting_rippling(painting);
-            break;
-    }
+Gfx *display_painting(struct GraphNode *node, struct Painting *painting) {
+    return display_painting_not_rippling(node, painting);
+    // switch (painting->state) {
+    //     case PAINTING_IDLE:
+    //         break;
+    //     default:
+    //         return display_painting_rippling(painting);
+    //         break;
+    // }
 }
 
 /**
@@ -1236,7 +1304,7 @@ Gfx *geo_painting_draw(s32 callContext, struct GraphNode *node, UNUSED void *con
         set_painting_layer(gen, painting);
 
         // Draw before updating
-        paintingDlist = display_painting(painting);
+        paintingDlist = display_painting(node, painting);
 
         // Update the painting
         painting_update_floors(painting);
