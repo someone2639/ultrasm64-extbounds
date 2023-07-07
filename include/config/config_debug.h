@@ -7,7 +7,7 @@
 /**
  * Enables most debug options, including PUPPYPRINT_DEBUG.
  */
-// #define DEBUG_ALL
+#define DEBUG_ALL
 
 /**
  * Disables all debug options (except PUPPYPRINT).
@@ -79,7 +79,7 @@
 /**
  * Includes vanilla debug functionality.
  */
-// #define VANILLA_DEBUG
+#define VANILLA_DEBUG
 
 /**
  * Forces a crash when the game starts. Useful for debugging the crash screen.

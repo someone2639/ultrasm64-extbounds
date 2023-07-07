@@ -436,6 +436,7 @@ void render_game(void) {
         s2d_init();
 
         // place any custom text engine code here if not using deferred prints
+        cpr_tick();
 
         s2d_handle_deferred();
         s2d_stop();

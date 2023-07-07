@@ -773,6 +773,8 @@ void thread5_game_loop(UNUSED void *arg) {
 #endif
     render_init();
 
+    cpr_init();
+
     while (TRUE) {
         profiler_frame_setup();
         // If the reset timer is active, run the process to reset the game.

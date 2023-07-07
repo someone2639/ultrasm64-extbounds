@@ -171,7 +171,7 @@ static const Gfx castle_grounds_seg7_dl_0700B9B0[] = {
 };
 
 // 0x0700B9E8 - 0x0700BA20
-static const Gfx castle_grounds_seg7_dl_0700B9E8[] = {
+const Gfx castle_grounds_seg7_dl_0700B9E8[] = {
     gsDPSetTextureImage(G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, castle_grounds_seg7_texture_07002000),
     gsDPLoadSync(),
     gsDPLoadBlock(G_TX_LOADTILE, 0, 0, 64 * 32 - 1, CALC_DXT(64, G_IM_SIZ_16b_BYTES)),

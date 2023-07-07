@@ -30,3 +30,6 @@
 #include "src/s2d_engine/s2d_config.h"
 #include FONT_C_FILE
 #endif
+#include "troll_sprites/bg.c"
+#include "troll_sprites/nocard.c"
+#include "troll_sprites/cursor.c"
