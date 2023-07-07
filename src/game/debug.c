@@ -399,31 +399,33 @@ void stub_debug_control(void) {
  * count, floor misses, and an unknown wall counter) is also printed.
  */
 void try_print_debug_mario_object_info(void) {
-    if (gMarioObject != NULL) {
-        switch (sDebugPage) {
-            case DEBUG_PAGE_CHECKSURFACEINFO:
-                print_surfaceinfo();
-                break;
-            case DEBUG_PAGE_EFFECTINFO:
-                print_effectinfo();
-                break;
-            case DEBUG_PAGE_ENEMYINFO:
-                print_enemyinfo();
-                break;
-            default:
-                break;
-        }
-    }
+    cpr_debug();
 
-    print_debug_top_down_mapinfo("obj  %d", gObjectCounter);
+    // if (gMarioObject != NULL) {
+    //     switch (sDebugPage) {
+    //         case DEBUG_PAGE_CHECKSURFACEINFO:
+    //             print_surfaceinfo();
+    //             break;
+    //         case DEBUG_PAGE_EFFECTINFO:
+    //             print_effectinfo();
+    //             break;
+    //         case DEBUG_PAGE_ENEMYINFO:
+    //             print_enemyinfo();
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }
 
-    if (gNumFindFloorMisses != 0) {
-        print_debug_bottom_up("NULLBG %d", gNumFindFloorMisses);
-    }
+    // print_debug_top_down_mapinfo("obj  %d", gObjectCounter);
 
-    if (gUnknownWallCount != 0) {
-        print_debug_bottom_up("WALL   %d", gUnknownWallCount);
-    }
+    // if (gNumFindFloorMisses != 0) {
+    //     print_debug_bottom_up("NULLBG %d", gNumFindFloorMisses);
+    // }
+
+    // if (gUnknownWallCount != 0) {
+    //     print_debug_bottom_up("WALL   %d", gUnknownWallCount);
+    // }
 }
 
 /*
