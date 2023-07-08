@@ -21,34 +21,31 @@ int BB_inside(Bound *b, u16 x, u16 y) {
         && ((y <= b->uly) && (y >= b->lry));
 }
 
-
-
-enum CPR_GAMESTATE {
-    CPR_INIT = 0,
-    CPR_ZOOMIN,
-    CPR_GAME,
-    CPR_ZOOMOUT,
-    CPR_FINISH,
+Bound drawBoxBounds = {
+    .ulx = 0, .uly = 32,
+    .lrx = 63, .lry = 1,
 };
-u32 cpr_GameState = CPR_INIT;
-u32 cpr_NextState = CPR_INIT;
-u32 cpr_Timer = 0;
 
-
-void cpr_drawscreenzoom() {
-    static float scale = 0.1f;
-    uObjBg *b = segmented_to_virtual(&bg_bg);
-
-    b->s.scaleW = b->s.scaleH = qs510(scale);
-
-    scale = approach_f32_asymptotic(scale, 1.0f, 2.0f);
-    if (scale > 1.0f) {
-        scale = 1.0f;
-        cpr_NextState = CPR_GAME;
-    }
-
-    gSPDisplayList(gDisplayListHead++, bg_bg_dl);
+void BB_constrain(Bound *b, s16 *x, s16 *y) {
+    if (*x < b->ulx) *x = b->ulx;
+    if (*x > b->lrx) *x = b->lrx;
+    if (*y < b->lry) *y = b->lry;
+    if (*y > b->uly) *y = b->uly;
 }
+
+
+typedef enum CPR_DRAWTOOL {
+    CPR_MINTOOL = 0,
+    CPR_POINT,
+    CPR_LINE,
+    CPR_AIRBRUSH,
+    // CPR_FILL,
+    CPR_MAXTOOL,
+} DrawTool;
+
+DrawTool cpr_Tool = CPR_POINT;
+u16 cpr_ColorOn = 0x0001;
+
 void cpr_drawscreen() {
     gSPDisplayList(gDisplayListHead++, bg_bg_dl);
 }
@@ -85,9 +82,96 @@ void cpr_point(u16 on, u16 x, u16 y) {
     // #define PIXEL ((x * 32) + (64 - y))
 
     if (on) {
-        toDraw[32 - y][x] = 0x0001;
+        toDraw[32 - y][x] = cpr_ColorOn;
     } else {
         toDraw[32 - y][x] = 0xFFFF;
+    }
+}
+
+void cpr_line(u16 on, u16 x, u16 y) {
+    u16 (*toDraw)[64] = cpr_Texture;
+    #define PIXEL (((32 - y) * 64) + x)
+    #define LEFTPAD(c) ((c) < 0 ? 0 : (c))
+    #define RIGHTPAD(c) ((c) > 63 ? 63 : (c))
+
+    s16 xPos[5];
+        xPos[0] = LEFTPAD(x - 2);
+        xPos[1] = LEFTPAD(x - 1);
+        xPos[2] = x;
+        xPos[3] = RIGHTPAD(x + 1);
+        xPos[4] = RIGHTPAD(x + 2);
+
+
+    for (int i = 0; i < 5; i++) {
+        if (on) {
+            toDraw[32 - y][xPos[i]] = cpr_ColorOn;
+        } else {
+            toDraw[32 - y][xPos[i]] = 0xFFFF;
+        }
+    }
+}
+
+void cpr_airbrush(u16 on, u16 x, u16 y) {
+    u16 (*toDraw)[64] = cpr_Texture;
+    #define LEFTPAD(c) ((c) < 0 ? 0 : (c))
+    #define RIGHTPAD(c) ((c) > 63 ? 63 : (c))
+    #define UP_PAD(c) ((c) < 1 ? 1 : (c))
+    #define DOWNPAD(c) ((c) > 32 ? 32 : (c))
+
+    #define AIRBRUSH_RADIUS 5
+
+    for (int i = 0; i < 5; i++) {
+        s16 newY = (32 - y);
+        s16 newX = x;
+
+        if (random_u16() & 1) {
+            newY -= random_float() * AIRBRUSH_RADIUS;
+        } else {
+            newY += random_float() * AIRBRUSH_RADIUS;
+        }
+
+        if (random_u16() & 1) {
+            newX -= random_float() * AIRBRUSH_RADIUS;
+        } else {
+            newX += random_float() * AIRBRUSH_RADIUS;
+        }
+
+
+        if (on) {
+            toDraw[newY][newX] = cpr_ColorOn;
+        } else {
+            toDraw[newY][newX] = 0xFFFF;
+        }
+    }
+}
+
+void cpr_fill(u16 startColor, u16 on, s16 x, s16 y) {
+    u16 (*toDraw)[64] = cpr_Texture;
+    // trivial cases
+    if (x < 0) return;
+    if (y < 1) return;
+    if (x > 63) return;
+    if (y < 32) return;
+    // color cases
+    if (toDraw[32 - y][x] != startColor) return;
+
+    if (on) {
+        toDraw[32 - y][x] = cpr_ColorOn;
+    } else {
+        toDraw[32 - y][x] = 0xFFFF;
+    }
+
+    cpr_fill(startColor, on, x - 1, y);
+    cpr_fill(startColor, on, x + 1, y);
+    cpr_fill(startColor, on, x, y - 1);
+    cpr_fill(startColor, on, x, y + 1);
+}
+
+void cpr_draw(u16 on, u16 x, u16 y) {
+    switch (cpr_Tool) {
+        case CPR_POINT: cpr_point(on, x, y); break;
+        case CPR_LINE: cpr_line(on, x, y); break;
+        case CPR_AIRBRUSH: cpr_airbrush(on, x, y); break;
     }
 }
 
@@ -102,27 +186,34 @@ void cpr_drawcursor() {
 
     if (gPlayer1Controller->stickX < -14) {
         curX--;
-        if (curX < 0) curX = 0;
     }
     if (gPlayer1Controller->stickX > 14) {
         curX++;
-        if (curX > 63) curX = 63;
     }
     if (gPlayer1Controller->stickY < -14) {
         curY--;
-        if (curY < 1) curY = 1;
     }
     if (gPlayer1Controller->stickY > 14) {
         curY++;
-        if (curY > 32) curY = 32;
     }
+    BB_constrain(&drawBoxBounds, &curX, &curY);
 
     if (gPlayer1Controller->buttonDown & A_BUTTON) {
-        cpr_point(TRUE, curX, curY);
+        cpr_draw(TRUE, curX, curY);
     }
     if (gPlayer1Controller->buttonDown & B_BUTTON) {
-        cpr_point(FALSE, curX, curY);
+        cpr_draw(FALSE, curX, curY);
     }
+
+    // u16 (*toDraw)[64] = cpr_Texture;
+    // u16 currColor = toDraw[32 - curY][curX];
+
+    // if (gPlayer1Controller->buttonPressed & A_BUTTON) {
+    //     cpr_fill(currColor, TRUE, curX, curY);
+    // }
+    // if (gPlayer1Controller->buttonPressed & B_BUTTON) {
+    //     cpr_fill(currColor, FALSE, curX, curY);
+    // }
 
     posSprite->s.objX = qs102((16 + 70 + (curX * 3)));
     posSprite->s.objY = qs102(240 - (100 + (curY * 3)));
@@ -130,6 +221,37 @@ void cpr_drawcursor() {
     gSPDisplayList(gDisplayListHead++, cursor_sprite_dl);
 }
 
+void cpr_updatetool() {
+    if (gPlayer1Controller->buttonPressed & U_JPAD) cpr_Tool++;
+    if (gPlayer1Controller->buttonPressed & D_JPAD) cpr_Tool--;
+
+    if (cpr_Tool <= CPR_MINTOOL) cpr_Tool = CPR_MINTOOL + 1;
+    if (cpr_Tool >= CPR_MAXTOOL) cpr_Tool = CPR_MAXTOOL - 1;
+}
+void cpr_updatecolor() {
+    enum colors {
+        CPR_MINCOL,
+        COLOR_BLACK,
+        COLOR_RED,
+        COLOR_GREEN,
+        COLOR_TEAL,
+        CPR_MAXCOL,
+    };
+    static enum colors cpr_colorIdx = COLOR_BLACK;
+
+    if (gPlayer1Controller->buttonPressed & L_JPAD) cpr_colorIdx--;
+    if (gPlayer1Controller->buttonPressed & R_JPAD) cpr_colorIdx++;
+
+    if (cpr_colorIdx <= CPR_MINCOL) cpr_colorIdx = CPR_MINCOL + 1;
+    if (cpr_colorIdx >= CPR_MAXCOL) cpr_colorIdx = CPR_MAXCOL - 1;
+
+    switch (cpr_colorIdx) {
+        case COLOR_BLACK: cpr_ColorOn = 0x0001; break;
+        case COLOR_RED: cpr_ColorOn = GPACK_RGBA5551(247, 70, 57, 255); break;
+        case COLOR_GREEN: cpr_ColorOn = GPACK_RGBA5551(173, 209, 10, 255); break;
+        case COLOR_TEAL: cpr_ColorOn = GPACK_RGBA5551(33, 209, 192, 255); break;
+    }
+}
 
 int cpr_minigame() {
     cpr_drawscreen();
@@ -137,13 +259,10 @@ int cpr_minigame() {
     cpr_drawtexture();
     cpr_drawcursor();
 
-    cpr_Timer++;
-    if (cpr_NextState != cpr_GameState) {
-        cpr_GameState = cpr_NextState;
-        cpr_Timer = 0;
-    }
+    cpr_updatetool();
+    cpr_updatecolor();
 
-    if (gPlayer1Controller->buttonPressed & L_CBUTTONS) {
+    if (gPlayer1Controller->buttonPressed & START_BUTTON) {
         if (cpr_filegone()) {
             cpr_makefile();
         }
