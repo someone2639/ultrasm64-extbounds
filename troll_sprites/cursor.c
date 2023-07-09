@@ -32,7 +32,7 @@ Gfx cursor_init_dl[] = {
 uObjMtx cursor_mtx = {
 	0x10000,  0,              /* A,B */
 	0,        0x10000,        /* C,D */
-	50,        50,            /* X,Y */
+	0 << 2,        0 << 2,            /* X,Y */
 	1<<10,    1<<10           /* BaseScaleX, BaseScaleY */
 };
 uObjSprite cursor_obj = {
@@ -67,9 +67,15 @@ uObjTxtrBlock_t texParms = {
     (u32) NULL, /* flag */
     0xFFFFFFFF, /* mask */
 };
+uObjMtx tex_mtx = {
+	0x10000,  0,              /* A,B */
+	0,        0x10000,        /* C,D */
+	100 << 2,        70 << 2,            /* X,Y */
+	1<<10,    1<<10           /* BaseScaleX, BaseScaleY */
+};
 uObjSprite tex_obj = {
-    100<<2, qs510(0.33), 64<<5, 0,          /* objX, scaleX, imageW, unused */
-    70<<2, qs510(0.33), 32<<5, 0,          /* objY, scaleY, imageH, unused */
+    0<<2, qs510(0.33), 64<<5, 0,          /* objX, scaleX, imageW, unused */
+    0<<2, qs510(0.33), 32<<5, 0,          /* objY, scaleY, imageH, unused */
     .s.imageStride = GS_PIX2TMEM(64, G_IM_SIZ_16b), /* imageStride */
     .s.imageAdrs = GS_PIX2TMEM(0, G_IM_SIZ_16b), /* imageAdrs */
     G_IM_FMT_RGBA, /* imageFmt */

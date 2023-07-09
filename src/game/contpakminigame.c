@@ -6,6 +6,9 @@
 
 #include "troll_sprites/bg.h"
 #include "troll_sprites/cursor.h"
+#include "troll_sprites/painttool.h"
+#include "troll_sprites/linetool.h"
+#include "troll_sprites/airbrush.h"
 
 
 #define qs510(n) ((s16)((n)*0x0400))
@@ -54,10 +57,11 @@ void cpr_drawscreen() {
 void cpr_drawsprites() {
     // for paint and colors
     // maybe also cursors
+    gSPDisplayList(gDisplayListHead++, painttool_sprite_dl);
 }
 
 void cpr_drawtexture() {
-    extern u8 cursor_init_dl[], tex_obj[];
+    extern u8 cursor_init_dl[], tex_obj[], tex_mtx[];
 
     extern uObjTxtrBlock_t texParms;
 
@@ -73,6 +77,7 @@ void cpr_drawtexture() {
     gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SPRITE, G_RM_XLU_SPRITE2);
     gSPObjRenderMode(gDisplayListHead++, G_OBJRM_XLU | G_OBJRM_BILERP);
     gSPObjLoadTxtr(gDisplayListHead++, &texParms);
+    gSPObjMatrix(gDisplayListHead++, &tex_mtx);
     gSPObjSprite(gDisplayListHead++, &tex_obj);
 }
 
@@ -115,8 +120,8 @@ void cpr_airbrush(u16 on, u16 x, u16 y) {
     u16 (*toDraw)[64] = cpr_Texture;
     #define LEFTPAD(c) ((c) < 0 ? 0 : (c))
     #define RIGHTPAD(c) ((c) > 63 ? 63 : (c))
-    #define UP_PAD(c) ((c) < 1 ? 1 : (c))
-    #define DOWNPAD(c) ((c) > 32 ? 32 : (c))
+    #define DOWNPAD(c) ((c) < 1 ? 1 : (c))
+    #define UP_PAD(c) ((c) > 32 ? 32 : (c))
 
     #define AIRBRUSH_RADIUS 5
 
@@ -125,15 +130,15 @@ void cpr_airbrush(u16 on, u16 x, u16 y) {
         s16 newX = x;
 
         if (random_u16() & 1) {
-            newY -= random_float() * AIRBRUSH_RADIUS;
+            newY = DOWNPAD(newY - random_float() * AIRBRUSH_RADIUS);
         } else {
-            newY += random_float() * AIRBRUSH_RADIUS;
+            newY = UP_PAD(newY + random_float() * AIRBRUSH_RADIUS);
         }
 
         if (random_u16() & 1) {
-            newX -= random_float() * AIRBRUSH_RADIUS;
+            newX = LEFTPAD(newX - random_float() * AIRBRUSH_RADIUS);
         } else {
-            newX += random_float() * AIRBRUSH_RADIUS;
+            newX = RIGHTPAD(newX + random_float() * AIRBRUSH_RADIUS);
         }
 
 
@@ -215,8 +220,8 @@ void cpr_drawcursor() {
     //     cpr_fill(currColor, FALSE, curX, curY);
     // }
 
-    posSprite->s.objX = qs102((16 + 70 + (curX * 3)));
-    posSprite->s.objY = qs102(240 - (100 + (curY * 3)));
+    posMtx->m.X = qs102((70 + 44 + (curX * 3)));
+    posMtx->m.Y = qs102(240 - (65 + (curY * 3)));
 
     gSPDisplayList(gDisplayListHead++, cursor_sprite_dl);
 }
