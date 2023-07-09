@@ -60,6 +60,9 @@ enum colors {
     COLOR_RED,
     COLOR_GREEN,
     COLOR_TEAL,
+    COLOR_PURBLE,
+    COLOR_BLUE,
+    COLOR_YELLOW,
     CPR_MAXCOL,
 };
 static enum colors cpr_colorIdx = COLOR_BLACK;
@@ -69,6 +72,9 @@ u16 cpr_colorArray[CPR_MAXCOL] = {
     [COLOR_RED] = GPACK_RGBA5551(247, 70, 57, 255),
     [COLOR_GREEN] = GPACK_RGBA5551(173, 209, 10, 255),
     [COLOR_TEAL] = GPACK_RGBA5551(33, 209, 192, 255),
+    [COLOR_PURBLE] = GPACK_RGBA5551(167, 66, 235, 255),
+    [COLOR_BLUE] = GPACK_RGBA5551(42, 42, 247, 255),
+    [COLOR_YELLOW] = GPACK_RGBA5551(0xFF,0xFF,00, 255),
 };
 
 void cpr_drawsprites() {
