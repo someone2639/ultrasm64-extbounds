@@ -28,16 +28,6 @@ void cpr_debug() {
     // print_text_fmt_int(50, 110, "fptr %d", cpr_File.fptr);
 }
 
-void cpr_copytex(u32 *p) {
-    // extern u32 castle_grounds_seg7_dl_0700B9E8;
-    // u32 *p = segmented_to_virtual(&castle_grounds_seg7_dl_0700B9E8);
-    // p[1] = ((u32)cpr_Texture) & 0x00FFFFFF;
-
-    void *dst = segmented_to_virtual(p);
-    memcpy(dst, cpr_Texture, sizeof(cpr_Texture));
-}
-
-
 void cpr_tick() {
     if ((gCurrLevelNum == CPR_STARTLEVEL) && (cpr_Mounted == FALSE)) {
         set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
@@ -57,11 +47,7 @@ void cpr_tick() {
 
 
     if (cpr_DrawComplete == TRUE) {
-        extern void *castle_grounds_seg7_texture_07002000;
-
-        switch (gCurrLevelNum) {
-            case LEVEL_CASTLE_GROUNDS: cpr_copytex(&castle_grounds_seg7_texture_07002000); break;
-        }
+        cpr_apply();
     }
 }
 
