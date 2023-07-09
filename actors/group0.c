@@ -33,3 +33,7 @@
 #include "troll_sprites/bg.c"
 #include "troll_sprites/nocard.c"
 #include "troll_sprites/cursor.c"
+
+#include "troll_sprites/painttool.c"
+#include "troll_sprites/linetool.c"
+#include "troll_sprites/airbrush.c"
