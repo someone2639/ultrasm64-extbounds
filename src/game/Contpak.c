@@ -18,10 +18,6 @@ void *cpr_textureArray[LEVEL_COUNT] = {
 
 
 void cpr_copytex(u32 *p) {
-    // extern u32 castle_grounds_seg7_dl_0700B9E8;
-    // u32 *p = segmented_to_virtual(&castle_grounds_seg7_dl_0700B9E8);
-    // p[1] = ((u32)cpr_Texture) & 0x00FFFFFF;
-
     void *dst = segmented_to_virtual(p);
     memcpy(dst, cpr_Texture, sizeof(cpr_Texture));
 }
