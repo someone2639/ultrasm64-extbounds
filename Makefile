@@ -118,7 +118,7 @@ LIBRARIES := nustd hvqm2 z goddard
 
 # TEXT ENGINES
 #   s2dex_text_engine - Text Engine by someone2639
-TEXT_ENGINE := none
+TEXT_ENGINE := s2dex_text_engine
 ifeq ($(TEXT_ENGINE), s2dex_text_engine)
   DEFINES += S2DEX_GBI_2=1 S2DEX_TEXT_ENGINE=1
   LIBRARIES += s2d_engine
@@ -378,7 +378,8 @@ ACTOR_DIR      := actors
 LEVEL_DIRS     := $(patsubst levels/%,%,$(dir $(wildcard levels/*/header.h)))
 
 # Directories containing source files
-SRC_DIRS += src src/boot src/game src/engine src/audio src/menu src/buffers actors levels bin data assets asm lib sound
+SRC_DIRS += src src/boot src/game src/engine src/audio src/menu src/buffers actors levels bin data assets asm lib sound \
+						src/libcart/src src/libcart/ff
 LIBZ_SRC_DIRS := src/libz
 GODDARD_SRC_DIRS := src/goddard src/goddard/dynlists
 BIN_DIRS := bin bin/$(VERSION)
@@ -467,11 +468,11 @@ OBJDUMP   := $(CROSS)objdump
 OBJCOPY   := $(CROSS)objcopy
 
 ifeq ($(TARGET_N64),1)
-  TARGET_CFLAGS := -nostdinc -DTARGET_N64 -D_LANGUAGE_C
+  TARGET_CFLAGS := -nostdinc -D_ULTRA64 -DTARGET_N64 -D_LANGUAGE_C
   CC_CFLAGS := -fno-builtin
 endif
 
-INCLUDE_DIRS += include $(BUILD_DIR) $(BUILD_DIR)/include src . include/hvqm
+INCLUDE_DIRS += include $(BUILD_DIR) $(BUILD_DIR)/include src . include/hvqm src/libcart/include
 ifeq ($(TARGET_N64),1)
   INCLUDE_DIRS += include/libc
 endif
@@ -529,7 +530,7 @@ else
   RSPASM              := $(TOOLS_DIR)/armips
 endif
 ENDIAN_BITWIDTH       := $(BUILD_DIR)/endian-and-bitwidth
-EMULATOR = mupen64plus
+EMULATOR = parallel-launcher
 EMU_FLAGS =
 LOADER = loader64
 LOADER_FLAGS = -vwf

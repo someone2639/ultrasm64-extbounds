@@ -429,6 +429,10 @@ void render_game(void) {
         }
     }
 
+    s2d_init();
+    cpr_tick();
+    s2d_stop();
+
     gViewportOverride = NULL;
     gViewportClip     = NULL;
     
