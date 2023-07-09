@@ -28,7 +28,7 @@ Gfx painttool_init_dl[] = {
 uObjMtx painttool_mtx = {
 	0x10000,  0,              /* A,B */
 	0,        0x10000,        /* C,D */
-	26 << 2,  45 << 2,            /* X,Y */
+	32 << 2,  69 << 2,            /* X,Y */
 	1<<10,    1<<10           /* BaseScaleX, BaseScaleY */
 };
 uObjSprite painttool_obj = {

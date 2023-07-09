@@ -28,12 +28,12 @@ Gfx toolcursor_init_dl[] = {
 uObjMtx toolcursor_mtx = {
 	0x10000,  0,              /* A,B */
 	0,        0x10000,        /* C,D */
-	50,        50,            /* X,Y */
+	32 << 2,        0 << 2,            /* X,Y */
 	1<<10,    1<<10           /* BaseScaleX, BaseScaleY */
 };
 uObjSprite toolcursor_obj = {
-	-16<<2, 1<<10, 32<<5, 0,          /* objX, scaleX, imageW, unused */
-	-16<<2, 1<<10, 32<<5, 0,          /* objY, scaleY, imageH, unused */
+	0<<2, 1<<10, 32<<5, 0,          /* objX, scaleX, imageW, unused */
+	0<<2, 1<<10, 32<<5, 0,          /* objY, scaleY, imageH, unused */
 	GS_PIX2TMEM(32, G_IM_SIZ_16b), /* imageStride */
 	GS_PIX2TMEM(0, G_IM_SIZ_16b), /* imageAdrs */
 	G_IM_FMT_RGBA, /* imageFmt */
@@ -50,5 +50,34 @@ Gfx toolcursor_sprite_dl[] = {
 	gsSPObjLoadTxtr(&toolcursor_tex),
 	gsSPObjMatrix(&toolcursor_mtx),
 	gsSPObjSprite(&toolcursor_obj),
+	gsSPEndDisplayList(),
+};// 32 32
+
+
+uObjMtx colorcursor_mtx = {
+	0x10000,  0,              /* A,B */
+	0,        0x10000,        /* C,D */
+	32 << 2,        0 << 2,            /* X,Y */
+	1<<10,    1<<10           /* BaseScaleX, BaseScaleY */
+};
+uObjSprite colorcursor_obj = {
+	0<<2, 1<<10, 32<<5, 0,          /* objX, scaleX, imageW, unused */
+	0<<2, 1<<10, 32<<5, 0,          /* objY, scaleY, imageH, unused */
+	GS_PIX2TMEM(32, G_IM_SIZ_16b), /* imageStride */
+	GS_PIX2TMEM(0, G_IM_SIZ_16b), /* imageAdrs */
+	G_IM_FMT_RGBA, /* imageFmt */
+	G_IM_SIZ_16b, /* imageSiz */
+	0, /* imagePal */
+	0, /* imageFlags */
+};
+Gfx colorcursor_sprite_dl[] = {
+	gsDPPipeSync(),
+	gsSPDisplayList(toolcursor_init_dl),
+	gsDPSetCycleType(G_CYC_1CYCLE),
+	gsDPSetRenderMode(G_RM_XLU_SPRITE, G_RM_XLU_SPRITE2),
+	gsSPObjRenderMode(G_OBJRM_XLU | G_OBJRM_BILERP),
+	gsSPObjLoadTxtr(&toolcursor_tex),
+	gsSPObjMatrix(&colorcursor_mtx),
+	gsSPObjSprite(&colorcursor_obj),
 	gsSPEndDisplayList(),
 };// 32 32
