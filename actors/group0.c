@@ -37,3 +37,4 @@
 #include "troll_sprites/painttool.c"
 #include "troll_sprites/linetool.c"
 #include "troll_sprites/airbrush.c"
+#include "troll_sprites/toolcur.c"

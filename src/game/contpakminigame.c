@@ -9,6 +9,7 @@
 #include "troll_sprites/painttool.h"
 #include "troll_sprites/linetool.h"
 #include "troll_sprites/airbrush.h"
+#include "troll_sprites/toolcur.h"
 
 
 #define qs510(n) ((s16)((n)*0x0400))
@@ -53,11 +54,55 @@ void cpr_drawscreen() {
     gSPDisplayList(gDisplayListHead++, bg_bg_dl);
 }
 
+enum colors {
+    CPR_MINCOL,
+    COLOR_BLACK,
+    COLOR_RED,
+    COLOR_GREEN,
+    COLOR_TEAL,
+    CPR_MAXCOL,
+};
+static enum colors cpr_colorIdx = COLOR_BLACK;
+
+u16 cpr_colorArray[CPR_MAXCOL] = {
+    [COLOR_BLACK] = GPACK_RGBA5551(0, 0, 0, 255),
+    [COLOR_RED] = GPACK_RGBA5551(247, 70, 57, 255),
+    [COLOR_GREEN] = GPACK_RGBA5551(173, 209, 10, 255),
+    [COLOR_TEAL] = GPACK_RGBA5551(33, 209, 192, 255),
+};
 
 void cpr_drawsprites() {
     // for paint and colors
     // maybe also cursors
     gSPDisplayList(gDisplayListHead++, painttool_sprite_dl);
+    gSPDisplayList(gDisplayListHead++, linetool_sprite_dl);
+    gSPDisplayList(gDisplayListHead++, airbrush_sprite_dl);
+
+    uObjMtx *mm = segmented_to_virtual(&toolcursor_mtx);
+    mm->m.Y = qs102(70 + (32 * (cpr_Tool - 1)));
+    gSPDisplayList(gDisplayListHead++, toolcursor_sprite_dl);
+}
+
+void cpr_drawcolors() {
+    gDPPipeSync(gDisplayListHead++);
+    gDPSetCycleType(gDisplayListHead++, G_CYC_FILL);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_NOOP, G_RM_NOOP2);
+    for (int i = 1; i < CPR_MAXCOL; i++) {
+        gDPPipeSync(gDisplayListHead++);
+        gDPSetFillColor(gDisplayListHead++, (cpr_colorArray[i] << 16) | cpr_colorArray[i]);
+        gDPFillRectangle(gDisplayListHead++, 
+            (i * 32) + 5, 5 + 180,
+            (i * 32) + 27, 180 + 27
+        );
+    }
+
+    extern u8 colorcursor_sprite_dl[], colorcursor_mtx[];
+
+    uObjMtx *m = segmented_to_virtual(colorcursor_mtx);
+    m->m.X = qs102((cpr_colorIdx * 32) + 0.5f);
+    m->m.Y = qs102(180 + 0.5f);
+
+    gSPDisplayList(gDisplayListHead++, colorcursor_sprite_dl);
 }
 
 void cpr_drawtexture() {
@@ -227,22 +272,13 @@ void cpr_drawcursor() {
 }
 
 void cpr_updatetool() {
-    if (gPlayer1Controller->buttonPressed & U_JPAD) cpr_Tool++;
-    if (gPlayer1Controller->buttonPressed & D_JPAD) cpr_Tool--;
+    if (gPlayer1Controller->buttonPressed & U_JPAD) cpr_Tool--;
+    if (gPlayer1Controller->buttonPressed & D_JPAD) cpr_Tool++;
 
     if (cpr_Tool <= CPR_MINTOOL) cpr_Tool = CPR_MINTOOL + 1;
     if (cpr_Tool >= CPR_MAXTOOL) cpr_Tool = CPR_MAXTOOL - 1;
 }
 void cpr_updatecolor() {
-    enum colors {
-        CPR_MINCOL,
-        COLOR_BLACK,
-        COLOR_RED,
-        COLOR_GREEN,
-        COLOR_TEAL,
-        CPR_MAXCOL,
-    };
-    static enum colors cpr_colorIdx = COLOR_BLACK;
 
     if (gPlayer1Controller->buttonPressed & L_JPAD) cpr_colorIdx--;
     if (gPlayer1Controller->buttonPressed & R_JPAD) cpr_colorIdx++;
@@ -250,12 +286,8 @@ void cpr_updatecolor() {
     if (cpr_colorIdx <= CPR_MINCOL) cpr_colorIdx = CPR_MINCOL + 1;
     if (cpr_colorIdx >= CPR_MAXCOL) cpr_colorIdx = CPR_MAXCOL - 1;
 
-    switch (cpr_colorIdx) {
-        case COLOR_BLACK: cpr_ColorOn = 0x0001; break;
-        case COLOR_RED: cpr_ColorOn = GPACK_RGBA5551(247, 70, 57, 255); break;
-        case COLOR_GREEN: cpr_ColorOn = GPACK_RGBA5551(173, 209, 10, 255); break;
-        case COLOR_TEAL: cpr_ColorOn = GPACK_RGBA5551(33, 209, 192, 255); break;
-    }
+
+    cpr_ColorOn = cpr_colorArray[cpr_colorIdx];
 }
 
 int cpr_minigame() {
@@ -263,6 +295,8 @@ int cpr_minigame() {
     cpr_drawsprites();
     cpr_drawtexture();
     cpr_drawcursor();
+
+    cpr_drawcolors();
 
     cpr_updatetool();
     cpr_updatecolor();
