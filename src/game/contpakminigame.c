@@ -11,6 +11,13 @@
 #include "troll_sprites/airbrush.h"
 #include "troll_sprites/toolcur.h"
 
+#define cpr_CYC G_CYC_1CYCLE
+
+#if cpr_CYC == G_CYC_1CYCLE
+#define cpr_dsdx 1
+#else
+#define cpr_dsdx 4
+#endif
 
 #define qs510(n) ((s16)((n)*0x0400))
 #define qs1516(n) ((s32)((n)*0x00010000))
@@ -51,7 +58,8 @@ DrawTool cpr_Tool = CPR_POINT;
 u16 cpr_ColorOn = 0x0001;
 
 void cpr_drawscreen() {
-    gSPDisplayList(gDisplayListHead++, bg_bg_dl);
+    // gSPDisplayList(gDisplayListHead++, bg_bg_dl);
+    render_multi_image(bg_tex_0, 0, 0, 320, 240, 1, 1, cpr_CYC);
 }
 
 enum colors {
@@ -80,13 +88,18 @@ u16 cpr_colorArray[CPR_MAXCOL] = {
 void cpr_drawsprites() {
     // for paint and colors
     // maybe also cursors
-    gSPDisplayList(gDisplayListHead++, painttool_sprite_dl);
-    gSPDisplayList(gDisplayListHead++, linetool_sprite_dl);
-    gSPDisplayList(gDisplayListHead++, airbrush_sprite_dl);
+    render_multi_image(painttool_tex_0, 32, 69, 32, 32, 1, 1, cpr_CYC);
+    render_multi_image(linetool_tex_0, 32, 100, 32, 32, 1, 1, cpr_CYC);
+    render_multi_image(airbrush_tex_0, 32, 132, 32, 32, 1, 1, cpr_CYC);
+    // gSPDisplayList(gDisplayListHead++, painttool_sprite_dl);
+    // gSPDisplayList(gDisplayListHead++, linetool_sprite_dl);
+    // gSPDisplayList(gDisplayListHead++, airbrush_sprite_dl);
 
-    uObjMtx *mm = segmented_to_virtual(&toolcursor_mtx);
-    mm->m.Y = qs102(70 + (32 * (cpr_Tool - 1)));
-    gSPDisplayList(gDisplayListHead++, toolcursor_sprite_dl);
+    render_multi_image(toolcursor_tex_0, 32, 70 + (32 * (cpr_Tool - 1)), 32, 32, 1, 1, cpr_CYC);
+
+    // uObjMtx *mm = segmented_to_virtual(&toolcursor_mtx);
+    // mm->m.Y = qs102(70 + (32 * (cpr_Tool - 1)));
+    // gSPDisplayList(gDisplayListHead++, toolcursor_sprite_dl);
 }
 
 void cpr_drawcolors() {
@@ -104,11 +117,20 @@ void cpr_drawcolors() {
 
     extern u8 colorcursor_sprite_dl[], colorcursor_mtx[];
 
-    uObjMtx *m = segmented_to_virtual(colorcursor_mtx);
-    m->m.X = qs102((cpr_colorIdx * 32) + 0.5f);
-    m->m.Y = qs102(180 + 0.5f);
+    render_multi_image(
+        toolcursor_tex_0,
+        32 + (cpr_colorIdx * 32),
+        180,
+        32, 32,
+        1, 1,
+        cpr_CYC
+    );
 
-    gSPDisplayList(gDisplayListHead++, colorcursor_sprite_dl);
+    // uObjMtx *m = segmented_to_virtual(colorcursor_mtx);
+    // m->m.X = qs102((cpr_colorIdx * 32) + 0.5f);
+    // m->m.Y = qs102(180 + 0.5f);
+
+    // gSPDisplayList(gDisplayListHead++, colorcursor_sprite_dl);
 }
 
 void cpr_drawtexture() {
@@ -121,15 +143,26 @@ void cpr_drawtexture() {
     parm->image = cpr_Texture;
     parm->flag = cpr_Texture;
 
+    extern u8 dl_hud_img_load_tex_block[];
+
+    u16 x = 100;
+    u16 y = 70;
 
     gDPPipeSync(gDisplayListHead++);
-    gSPDisplayList(gDisplayListHead++, cursor_init_dl);
-    gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
-    gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SPRITE, G_RM_XLU_SPRITE2);
-    gSPObjRenderMode(gDisplayListHead++, G_OBJRM_XLU | G_OBJRM_BILERP);
-    gSPObjLoadTxtr(gDisplayListHead++, &texParms);
-    gSPObjMatrix(gDisplayListHead++, &tex_mtx);
-    gSPObjSprite(gDisplayListHead++, &tex_obj);
+    gDPSetCycleType(gDisplayListHead++, cpr_CYC);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+    gDPSetTextureFilter(gDisplayListHead++, G_TF_POINT);
+    gDPSetTextureImage(gDisplayListHead++, G_IM_FMT_RGBA, G_IM_SIZ_16b, 1, cpr_Texture);
+    gSPDisplayList(gDisplayListHead++, &dl_hud_img_load_tex_block);
+    gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, (x + 63) << 2, (y + 31) << 2,
+                        G_TX_RENDERTILE, 0, 0, cpr_dsdx << 10, 1 << 10);
+    // gSPDisplayList(gDisplayListHead++, cursor_init_dl);
+    // gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
+    // gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SPRITE, G_RM_XLU_SPRITE2);
+    // gSPObjRenderMode(gDisplayListHead++, G_OBJRM_XLU | G_OBJRM_BILERP);
+    // gSPObjLoadTxtr(gDisplayListHead++, &texParms);
+    // gSPObjMatrix(gDisplayListHead++, &tex_mtx);
+    // gSPObjSprite(gDisplayListHead++, &tex_obj);
 }
 
 void cpr_point(u16 on, u16 x, u16 y) {
@@ -274,7 +307,15 @@ void cpr_drawcursor() {
     posMtx->m.X = qs102((70 + 44 + (curX * 3)));
     posMtx->m.Y = qs102(240 - (65 + (curY * 3)));
 
-    gSPDisplayList(gDisplayListHead++, cursor_sprite_dl);
+    // gSPDisplayList(gDisplayListHead++, cursor_sprite_dl);
+    render_multi_image(
+        cursor_tex_0,
+        (70 + 44 + (curX * 3)),
+        240 - (65 + (curY * 3)),
+        32, 32,
+        1, 1,
+        cpr_CYC
+    );
 }
 
 void cpr_updatetool() {

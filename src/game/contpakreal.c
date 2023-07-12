@@ -32,7 +32,8 @@ void cpr_tick() {
     if ((gCurrLevelNum == CPR_STARTLEVEL) && (cpr_Mounted == FALSE)) {
         set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
         enable_time_stop();
-        gSPDisplayList(gDisplayListHead++, nocard_bg_dl);
+        // gSPDisplayList(gDisplayListHead++, nocard_bg_dl);
+        render_multi_image(nocard_tex_0, 0, 0, 320, 240, 1, 1, G_CYC_1CYCLE);
         return;
     }
 

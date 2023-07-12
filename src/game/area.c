@@ -395,6 +395,7 @@ void render_game(void) {
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, gBorderHeight, SCREEN_WIDTH,
                       SCREEN_HEIGHT - gBorderHeight);
         render_hud();
+        cpr_tick();
 
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         render_text_labels();
@@ -432,15 +433,14 @@ void render_game(void) {
                 gWarpTransDelay--;
             }
         }
-#ifdef S2DEX_TEXT_ENGINE
-        s2d_init();
+// #ifdef S2DEX_TEXT_ENGINE
+//         s2d_init();
 
         // place any custom text engine code here if not using deferred prints
-        cpr_tick();
 
-        s2d_handle_deferred();
-        s2d_stop();
-#endif
+//         s2d_handle_deferred();
+//         s2d_stop();
+// #endif
     } else {
         render_text_labels();
 #ifdef PUPPYPRINT
