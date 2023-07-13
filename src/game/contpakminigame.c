@@ -59,7 +59,14 @@ u16 cpr_ColorOn = 0x0001;
 
 void cpr_drawscreen() {
     // gSPDisplayList(gDisplayListHead++, bg_bg_dl);
-    render_multi_image(bg_tex_0, 0, 0, 320, 240, 1, 1, cpr_CYC);
+    
+    sprite_draw(
+        bg_tex_0, G_IM_FMT_RGBA, G_IM_SIZ_16b, FALSE,
+        320, 240,
+        0, 0,
+        320 << 2, 240 << 2
+    );
+    // render_multi_image(bg_tex_0, 0, 0, 304, 240, 1, 1, cpr_CYC);
 }
 
 enum colors {
@@ -339,9 +346,9 @@ void cpr_updatecolor() {
 
 int cpr_minigame() {
     cpr_drawscreen();
-    cpr_drawsprites();
-    cpr_drawtexture();
-    cpr_drawcursor();
+    // cpr_drawsprites();
+    // cpr_drawtexture();
+    // cpr_drawcursor();
 
     cpr_drawcolors();
 
