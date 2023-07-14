@@ -29,17 +29,20 @@ void cpr_debug() {
 }
 
 void cpr_tick() {
-    gDPPipeSync(gDisplayListHead++);
-    gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
-    gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
-    gDPSetCombineMode(gDisplayListHead++, G_CC_DECALRGBA, G_CC_DECALRGBA);
-    gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
-
     if ((gCurrLevelNum == CPR_STARTLEVEL) && (cpr_Mounted == FALSE)) {
         set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
         enable_time_stop();
-        // gSPDisplayList(gDisplayListHead++, nocard_bg_dl);
-        render_multi_image(nocard_tex_0, 0, 0, 304, 240, 1, 1, G_CYC_1CYCLE);
+        gDPPipeSync(gDisplayListHead++);
+        gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
+        gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+        gDPSetCombineMode(gDisplayListHead++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+        gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
+        sprite_draw(
+            nocard_tex_0, G_IM_FMT_RGBA, G_IM_SIZ_16b, FALSE,
+            320, 240,
+            0, 0,
+            320 << 2, 240 << 2
+        );
         return;
     }
 
