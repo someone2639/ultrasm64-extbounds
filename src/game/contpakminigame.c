@@ -11,10 +11,25 @@
 #include "troll_sprites/airbrush.h"
 #include "troll_sprites/toolcur.h"
 
+#define cpr_CYC G_CYC_1CYCLE
+
+#if cpr_CYC == G_CYC_1CYCLE
+#define cpr_dsdx 1
+#else
+#define cpr_dsdx 4
+#endif
 
 #define qs510(n) ((s16)((n)*0x0400))
 #define qs1516(n) ((s32)((n)*0x00010000))
 #define qs102(n) ((s16)((n)*0x0004))
+#define Draw(tx, x, y) {\
+    sprite_draw(\
+        tx, G_IM_FMT_RGBA, G_IM_SIZ_16b, FALSE,\
+        32, 32,\
+        (x) << 2, (y) << 2,\
+        32 << 2, 32 << 2\
+    );\
+}
 
 typedef struct BB {
     u16 ulx; u16 uly;
@@ -51,7 +66,12 @@ DrawTool cpr_Tool = CPR_POINT;
 u16 cpr_ColorOn = 0x0001;
 
 void cpr_drawscreen() {
-    gSPDisplayList(gDisplayListHead++, bg_bg_dl);
+    sprite_draw(
+        bg_tex_0, G_IM_FMT_RGBA, G_IM_SIZ_16b, FALSE,
+        320, 240,
+        0, 0,
+        320 << 2, 240 << 2
+    );
 }
 
 enum colors {
@@ -78,15 +98,11 @@ u16 cpr_colorArray[CPR_MAXCOL] = {
 };
 
 void cpr_drawsprites() {
-    // for paint and colors
-    // maybe also cursors
-    gSPDisplayList(gDisplayListHead++, painttool_sprite_dl);
-    gSPDisplayList(gDisplayListHead++, linetool_sprite_dl);
-    gSPDisplayList(gDisplayListHead++, airbrush_sprite_dl);
+    Draw(painttool_tex_0, 32, 69);
+    Draw(linetool_tex_0, 32, 100);
+    Draw(airbrush_tex_0, 32, 132);
 
-    uObjMtx *mm = segmented_to_virtual(&toolcursor_mtx);
-    mm->m.Y = qs102(70 + (32 * (cpr_Tool - 1)));
-    gSPDisplayList(gDisplayListHead++, toolcursor_sprite_dl);
+    Draw(toolcursor_tex_0, 32, 70 + (32 * (cpr_Tool - 1)));
 }
 
 void cpr_drawcolors() {
@@ -103,12 +119,12 @@ void cpr_drawcolors() {
     }
 
     extern u8 colorcursor_sprite_dl[], colorcursor_mtx[];
-
-    uObjMtx *m = segmented_to_virtual(colorcursor_mtx);
-    m->m.X = qs102((cpr_colorIdx * 32) + 0.5f);
-    m->m.Y = qs102(180 + 0.5f);
-
-    gSPDisplayList(gDisplayListHead++, colorcursor_sprite_dl);
+    gDPPipeSync(gDisplayListHead++);
+    gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+    gDPSetCombineMode(gDisplayListHead++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+    gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
+    Draw(toolcursor_tex_0, (cpr_colorIdx * 32), 180);
 }
 
 void cpr_drawtexture() {
@@ -121,15 +137,33 @@ void cpr_drawtexture() {
     parm->image = cpr_Texture;
     parm->flag = cpr_Texture;
 
+    extern u8 dl_hud_img_load_tex_block[];
+
+    u16 x = 100;
+    u16 y = 70;
 
     gDPPipeSync(gDisplayListHead++);
-    gSPDisplayList(gDisplayListHead++, cursor_init_dl);
     gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
-    gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SPRITE, G_RM_XLU_SPRITE2);
-    gSPObjRenderMode(gDisplayListHead++, G_OBJRM_XLU | G_OBJRM_BILERP);
-    gSPObjLoadTxtr(gDisplayListHead++, &texParms);
-    gSPObjMatrix(gDisplayListHead++, &tex_mtx);
-    gSPObjSprite(gDisplayListHead++, &tex_obj);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+    gDPSetTextureFilter(gDisplayListHead++, G_TF_POINT);
+    gDPLoadTextureBlock(
+        gDisplayListHead++,
+        cpr_Texture,
+        G_IM_FMT_RGBA,
+        G_IM_SIZ_16b,
+        64,
+        32,
+        0,
+        G_TX_WRAP | G_TX_NOMIRROR,
+        G_TX_WRAP | G_TX_NOMIRROR,
+        G_TX_NOMASK,
+        G_TX_NOMASK,
+        G_TX_NOLOD,
+        G_TX_NOLOD
+    );
+    #define SCALE 3
+    gSPTextureRectangle(gDisplayListHead++, x << 2, y << 2, qs102(x + (64 * SCALE)), qs102(y + (32 * SCALE)),
+                        G_TX_RENDERTILE, 0, 0, qs510(1.0f / SCALE), qs510(1.0f / SCALE));
 }
 
 void cpr_point(u16 on, u16 x, u16 y) {
@@ -261,20 +295,10 @@ void cpr_drawcursor() {
         cpr_draw(FALSE, curX, curY);
     }
 
-    // u16 (*toDraw)[64] = cpr_Texture;
-    // u16 currColor = toDraw[32 - curY][curX];
-
-    // if (gPlayer1Controller->buttonPressed & A_BUTTON) {
-    //     cpr_fill(currColor, TRUE, curX, curY);
-    // }
-    // if (gPlayer1Controller->buttonPressed & B_BUTTON) {
-    //     cpr_fill(currColor, FALSE, curX, curY);
-    // }
-
     posMtx->m.X = qs102((70 + 44 + (curX * 3)));
     posMtx->m.Y = qs102(240 - (65 + (curY * 3)));
 
-    gSPDisplayList(gDisplayListHead++, cursor_sprite_dl);
+    Draw(cursor_tex_0, (70 + 44 + (curX * 3)), 240 - (65 + (curY * 3)));
 }
 
 void cpr_updatetool() {
@@ -297,6 +321,11 @@ void cpr_updatecolor() {
 }
 
 int cpr_minigame() {
+    gDPPipeSync(gDisplayListHead++);
+    gDPSetCycleType(gDisplayListHead++, G_CYC_1CYCLE);
+    gDPSetRenderMode(gDisplayListHead++, G_RM_XLU_SURF, G_RM_XLU_SURF2);
+    gDPSetCombineMode(gDisplayListHead++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+    gDPSetTexturePersp(gDisplayListHead++, G_TP_NONE);
     cpr_drawscreen();
     cpr_drawsprites();
     cpr_drawtexture();
