@@ -121,7 +121,7 @@ endif
 
 # TEXT ENGINES
 #   s2dex_text_engine - Text Engine by someone2639
-TEXT_ENGINE := s2dex_text_engine
+TEXT_ENGINE := none
 $(eval $(call validate-option,TEXT_ENGINE,none s2dex_text_engine))
 
 ifeq ($(TEXT_ENGINE), s2dex_text_engine)
