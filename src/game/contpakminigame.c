@@ -298,7 +298,7 @@ void cpr_drawcursor() {
     posMtx->m.X = qs102((70 + 44 + (curX * 3)));
     posMtx->m.Y = qs102(240 - (65 + (curY * 3)));
 
-    Draw(cursor_tex_0, (70 + 44 + (curX * 3)), 240 - (65 + (curY * 3)));
+    Draw(cursor_tex_0, (70 + 44 + (curX * 3)) - 16, 240 - (65 + (curY * 3)) - 15);
 }
 
 void cpr_updatetool() {
