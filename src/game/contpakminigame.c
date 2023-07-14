@@ -68,9 +68,9 @@ u16 cpr_ColorOn = 0x0001;
 void cpr_drawscreen() {
     sprite_draw(
         bg_tex_0, G_IM_FMT_RGBA, G_IM_SIZ_16b, FALSE,
-        320, 240,
+        304, 240,
         0, 0,
-        320 << 2, 240 << 2
+        304 << 2, 240 << 2
     );
 }
 
