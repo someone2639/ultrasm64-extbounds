@@ -30,6 +30,18 @@ enum ZBmodes {
     CLEAR_ZBUFFER = 1,
 };
 
+typedef struct mouse
+{
+	short x;
+	short y;
+	u16 held;
+	u16 down;
+	OSContPad *pad;
+}
+MOUSE;
+
+extern MOUSE mouse;
+
 extern struct Controller gControllers[3];
 extern OSContStatus gControllerStatuses[4];
 extern OSContPadEx gControllerPads[4];

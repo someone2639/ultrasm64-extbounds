@@ -34,6 +34,7 @@
 
 // First 3 controller slots
 struct Controller gControllers[3];
+MOUSE mouse;
 
 // Gfx handlers
 struct SPTask *gGfxSPTask;
@@ -585,6 +586,40 @@ void adjust_analog_stick(struct Controller *controller) {
     }
 }
 
+#define SCREEN_WD SCREEN_WIDTH
+#define SCREEN_HT SCREEN_HEIGHT
+
+static void mouse_update(void)
+{
+    int x;
+    int y;
+    u16 button;
+    s8 stick_x;
+    s8 stick_y;
+    if (mouse.pad)
+    {
+        button = mouse.pad->button;
+        stick_x = mouse.pad->stick_x;
+        stick_y = mouse.pad->stick_y;
+    }
+    else
+    {
+        button = gPlayer3Controller->buttonDown;
+        stick_x = gPlayer3Controller->rawStickX / 16;
+        stick_y = gPlayer3Controller->rawStickY / 16;
+    }
+    x = mouse.x + stick_x;
+    y = mouse.y - stick_y;
+    if (x <           0) x = 0;
+    if (x > SCREEN_WD-1) x = SCREEN_WD-1;
+    if (y <           0) y = 0;
+    if (y > SCREEN_HT-1) y = SCREEN_HT-1;
+    mouse.x = x;
+    mouse.y = y;
+    mouse.down = button & ~mouse.held;
+    mouse.held = button;
+}
+
 /**
  * Update the controller struct with available inputs if present.
  */
@@ -651,6 +686,7 @@ void read_controller_inputs(s32 threadID) {
     gPlayer3Controller->buttonPressed = gPlayer1Controller->buttonPressed;
     gPlayer3Controller->buttonReleased = gPlayer1Controller->buttonReleased;
     gPlayer3Controller->buttonDown = gPlayer1Controller->buttonDown;
+    mouse_update();
 }
 
 /**
@@ -688,22 +724,23 @@ void init_controllers(void) {
             // into any port in order to play the game. this was probably
             // so if any of the ports didn't work, you can have controllers
             // plugged into any of them and it will work.
+            if (gControllerStatuses[port].type == CONT_TYPE_MOUSE)
+            {
+                if (!mouse.pad) mouse.pad = &gControllerPads[port];
+            }
+            else
+            {
 #if ENABLE_RUMBLE
-            gControllers[cont].port = port;
+                gControllers[cont].port = port;
 #endif
-            gControllers[cont].statusData = &gControllerStatuses[port];
-            gControllers[cont++].controllerData = &gControllerPads[port];
-        }
-    }
-    if ((__osControllerTypes[1] == CONT_TYPE_GCN) && (gIsConsole)) {
-        gGamecubeControllerPort = 1;
-        gPlayer1Controller = &gControllers[1];
-    } else {
-        if (__osControllerTypes[0] == CONT_TYPE_GCN) {
-            gGamecubeControllerPort = 0;
+                gControllers[cont].statusData = &gControllerStatuses[port];
+                gControllers[cont++].controllerData = &gControllerPads[port];
+            }
         }
         gPlayer1Controller = &gControllers[0];
     }
+
+    // if (!mouse.pad) mouse.pad = &gControllerPads[0];
 }
 
 // Game thread core

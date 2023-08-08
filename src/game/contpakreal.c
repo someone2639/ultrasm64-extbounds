@@ -17,9 +17,11 @@
 FATFS FatFs;
 FIL cpr_File;
 
-u8 cpr_Texture[4096];
+u8 cpr_Texture[2048 + 32];
 u8 cpr_DrawComplete = FALSE;
 u8 cpr_Mounted = FALSE;
+
+u8 cpr_FirstDraw = TRUE;
 
 void cpr_debug() {
     // print_text_fmt_int(50, 50, "DRAWN %d", cpr_DrawComplete);
@@ -49,7 +51,16 @@ void cpr_tick() {
     if ((gCurrLevelNum == CPR_STARTLEVEL) && (cpr_DrawComplete == FALSE)) {
         set_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
         enable_time_stop();
-        if (cpr_minigame() == 1) {
+        paint_draw();
+        extern u16 cursor_tex_0[];
+        gDPPipeSync(gDisplayListHead++);
+        gDPSetCombineMode(gDisplayListHead++, G_CC_DECALRGBA, G_CC_DECALRGBA);
+        gDPSetBlendColor(gDisplayListHead++, 0xFF, 0xFF, 0xFF, 0xFF);
+        gDPSetTextureLUT(gDisplayListHead++, G_TT_NONE);
+        gDPSetRenderMode(gDisplayListHead++, G_RM_OPA_SURF, G_RM_OPA_SURF2);
+        gDPSetAlphaCompare(gDisplayListHead++, G_AC_THRESHOLD);
+        sprite_draw(cursor_tex_0, G_IM_FMT_RGBA, G_IM_SIZ_16b, FALSE, 32, 32, 4*(mouse.x-4), 4*(mouse.y-11), 4*32, 4*32);
+        if (paint_update() == 1) {
             cpr_DrawComplete = TRUE;
             clear_time_stop_flags(TIME_STOP_ENABLED | TIME_STOP_MARIO_AND_DOORS);
         }
@@ -57,7 +68,11 @@ void cpr_tick() {
 
 
     if (cpr_DrawComplete == TRUE) {
-        cpr_apply();
+        if (cpr_FirstDraw == TRUE) {
+            cpr_apply_initial();
+        } else {
+            cpr_apply_payoff();
+        }
     }
 }
 
@@ -141,8 +156,11 @@ int cpr_filegone() {
 void cpr_checkfile() {
     if (cpr_filegone()) {
         cpr_makefile();
+        paint_clear();
+        paint_init();
     } else {
         cpr_DrawComplete = TRUE;
+        cpr_FirstDraw = FALSE;
         cpr_openfile();
         cpr_read();
     }
@@ -161,7 +179,6 @@ void cpr_init() {
 
     if (code == FR_OK) {
         cpr_Mounted = TRUE;
-        memset(cpr_Texture, 0xFF, sizeof(cpr_Texture));
         cpr_checkfile();
     } else {
         return;
