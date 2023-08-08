@@ -2886,6 +2886,8 @@ const Gfx dl_paintings_draw_ripples[] = {
     gsSPEndDisplayList(),
 };
 
+#include "paint_gfx.h"
+
 // 14A60: triangle mesh
 // 0x02014A60
 const s16 seg2_painting_triangle_mesh[] = {
