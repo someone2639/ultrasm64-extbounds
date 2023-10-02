@@ -1,3 +1,7 @@
+#include <ultra64.h>
+#include "global_object_fields.h"
+#include "object_helpers.h"
+
 // water_objs.inc.c
 // HACKERSM64_DO: Better name, please
 
