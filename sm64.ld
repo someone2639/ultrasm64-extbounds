@@ -8,13 +8,13 @@ OUTPUT_ARCH (mips)
 
 #define BEGIN_SEG(name, addr) \
     _##name##SegmentStart = ADDR(.name); \
-    _##name##SegmentRomStart = __romPos; \
-    .name addr : AT(__romPos)
+    _##name##SegmentRomStart = LOADADDR(.name); \
+    .name addr :
 
 #define END_SEG(name) \
+    AT> rom \
     _##name##SegmentEnd = ADDR(.name) + SIZEOF(.name); \
-    _##name##SegmentRomEnd = __romPos + SIZEOF(.name); \
-    __romPos += SIZEOF(.name);
+    _##name##SegmentRomEnd = LOADADDR(.name) + SIZEOF(.name);
 
 #define BEGIN_NOLOAD(name) \
     _##name##SegmentBssStart = ADDR(.name.noload); \
@@ -90,9 +90,13 @@ OUTPUT_ARCH (mips)
    _##name##_mio0SegmentRomStart = _##name##_yay0SegmentRomStart; \
    _##name##_mio0SegmentRomEnd = _##name##_yay0SegmentRomEnd;
 
+MEMORY {
+   rom : ORIGIN = 0x0, LENGTH = 64M
+}
+
 SECTIONS
 {
-   __romPos = 0;
+   /*__romPos = 0;*/
 
    BEGIN_SEG(boot, 0x04000000)
    {
@@ -446,7 +450,7 @@ SECTIONS
    END_SEG(gd_dynlists)
 #endif
 
-   gMainLevels = __romPos;
+   gMainLevels = _menuSegmentRomStart;
 
    BEGIN_SEG(menu, 0x14000000)
    {
@@ -502,7 +506,7 @@ SECTIONS
 #undef DEFINE_LEVEL
 
    /* 4E9FA0-? [?] */
-   BEGIN_SEG(assets, __romPos)
+   BEGIN_SEG(assets, _assetsSegmentRomStart)
    {
       KEEP(BUILD_DIR/assets/mario_anim_data.o(.data*));
       KEEP(BUILD_DIR/assets/mario_anim_data.o(.rodata*));
@@ -511,7 +515,7 @@ SECTIONS
    }
    END_SEG(assets)
 #ifdef HVQM
-   BEGIN_SEG(capcom, __romPos) SUBALIGN(2)
+   BEGIN_SEG(capcom, _capcomSegmentRomStart) SUBALIGN(2)
    {
       KEEP(BUILD_DIR/data/capcom.o(.data*));
    }
