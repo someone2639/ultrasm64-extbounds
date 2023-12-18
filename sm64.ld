@@ -90,6 +90,8 @@ OUTPUT_ARCH (mips)
    _##name##_mio0SegmentRomStart = _##name##_yay0SegmentRomStart; \
    _##name##_mio0SegmentRomEnd = _##name##_yay0SegmentRomEnd;
 
+ENTRY(entry_point);
+
 SECTIONS
 {
    __romPos = 0;
