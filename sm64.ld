@@ -94,13 +94,6 @@ SECTIONS
 {
    __romPos = 0;
 
-   BEGIN_SEG(boot, 0x04000000)
-   {
-      KEEP(BUILD_DIR/asm/rom_header.o(.text*));
-      KEEP(BUILD_DIR/asm/ipl3.o(.text*));
-   }
-   END_SEG(boot)
-
    . = (RAM_START + 0x400);
    BEGIN_NOLOAD(zbuffer)
    {
