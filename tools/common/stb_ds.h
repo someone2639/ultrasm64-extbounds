@@ -49,7 +49,7 @@ COMPILE-TIME OPTIONS
      By default stb_ds uses stdlib realloc() and free() for memory management. You can
      substitute your own functions instead by defining these symbols. You must either
      define both, or neither. Note that at the moment, 'context' will always be NULL.
-     @TODO add an array/hash initialization function that takes a memory context pointer.
+     @TO DO add an array/hash initialization function that takes a memory context pointer.
 
   #define STBDS_UNIT_TESTS
 
@@ -352,7 +352,7 @@ NOTES - HASH MAP
   * Use sh_new_arena() for string hashmaps that you never delete from. Initialize
     with NULL if you're managing the memory for your strings, or your strings are
     never freed (at least until the hashmap is freed). Otherwise, use sh_new_strdup().
-    @TODO: make an arena variant that garbage collects the strings with a trivial
+    @TO DO: make an arena variant that garbage collects the strings with a trivial
     copy collector into a new arena whenever the table shrinks / rebuilds. Since
     current arena recommendation is to only use arena if it never deletes, then
     this can just replace current arena implementation.

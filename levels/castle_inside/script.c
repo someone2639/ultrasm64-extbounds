@@ -338,8 +338,8 @@ const LevelScript level_castle_inside_entry[] = {
         WARP_NODE(/*id*/ 0xF1, /*destLevel*/ LEVEL_CASTLE_GROUNDS, /*destArea*/ 0x01, /*destNode*/ 0x03, /*flags*/ WARP_NO_CHECKPOINT),
         TERRAIN(/*terrainData*/ inside_castle_seg7_area_2_collision),
         ROOMS(/*surfaceRooms*/ inside_castle_seg7_area_2_rooms),
-#if defined(ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS) && !defined(UNLOCK_ALL)
         JUMP_LINK(script_inside_castle_area_2_macro_objects),
+#if defined(ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS) && !defined(UNLOCK_ALL)
         INSTANT_WARP(/*index*/ 0, /*destArea*/ 2, /*displace*/ 0, -205, 410),
 #endif
         SET_BACKGROUND_MUSIC(/*settingsPreset*/ 0x0001, /*seq*/ SEQ_LEVEL_INSIDE_CASTLE),

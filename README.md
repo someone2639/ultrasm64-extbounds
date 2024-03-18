@@ -38,9 +38,10 @@ Many of these tweaks and features may be toggled by editing the files in the `in
 - Improved wall collision with rounded corners, which also helps to reduce potential softlocks in custom levels
 
 ### Colored Text Support
-- Add colors to text boxes by adding `@RRGGBBAA` to the text, where each letter is a hex digit representing red, green, blue, and alpha (transparency).
-- Reset the color by adding `@--------`. It is not mandatory to do this, but text will need to be recolored each time it scrolls in a dialog box, or the custom color will reset.
-- For example: `"@FF0000FFRED @00FF00FFGREEN @0000FFFFBLUE @FFFFFF00INVISIBLE @--------NORMAL"`
+- Add colors to text boxes by adding `COL_RGB("XXXXXX")` or `COL_RGBA("XXXXXXXX")` to the text string, where each letter is a hex digit representing red, green, blue, and alpha (if applicable).
+- Reset the color by adding `COL_RESET`. It is not mandatory to do this, but text will need to be recolored each time it scrolls in a dialog box, or the custom color will reset.
+- For example: `COL_RGB("FF0000") "RED " COL_RGB("00FF00") "GREEN " COL_RGB("0000FF") "BLUE " COL_RGBA("FFFFFF00") "INVISIBLE " COL_RESET "NORMAL"`
+- Note if you do not need to set alpha, it is best to use `COL_RGB`, as it will preserve the alpha value previously assigned to the text display (for stuff like fade effects).
 
 ### Lighting Engine
 - Allows for the use of dynamic lights in your levels.

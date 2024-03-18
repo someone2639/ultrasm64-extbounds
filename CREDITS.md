@@ -6,11 +6,11 @@
 - **MrComit**: General use object defines, JUMP_KICK_FIX
 - **aglab2**: LZ4T/deflate integration, MinGW tooling, basic VC compatibility
 - **someone2639**: math.s and crash screen disam, stack trace, map packing, shiftable segments 2, S2DEX engine
-- **Arthurtilly**: Platform Displacement 2
+- **Arthurtilly**: ASCII / UTF-8 support, Multilang, Platform Displacement 2
 - **Fazana**: PuppyLib, ucode swapping, audio load time optimisations (with Arctic), general hacker qol improvements, visual debug
-- **Reonu**: Starting the project/repo, widescreen, reonucam, various defines for hacker QoL
+- **Reonu**: Starting the project + widescreen, reonucam, various defines for hacker QoL, and a custom Spanish (Spain) translation of the game.
 - **JoshDuMan**: Decomp guy, general assistance
-- **Arceveti**: Silhouette, shadow optimisation, better hanging, breath meter, 4 controller support
+- **Arceveti**: Silhouette, shadow optimization, better hanging, breath meter, 4 controller support
 - **axollyon**: Console testing, bugfixes, idea-guying, and had a hand in silhouettes
 - **Wiseguy**:  World scale reimplementation, silhouette, graph node optimisations, instant input patch, cake screen fix, segmented code support, lighting engine, and various optimizations/fixes
 - **Kaze**: Graph node optimisations, automatic optimal collision distance
