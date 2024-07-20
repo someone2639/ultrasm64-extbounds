@@ -19,7 +19,7 @@
 #include "level_update.h"
 #include "mario.h"
 #include "mario_actions_cutscene.h"
-#include "mario_misc.h"
+#include "mario_geo.h"
 #include "memory.h"
 #include "obj_behaviors.h"
 #include "object_helpers.h"
