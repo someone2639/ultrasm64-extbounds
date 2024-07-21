@@ -1400,15 +1400,6 @@ void treat_far_home_as_mario(f32 threshold) {
     }
 }
 
-// HACKERSM64_DO koopa : Text arg field name
-// HACKERSM64_DO chain_chomp : chain_chomp_sub_act_lunge documentation
-// HACKERSM64_DO wiggler
-// HACKERSM64_DO enemy_lakitu
-// HACKERSM64_DO camera_lakitu : 104 label, follow cam documentation
-// HACKERSM64_DO monty_mole
-// HACKERSM64_DO water_bomb : Shadow position
-// HACKERSM64_DO ttc_treadmill
-
 /**
  * Used by bowser, fly guy, piranha plant, and fire spitters.
  */
