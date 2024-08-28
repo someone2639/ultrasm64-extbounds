@@ -17,6 +17,7 @@
 #include "behavior_actions.h"
 #include "behavior_data.h"
 #include "camera.h"
+#include "camera/camera_cutscene.h"
 #include "debug.h"
 #include "debugger/assert.h"
 #include "dialog_ids.h"
