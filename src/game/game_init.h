@@ -10,6 +10,7 @@
 #include "memory.h"
 #include "config.h"
 #include "emutest.h"
+#include "level_table.h"
 
 #define MARIO_ANIMS_POOL_SIZE 0x4000
 #define DEMO_INPUTS_POOL_SIZE 0x800
@@ -20,6 +21,11 @@
 struct GfxPool {
     Gfx buffer[GFX_POOL_SIZE];
     struct SPTask spTask;
+};
+
+struct DemoFile {
+    void *romStart;
+    void *romEnd;
 };
 
 struct DemoInput {
@@ -76,7 +82,9 @@ extern struct DemoInput gRecordedDemoInput;
 extern struct DmaHandlerList gMarioAnimsBuf;
 
 extern u8 gMarioAnims[];
-extern u8 gDemoInputs[];
+
+extern struct DemoFile gDemos[LEVEL_COUNT];
+extern u8 demoFile[], demoFileEnd[];
 
 extern u16 sRenderingFramebuffer;
 extern u32 gGlobalTimer;
