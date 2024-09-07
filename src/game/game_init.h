@@ -13,7 +13,7 @@
 #include "level_table.h"
 
 #define MARIO_ANIMS_POOL_SIZE 0x4000
-#define DEMO_INPUTS_POOL_SIZE 0x800
+#define DEMO_INPUTS_POOL_SIZE 0x2000
 
 // Emulators that the Instant Input patch should be applied to
 #define INSTANT_INPUT_WHITELIST (EMU_PARALLEL_LAUNCHER | EMU_PROJECT64 | EMU_MUPEN)
@@ -30,9 +30,9 @@ struct DemoFile {
 
 struct DemoInput {
     u8 timer; // time until next input. if this value is 0, it means the demo is over
-    s8 rawStickX;
-    s8 rawStickY;
-    u8 buttonMask;
+    f32 stickMag;
+    s16 stickYaw;
+    u16 buttonMask;
 };
 
 enum ZBmodes {
