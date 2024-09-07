@@ -6,6 +6,7 @@
 #include "behavior_actions.h"
 #include "behavior_data.h"
 #include "camera.h"
+#include "demo_system.h"
 #include "engine/graph_node.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
@@ -1255,7 +1256,7 @@ void update_mario_joystick_inputs(struct MarioState *m) {
         m->intendedMag = mag / 8.0f;
     }
 
-    if (gCurrDemoInput != NULL && !(gMarioState->action & ACT_FLAG_SWIMMING)) {
+    if (gCurrDemoInput != NULL && !(player_action_reads_stick(m))) {
         if (gCurrDemoInput->stickMag > 0.0f) {
             m->intendedMag = gCurrDemoInput->stickMag;
             m->input |= INPUT_NONZERO_ANALOG;
