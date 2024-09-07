@@ -122,6 +122,9 @@ const LevelScript level_main_scripts_entry[] = {
         EXECUTE(/*seg*/ SEGMENT_MENU_INTRO, _menuSegmentRomStart, _menuSegmentRomEnd, level_main_menu_entry_act_select),
         JUMP_LINK(script_exec_level_table),
         SLEEP(/*frames*/ 1),
+#ifdef DEMO_RECORDING_MODE
+        SET_REG(WARP_SPECIAL_ENDING),
+#endif // DEMO_RECORDING_MODE
     LOOP_UNTIL(/*op*/ OP_LT, /*arg*/ WARP_SPECIAL_NONE),
     JUMP_IF(   /*op*/ OP_EQ, /*arg*/ WARP_SPECIAL_ENDING,              goto_ending),
     JUMP_IF(   /*op*/ OP_EQ, /*arg*/ WARP_SPECIAL_MARIO_HEAD_REGULAR,  goto_mario_head_regular),

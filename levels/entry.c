@@ -17,6 +17,9 @@ const LevelScript level_script_entry[] = {
 #ifdef TEST_LEVEL
     SET_REG(/*value*/ TEST_LEVEL),
     EXECUTE(/*seg*/ SEGMENT_GLOBAL_LEVEL_SCRIPT, /*script*/ _scriptsSegmentRomStart, /*scriptEnd*/ _scriptsSegmentRomEnd, /*entry*/ level_main_scripts_entry),
+#elif defined(DEMO_RECORDING_MODE)
+    SET_REG(/*value*/ START_LEVEL),
+    EXECUTE(/*seg*/ SEGMENT_GLOBAL_LEVEL_SCRIPT, /*script*/ _scriptsSegmentRomStart, /*scriptEnd*/ _scriptsSegmentRomEnd, /*entry*/ level_main_scripts_entry),
 #else
     SET_REG(/*value*/ 0),
     EXECUTE(/*seg*/ SEGMENT_MENU_INTRO, /*script*/ _introSegmentRomStart, /*scriptEnd*/ _introSegmentRomEnd, /*entry*/ level_intro_splash_screen),

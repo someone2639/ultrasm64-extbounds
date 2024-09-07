@@ -101,6 +101,7 @@ void print_demo_input(struct DemoInput *d) {
     }
     osSyncPrintf(text);
 }
+
 // this function records distinct inputs over a 255-frame interval to RAM locations and was likely
 // used to record the demo sequences seen in the final game. This function is unused.
 void record_demo(void) {
