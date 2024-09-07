@@ -13,7 +13,7 @@
 #include "level_table.h"
 
 #define MARIO_ANIMS_POOL_SIZE 0x4000
-#define DEMO_INPUTS_POOL_SIZE 0x2000
+#define DEMO_INPUTS_POOL_SIZE 0x800
 
 // Emulators that the Instant Input patch should be applied to
 #define INSTANT_INPUT_WHITELIST (EMU_PARALLEL_LAUNCHER | EMU_PROJECT64 | EMU_MUPEN)
@@ -23,15 +23,14 @@ struct GfxPool {
     struct SPTask spTask;
 };
 
-struct DemoFile {
-    void *romStart;
-    void *romEnd;
-};
-
 struct DemoInput {
     u8 timer; // time until next input. if this value is 0, it means the demo is over
     f32 stickMag;
-    s16 stickYaw;
+    // Yaw is sufficient for most situations, but some Mario actions read the stick
+    union {
+        s16 stickYaw;
+        u8 stickPos[2];
+    };
     u16 buttonMask;
 };
 
@@ -82,10 +81,6 @@ extern struct DemoInput gRecordedDemoInput;
 extern struct DmaHandlerList gMarioAnimsBuf;
 
 extern u8 gMarioAnims[];
-
-extern struct DemoFile gDemos[LEVEL_COUNT];
-extern u16 gDemoLevel;
-extern u8 demoFile[], demoFileEnd[];
 
 extern u16 sRenderingFramebuffer;
 extern u32 gGlobalTimer;
