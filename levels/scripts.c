@@ -3,6 +3,9 @@
 #include "game/level_update.h"
 #include "level_commands.h"
 #include "game/area.h"
+#ifdef DEMO_RECORDING_MODE
+#include "game/demo_system.h"
+#endif // DEMO_RECORDING_MODE
 
 #include "make_const_nonconst.h"
 
@@ -120,9 +123,13 @@ const LevelScript level_main_scripts_entry[] = {
     CALL(/*arg*/ 0, /*func*/ lvl_init_from_save_file),
     LOOP_BEGIN(),
         EXECUTE(/*seg*/ SEGMENT_MENU_INTRO, _menuSegmentRomStart, _menuSegmentRomEnd, level_main_menu_entry_act_select),
+#ifdef DEMO_RECORDING_MODE
+        CALL(/*arg*/ 0, /*func*/ print_demo_header),
+#endif // DEMO_RECORDING_MODE
         JUMP_LINK(script_exec_level_table),
         SLEEP(/*frames*/ 1),
 #ifdef DEMO_RECORDING_MODE
+        CALL(/*arg*/ 0, /*func*/ print_demo_footer),
         SET_REG(WARP_SPECIAL_ENDING),
 #endif // DEMO_RECORDING_MODE
     LOOP_UNTIL(/*op*/ OP_LT, /*arg*/ WARP_SPECIAL_NONE),
