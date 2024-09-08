@@ -1256,18 +1256,18 @@ void update_mario_joystick_inputs(struct MarioState *m) {
         m->intendedMag = mag / 8.0f;
     }
 
-    if (gCurrDemoInput != NULL && !(player_action_reads_stick(m))) {
-        if (gCurrDemoInput->stickMag > 0.0f) {
-            m->intendedMag = gCurrDemoInput->stickMag;
-            m->input |= INPUT_NONZERO_ANALOG;
-        }
-        m->intendedYaw = gCurrDemoInput->stickYaw;
-    } else if (m->intendedMag > 0.0f) {
+    if (m->intendedMag > 0.0f) {
         m->intendedYaw = atan2s(-controller->stickY, controller->stickX) + m->area->camera->yaw;
         m->input |= INPUT_NONZERO_ANALOG;
     } else {
         m->intendedYaw = m->faceAngle[1];
     }
+
+#ifndef DISABLE_DEMO
+    if (gCurrDemoInput != NULL) {
+        apply_demo_inputs_to_player(m);
+    }
+#endif // DISABLE_DEMO
 }
 
 /**
