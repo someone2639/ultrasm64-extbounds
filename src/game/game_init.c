@@ -526,8 +526,17 @@ void read_controller_inputs(s32 threadID) {
         release_rumble_pak_control();
 #endif
     }
+#ifdef DEMO_RECORDING_MODE
+    if (gMarioState != NULL) {
+        // osSyncPrintf("FRAME %d", gGlobalTimer);
+        record_demo();
+    }
+#endif // DEMO_RECORDING_MODE
 #if !defined(DISABLE_DEMO) && defined(KEEP_MARIO_HEAD)
-    run_demo_inputs();
+    if (gCurrDemoInput != NULL) {
+        // osSyncPrintf("FRAME %d", gGlobalTimer);
+        run_demo_inputs();
+    }
 #endif
 
     for (s32 cont = 0; cont < MAX_NUM_PLAYERS; cont++) {
@@ -566,9 +575,6 @@ void read_controller_inputs(s32 threadID) {
             controller->stickMag       = 0.0f;
         }
     }
-#ifdef DEMO_RECORDING_MODE
-    record_demo();
-#endif // DEMO_RECORDING_MODE
 }
 
 /**

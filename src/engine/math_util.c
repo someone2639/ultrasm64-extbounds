@@ -25,7 +25,12 @@ Vec3s gVec3sZero = {     0,     0,     0 };
 Vec3i gVec3iZero = {     0,     0,     0 };
 Vec3s gVec3sOne  = {     1,     1,     1 };
 
-u16 gRandomSeed16;
+static u16 gRandomSeed16;
+
+void set_random_seed(u16 seed) {
+    // osSyncPrintf("Reset RNG");
+    gRandomSeed16 = seed;
+}
 
 // Generate a pseudorandom integer from 0 to 65535 from the random seed, and update the seed.
 u16 random_u16(void) {
@@ -50,6 +55,9 @@ u16 random_u16(void) {
         gRandomSeed16 = (temp2 ^ 0x8180);
     }
 
+    char rdb[50];
+    sprintf(rdb, "New RNG: 0x%04X\n", gRandomSeed16);
+    // osSyncPrintf(rdb);
     return gRandomSeed16;
 }
 

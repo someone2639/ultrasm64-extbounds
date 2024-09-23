@@ -2,6 +2,7 @@
 #include "types.h"
 #include "segments.h"
 
+#include "engine/math_util.h"
 #include "demo_system.h"
 #include "game_init.h"
 #include "level_update.h"
@@ -14,16 +15,71 @@ u32 gCurrentDemoIdx = 0;
 struct DemoFile gDemos[LEVEL_COUNT] ALIGNED8;
 static u16 sDemoCountdown = 0;
 u16 gDemoLevel = 0;
-extern u16 gRandomSeed16;
+u16 gFinalDemoLevel = 0;
+u8 gDemoActive = FALSE;
 
-// Level to String conversion for telling the player where to save the file
-#define STUB_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, _8) "stub_level",
-#define DEFINE_LEVEL(_0, _1, _2, filename, _4, _5, _6, _7, _8, _9, _10) #filename,
-static char sLevel2Str[LEVEL_COUNT][20] = {
-    #include "levels/level_defines.h"
-};
-#undef STUB_LEVEL
-#undef DEFINE_LEVEL
+void print_demo_input(struct DemoInput *d) {
+    char buttonStr[20];
+    char *buttonPtr = buttonStr;
+    u16 button = d->buttonMask & ~(START_BUTTON);
+
+    if (button == 0) {
+        sprintf(buttonStr, "_");
+    } else {
+
+        if (button & A_BUTTON) {
+            buttonPtr += sprintf(buttonPtr, "A | ");
+        }
+        if (button & B_BUTTON) {
+            buttonPtr += sprintf(buttonPtr, "B | ");
+        }
+        if (button & L_TRIG) {
+            buttonPtr += sprintf(buttonPtr, "L | ");
+        }
+        if (button & R_TRIG) {
+            buttonPtr += sprintf(buttonPtr, "R | ");
+        }
+        if (button & Z_TRIG) {
+            buttonPtr += sprintf(buttonPtr, "Z | ");
+        }
+
+        if (button & U_CBUTTONS) {
+            buttonPtr += sprintf(buttonPtr, "C_Up | ");
+        }
+        if (button & D_CBUTTONS) {
+            buttonPtr += sprintf(buttonPtr, "C_Down | ");
+        }
+        if (button & L_CBUTTONS) {
+            buttonPtr += sprintf(buttonPtr, "C_Left | ");
+        }
+        if (button & R_CBUTTONS) {
+            buttonPtr += sprintf(buttonPtr, "C_Right | ");
+        }
+
+        u32 len = strlen(buttonStr);
+        buttonStr[len - 3] = 0; // Remove the trailing ' | '
+    }
+
+    char text[100];
+
+    if (player_action_reads_stick(gMarioState)) {
+        sprintf(text, "for %3d frames;  mag %2f;  stick %3d, %3d;  press %s\n",
+            d->timer,
+            d->stickMag,
+            gPlayer1Controller->rawStickX,
+            gPlayer1Controller->rawStickY,
+            buttonStr
+        );
+    } else {
+        sprintf(text, "for %3d frames;  mag %2f;  yaw %6d;  press %s\n",
+            d->timer,
+            d->stickMag,
+            d->stickYaw,
+            buttonStr
+        );
+    }
+    osSyncPrintf(text);
+}
 
 u8 player_action_reads_stick(struct MarioState *m) {
     if (m->action & (ACT_FLAG_SWIMMING | ACT_FLAG_ON_POLE)) {
@@ -64,6 +120,7 @@ void dma_new_demo_data() {
  * If a demo sequence exists, this will run the demo input list until it is complete.
  */
 void run_demo_inputs(void) {
+    if (gDemoActive == FALSE) return;
     // Eliminate the unused bits.
     gPlayer1Controller->controllerData->button &= VALID_BUTTONS;
 
@@ -72,10 +129,12 @@ void run_demo_inputs(void) {
     if (gCurrDemoInput != NULL) {
         // The timer variable being 0 at the current input means the demo is over.
         // Set the button to the END_DEMO mask to end the demo.
+        print_demo_input(gCurrDemoInput);
         if (gCurrDemoInput->timer == 0) {
             gPlayer1Controller->controllerData->stick_x = 0;
             gPlayer1Controller->controllerData->stick_y = 0;
             gPlayer1Controller->controllerData->button = END_DEMO;
+            gDemoActive = FALSE;
         } else {
             // Backup the start button if it is pressed, since we don't want the
             // demo input to override the mask where start may have been pressed.
@@ -148,12 +207,19 @@ s32 run_level_id_or_demo(s32 level) {
                     }
                 } while (gDemos[gDemoLevel].romStart == NULL);
 
+                // After gFinalDemoLevel's demo is done playing, the intro splash should play
+                // The vanilla functionality is to always assume PSS is the final demo.
+                for (int i = 0; i < LEVEL_COUNT; i++) {
+                    if (gDemos[i].romStart != NULL) {
+                        gFinalDemoLevel = i + 1;
+                    }
+                }
+
+                gDemoLevel = LEVEL_BOB - 1;
+
                 gCurrentDemoSize = (u32) gDemos[gDemoLevel].romEnd - (u32) gDemos[gDemoLevel].romStart;
                 gCurrentDemoIdx = 0;
                 dma_new_demo_data();
-#ifdef DEMO_RECORDING_MODE
-                print_demo_header();
-#endif // DEMO_RECORDING_MODE
                 struct DemoInput *demoBank = get_segment_base_addr(SEGMENT_DEMO_INPUTS);
 
                 // Point the current input to the demo segment
@@ -170,92 +236,25 @@ s32 run_level_id_or_demo(s32 level) {
 }
 
 #ifdef DEMO_RECORDING_MODE
+
 // TODO: When libcart is merged, replace all these print functions
 //       with file i/o that automatically saves the file to the SD Card.
-s32 print_demo_header(UNUSED s32 arg) {
+void print_demo_header() {
     char header[500];
-    sprintf(header, R"(
-#include "demo_macros.inc"
-
-start_demo %s
-set_rng %d
-)", sLevel2Str[START_LEVEL - 1], gRandomSeed16);
+    sprintf(header, "#include \"demo_macros.inc\"\n \n");
     osSyncPrintf(header);
-    return 0;
-}
-
-void print_demo_input(struct DemoInput *d) {
-    char buttonStr[20];
-    char *buttonPtr = buttonStr;
-
-    if (d->timer == 0) {
-        osSyncPrintf("end_demo\n");
-        return;
-    }
-
-    if (d->buttonMask == 0) {
-        sprintf(buttonStr, "_");
-    } else {
-        u16 button = d->buttonMask;
-
-        if (button & A_BUTTON) {
-            buttonPtr += sprintf(buttonPtr, "A | ");
-        }
-        if (button & B_BUTTON) {
-            buttonPtr += sprintf(buttonPtr, "B | ");
-        }
-        if (button & L_TRIG) {
-            buttonPtr += sprintf(buttonPtr, "L | ");
-        }
-        if (button & R_TRIG) {
-            buttonPtr += sprintf(buttonPtr, "R | ");
-        }
-        if (button & Z_TRIG) {
-            buttonPtr += sprintf(buttonPtr, "Z | ");
-        }
-        if (button & START_BUTTON) {
-            buttonPtr += sprintf(buttonPtr, "Start | ");
-        }
-
-        if (button & U_CBUTTONS) {
-            buttonPtr += sprintf(buttonPtr, "C_Up | ");
-        }
-        if (button & D_CBUTTONS) {
-            buttonPtr += sprintf(buttonPtr, "C_Down | ");
-        }
-        if (button & L_CBUTTONS) {
-            buttonPtr += sprintf(buttonPtr, "C_Left | ");
-        }
-        if (button & R_CBUTTONS) {
-            buttonPtr += sprintf(buttonPtr, "C_Right | ");
-        }
-
-        u32 len = strlen(buttonStr);
-        buttonStr[len - 3] = 0; // Remove the trailing ' | '
-    }
-
-    char text[100];
-
-    if (player_action_reads_stick(gMarioState)) {
-        sprintf(text, "for %3d frames;  mag %2f;  stick %3d, %3d;  press %s\n",
-            d->timer,
-            d->stickMag,
-            gPlayer1Controller->rawStickX,
-            gPlayer1Controller->rawStickY,
-            buttonStr
-        );
-    } else {
-        sprintf(text, "for %3d frames;  mag %2f;  yaw %6d;  press %s\n",
-            d->timer,
-            d->stickMag,
-            d->stickYaw,
-            buttonStr
-        );
-    }
-    osSyncPrintf(text);
 }
 
 s32 print_demo_footer(UNUSED s32 arg) {
+#define STUB_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, _8) "stub_level",
+#define DEFINE_LEVEL(_0, _1, _2, filename, _4, _5, _6, _7, _8, _9, _10) #filename,
+    // Level to String conversion for telling the player where to save the file
+    static char sLevel2Str[LEVEL_COUNT][20] = {
+        #include "levels/level_defines.h"
+    };
+#undef STUB_LEVEL
+#undef DEFINE_LEVEL
+
     char footer[300];
     sprintf(footer, R"(
 end_demo
@@ -267,12 +266,13 @@ end_demo
 
 // this function records distinct inputs over a 255-frame interval to RAM locations and was likely
 // used to record the demo sequences seen in the final game. This function is unused.
-void record_demo(void) {
-    if (gMarioState == NULL) return;
+void record_demo() {
     // record the player's button mask and current rawStickX and rawStickY.
     u16 buttonMask = gPlayer1Controller->buttonDown;
     s16 intendedYaw = gMarioState->intendedYaw;
     f32 stickMag = gMarioState->intendedMag;
+
+    print_demo_input(&gRecordedDemoInput);
 
     // Rrecord the distinct input and timer so long as they are unique.
     // If the timer hits 0xFF, reset the timer for the next demo input.

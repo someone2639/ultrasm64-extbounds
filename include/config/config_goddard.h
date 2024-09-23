@@ -25,5 +25,6 @@
  * Copy the console output to a new file in `assets/demos/`. The name of the file should be printed at the top of the output.
  * For Parallel Launcher users, `ISVPRINT` in the Makefile must be set to 1.
  * For Ares users or N64 testing with a USB-enabled flashcart, `UNF` in the Makefile must be set to 1.
+ * This suppresses a few debug prints to keep the console output to just the file to save.
  */
-#define DEMO_RECORDING_MODE
+// #define DEMO_RECORDING_MODE
