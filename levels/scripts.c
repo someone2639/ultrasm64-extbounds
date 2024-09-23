@@ -123,9 +123,6 @@ const LevelScript level_main_scripts_entry[] = {
     CALL(/*arg*/ 0, /*func*/ lvl_init_from_save_file),
     LOOP_BEGIN(),
         EXECUTE(/*seg*/ SEGMENT_MENU_INTRO, _menuSegmentRomStart, _menuSegmentRomEnd, level_main_menu_entry_act_select),
-#ifdef DEMO_RECORDING_MODE
-        CALL(/*arg*/ 0, /*func*/ print_demo_header),
-#endif // DEMO_RECORDING_MODE
         JUMP_LINK(script_exec_level_table),
         SLEEP(/*frames*/ 1),
 #ifdef DEMO_RECORDING_MODE

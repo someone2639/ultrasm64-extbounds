@@ -34,13 +34,13 @@
     .half \b
 .endm
 
-/* Button macros are shifted weirdly */
+/* Pretty names since pressing every button on a frame might overrun a buffer*/
 #define A A_BUTTON
 #define B B_BUTTON
 #define Z Z_TRIG
 #define Start START_BUTTON
+#define R R_TRIG
 
-/* Might as well set pretty names for C buttons too */
 #define C_Up U_CBUTTONS
 #define C_Down D_CBUTTONS
 #define C_Left L_CBUTTONS

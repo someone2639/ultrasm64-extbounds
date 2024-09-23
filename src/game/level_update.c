@@ -7,6 +7,7 @@
 #include "audio/synthesis.h"
 #include "debugger/assert.h"
 #include "level_update.h"
+#include "demo_system.h"
 #include "game_init.h"
 #include "level_update.h"
 #include "main.h"
@@ -993,13 +994,18 @@ s32 play_mode_normal(void) {
     if (gCurrDemoInput != NULL) {
         print_intro_text();
         if (gPlayer1Controller->buttonPressed & END_DEMO) {
-            level_trigger_warp(gMarioState, gCurrLevelNum == LEVEL_PSS ? WARP_OP_DEMO_END : WARP_OP_DEMO_NEXT);
+            level_trigger_warp(gMarioState, gCurrLevelNum == gFinalDemoLevel ? WARP_OP_DEMO_END : WARP_OP_DEMO_NEXT);
         } else if (!gWarpTransition.isActive && sDelayedWarpOp == WARP_OP_NONE
                    && (gPlayer1Controller->buttonPressed & START_BUTTON)) {
             level_trigger_warp(gMarioState, WARP_OP_DEMO_NEXT);
         }
     }
 #endif
+#ifdef DEMO_RECORDING_MODE
+    if (gPlayer1Controller->buttonPressed & START_BUTTON) {
+        warp_special(WARP_SPECIAL_ENDING);
+    }
+#endif // DEMO_RECORDING_MODE
 
     warp_area();
     check_instant_warp();
@@ -1254,6 +1260,8 @@ s32 init_level(void) {
         if (gPlayerSpawnInfos[0].areaIndex >= 0) {
             load_mario_area();
             init_mario();
+            gRecordedDemoInput.stickYaw = gMarioState->faceAngle[1];
+            gDemoActive = TRUE;
         }
 
         if (gCurrentArea != NULL) {
