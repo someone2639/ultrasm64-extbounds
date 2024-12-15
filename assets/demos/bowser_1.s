@@ -1,340 +1,355 @@
+#include <PR/os_cont.h>
 #include "demo_macros.inc"
 
-for  30 frames;  mag 0.000000;  yaw      0;  press _
-for  25 frames;  mag 0.000000;  yaw -32768;  press _
-for   1 frames;  mag 0.031250;  yaw -24576;  press _
-for   1 frames;  mag 0.382813;  yaw -24576;  press _
-for   1 frames;  mag 1.531250;  yaw -24576;  press _
-for   1 frames;  mag 4.882813;  yaw -24576;  press _
-for   1 frames;  mag 11.281250;  yaw -24576;  press _
-for   1 frames;  mag 16.531250;  yaw -24576;  press _
-for   1 frames;  mag 19.531250;  yaw -24576;  press _
-for   1 frames;  mag 24.500000;  yaw -24576;  press _
-for   1 frames;  mag 29.070313;  yaw -24576;  press _
-for  32 frames;  mag 32.000000;  yaw -24576;  press _
-for   1 frames;  mag 32.000000;  yaw -25004;  press _
-for   1 frames;  mag 32.000000;  yaw -25853;  press _
-for   1 frames;  mag 32.000000;  yaw -27483;  press _
-for   1 frames;  mag 32.000000;  yaw -27614;  press _
-for   1 frames;  mag 32.000000;  yaw -28389;  press _
-for   1 frames;  mag 32.000000;  yaw -29156;  press _
-for   1 frames;  mag 32.000000;  yaw -30591;  press _
-for   3 frames;  mag 32.000000;  yaw -31637;  press _
-for   1 frames;  mag 32.000000;  yaw -31717;  press _
-for   1 frames;  mag 32.000000;  yaw -31802;  press _
-for   1 frames;  mag 32.000000;  yaw -31981;  press _
-for   1 frames;  mag 32.000000;  yaw -32165;  press _
-for   1 frames;  mag 32.000000;  yaw -32560;  press _
-for   1 frames;  mag 32.000000;  yaw  32655;  press _
-for   1 frames;  mag 30.265627;  yaw  32528;  press _
-for   1 frames;  mag 26.281250;  yaw  32512;  press _
-for   1 frames;  mag 21.406250;  yaw  32486;  press _
-for   1 frames;  mag 15.031251;  yaw  32432;  press _
-for   1 frames;  mag 10.195312;  yaw  32154;  press _
-for   1 frames;  mag 6.601563;  yaw  32004;  press _
-for   1 frames;  mag 4.062500;  yaw  31468;  press _
-for   1 frames;  mag 2.164062;  yaw  30533;  press _
-for   1 frames;  mag 0.851563;  yaw  27614;  press _
-for   1 frames;  mag 0.500000;  yaw  24576;  press _
-for   1 frames;  mag 0.281250;  yaw  24576;  press _
-for   1 frames;  mag 0.195313;  yaw  24576;  press _
-for   4 frames;  mag 0.125000;  yaw  24576;  press _
-for   1 frames;  mag 0.281250;  yaw  24576;  press _
-for   1 frames;  mag 3.445313;  yaw  24576;  press _
-for   1 frames;  mag 4.882813;  yaw  24576;  press _
-for   6 frames;  mag 5.695313;  yaw  24576;  press _
-for   1 frames;  mag 5.765625;  yaw  23420;  press _
-for   1 frames;  mag 6.078125;  yaw  21935;  press _
-for   1 frames;  mag 6.640625;  yaw  20542;  press _
-for   1 frames;  mag 7.953125;  yaw  18713;  press _
-for   1 frames;  mag 9.414062;  yaw  17021;  press _
-for   1 frames;  mag 10.976563;  yaw  16187;  press _
-for   1 frames;  mag 11.820313;  yaw  16192;  press _
-for   1 frames;  mag 17.570313;  yaw  15916;  press _
-for   1 frames;  mag 32.000000;  yaw  16171;  press _
-for   9 frames;  mag 32.000000;  yaw  16203;  press _
-for   3 frames;  mag 32.000000;  yaw  16118;  press _
-for   3 frames;  mag 32.000000;  yaw  16031;  press _
-for   2 frames;  mag 32.000000;  yaw  15843;  press _
-for   1 frames;  mag 32.000000;  yaw  15567;  press _
-for   1 frames;  mag 32.000000;  yaw  14878;  press _
-for   1 frames;  mag 32.000000;  yaw  13945;  press _
-for   1 frames;  mag 32.000000;  yaw  12269;  press _
-for   1 frames;  mag 32.000000;  yaw  10429;  press _
-for   1 frames;  mag 32.000000;  yaw   9096;  press _
-for  13 frames;  mag 32.000000;  yaw   8192;  press _
-for   1 frames;  mag 29.453125;  yaw   5266;  press _
-for   1 frames;  mag 29.351563;  yaw   2057;  press _
-for   1 frames;  mag 28.695314;  yaw   1344;  press _
-for   1 frames;  mag 31.781252;  yaw    694;  press _
-for   1 frames;  mag 32.000000;  yaw    336;  press _
-for   1 frames;  mag 32.000000;  yaw   -108;  press _
-for   1 frames;  mag 32.000000;  yaw   -817;  press _
-for   1 frames;  mag 32.000000;  yaw  -1945;  press _
-for   1 frames;  mag 32.000000;  yaw  -2484;  press _
-for   1 frames;  mag 32.000000;  yaw  -3162;  press _
-for   1 frames;  mag 32.000000;  yaw  -3814;  press _
-for   1 frames;  mag 32.000000;  yaw  -4603;  press _
-for   1 frames;  mag 32.000000;  yaw  -5493;  press _
-for   1 frames;  mag 32.000000;  yaw  -6367;  press _
-for   1 frames;  mag 32.000000;  yaw  -7126;  press _
-for   5 frames;  mag 32.000000;  yaw  -8192;  press _
-for   1 frames;  mag 31.007813;  yaw  -8192;  press _
-for   1 frames;  mag 17.382813;  yaw  -9076;  press _
-for   1 frames;  mag 3.601563;  yaw -13246;  press _
-for   1 frames;  mag 0.382813;  yaw -24576;  press _
-for   2 frames;  mag 0.031250;  yaw -24576;  press _
-for   1 frames;  mag 0.125000;  yaw -24576;  press _
-for   1 frames;  mag 0.281250;  yaw -24576;  press _
-for   1 frames;  mag 0.781250;  yaw -31288;  press _
-for   1 frames;  mag 1.890625;  yaw -32768;  press _
-for   1 frames;  mag 2.640625;  yaw -32768;  press _
-for   1 frames;  mag 3.289062;  yaw  32410;  press _
-for   5 frames;  mag 4.257813;  yaw  32453;  press _
-for   1 frames;  mag 4.000000;  yaw -32768;  press _
-for   1 frames;  mag 3.757813;  yaw  32432;  press _
-for   1 frames;  mag 3.515625;  yaw -32768;  press _
-for   1 frames;  mag 3.062500;  yaw -32768;  press _
-for   1 frames;  mag 1.906250;  yaw -31820;  press _
-for   1 frames;  mag 0.757813;  yaw -28937;  press _
-for   1 frames;  mag 0.070313;  yaw -24576;  press B
-for   4 frames;  mag 0.000000;  yaw -27724;  press B
-for   1 frames;  mag 0.000000;  yaw -27462;  press B
-for   9 frames;  mag 0.000000;  yaw -27462;  press _
-for   1 frames;  mag 0.632813;  yaw   8192;  press _
-for   1 frames;  mag 2.820313;  yaw   8192;  press _
-for   1 frames;  mag 7.507813;  yaw   8192;  press _
-for   1 frames;  mag 18.000000;  yaw   8192;  press _
-for   2 frames;  mag 32.000000;  yaw   8192;  press _
-for   1 frames;  mag 32.000000;  yaw   7632;  press _
-for   1 frames;  mag 32.000000;  yaw   2763;  press _
-for   3 frames;  mag 32.000000;  yaw    171;  press _
-for   1 frames;  mag 32.000000;  yaw   -541;  press _
-for   1 frames;  mag 32.000000;  yaw  -2021;  press _
-for   1 frames;  mag 32.000000;  yaw  -3746;  press _
-for   1 frames;  mag 32.000000;  yaw  -6855;  press _
-for   1 frames;  mag 32.000000;  yaw  -8924;  press _
-for   1 frames;  mag 32.000000;  yaw -12714;  press _
-for   1 frames;  mag 32.000000;  yaw -15272;  press _
-for   1 frames;  mag 32.000000;  yaw -16726;  press _
-for   1 frames;  mag 32.000000;  yaw -16645;  press _
-for   1 frames;  mag 32.000000;  yaw -17090;  press _
-for   1 frames;  mag 32.000000;  yaw -21306;  press _
-for   2 frames;  mag 32.000000;  yaw -24576;  press _
-for   1 frames;  mag 32.000000;  yaw -26113;  press _
-for   1 frames;  mag 32.000000;  yaw -29173;  press _
-for   1 frames;  mag 32.000000;  yaw -32255;  press _
-for   3 frames;  mag 32.000000;  yaw -32512;  press _
-for   2 frames;  mag 32.000000;  yaw -32597;  press _
-for   1 frames;  mag 32.000000;  yaw  32131;  press _
-for   1 frames;  mag 32.000000;  yaw  29412;  press _
-for   1 frames;  mag 32.000000;  yaw  25328;  press _
-for   1 frames;  mag 32.000000;  yaw  24576;  press _
-for   1 frames;  mag 32.000000;  yaw  23692;  press _
-for   1 frames;  mag 32.000000;  yaw  21454;  press _
-for   1 frames;  mag 32.000000;  yaw  19301;  press _
-for   1 frames;  mag 32.000000;  yaw  17314;  press _
-for   4 frames;  mag 32.000000;  yaw  16297;  press _
-for   1 frames;  mag 32.000000;  yaw  16123;  press _
-for   1 frames;  mag 32.000000;  yaw  15484;  press _
-for   1 frames;  mag 32.000000;  yaw  14106;  press _
-for   1 frames;  mag 32.000000;  yaw  11772;  press _
-for   1 frames;  mag 32.000000;  yaw   9177;  press _
-for   2 frames;  mag 32.000000;  yaw   8192;  press _
-for   1 frames;  mag 32.000000;  yaw   4922;  press _
-for   1 frames;  mag 32.000000;  yaw    424;  press _
-for   2 frames;  mag 32.000000;  yaw    256;  press _
-for   1 frames;  mag 32.000000;  yaw    171;  press _
-for   1 frames;  mag 32.000000;  yaw   -829;  press _
-for   1 frames;  mag 32.000000;  yaw  -2917;  press _
-for   1 frames;  mag 32.000000;  yaw  -5955;  press _
-for   1 frames;  mag 32.000000;  yaw  -8192;  press _
-for   1 frames;  mag 32.000000;  yaw -10282;  press _
-for   1 frames;  mag 32.000000;  yaw -14659;  press _
-for   1 frames;  mag 32.000000;  yaw -16813;  press _
-for   1 frames;  mag 32.000000;  yaw -16645;  press _
-for   1 frames;  mag 32.000000;  yaw -19147;  press _
-for   2 frames;  mag 32.000000;  yaw -24576;  press _
-for   1 frames;  mag 32.000000;  yaw -25963;  press _
-for   1 frames;  mag 32.000000;  yaw -31613;  press _
-for   1 frames;  mag 32.000000;  yaw -32344;  press _
-for   2 frames;  mag 32.000000;  yaw -32518;  press _
-for   1 frames;  mag 32.000000;  yaw -32681;  press _
-for   1 frames;  mag 32.000000;  yaw  30358;  press _
-for   1 frames;  mag 32.000000;  yaw  24576;  press _
-for   1 frames;  mag 32.000000;  yaw  23239;  press _
-for   1 frames;  mag 32.000000;  yaw  18750;  press _
-for   1 frames;  mag 32.000000;  yaw  16384;  press _
-for   1 frames;  mag 32.000000;  yaw  16297;  press _
-for   1 frames;  mag 32.000000;  yaw  15210;  press _
-for   1 frames;  mag 32.000000;  yaw  12468;  press _
-for   1 frames;  mag 32.000000;  yaw   9469;  press _
-for   1 frames;  mag 32.000000;  yaw   7632;  press _
-for   1 frames;  mag 32.000000;  yaw   1739;  press _
-for   1 frames;  mag 32.000000;  yaw    256;  press _
-for   1 frames;  mag 32.000000;  yaw    171;  press _
-for   1 frames;  mag 32.000000;  yaw   -637;  press _
-for   1 frames;  mag 32.000000;  yaw  -2794;  press _
-for   1 frames;  mag 32.000000;  yaw  -6249;  press _
-for   1 frames;  mag 32.000000;  yaw  -8192;  press _
-for   1 frames;  mag 32.000000;  yaw -12897;  press _
-for   1 frames;  mag 32.000000;  yaw -16731;  press _
-for   1 frames;  mag 32.000000;  yaw -16645;  press _
-for   1 frames;  mag 32.000000;  yaw -19498;  press _
-for   1 frames;  mag 32.000000;  yaw -24576;  press _
-for   1 frames;  mag 32.000000;  yaw -26666;  press _
-for   3 frames;  mag 32.000000;  yaw -32344;  press _
-for   1 frames;  mag 32.000000;  yaw -32426;  press _
-for   1 frames;  mag 32.000000;  yaw  31820;  press _
-for   1 frames;  mag 32.000000;  yaw  28075;  press _
-for   1 frames;  mag 32.000000;  yaw  24576;  press _
-for   1 frames;  mag 32.000000;  yaw  20987;  press _
-for   1 frames;  mag 32.000000;  yaw  17398;  press _
-for   1 frames;  mag 32.000000;  yaw  16297;  press _
-for   1 frames;  mag 32.000000;  yaw  16208;  press _
-for   1 frames;  mag 32.000000;  yaw  14825;  press _
-for   1 frames;  mag 32.000000;  yaw  11727;  press _
-for   2 frames;  mag 32.000000;  yaw   8192;  press _
-for   1 frames;  mag 32.000000;  yaw   4405;  press _
-for   1 frames;  mag 32.000000;  yaw    256;  press _
-for   2 frames;  mag 32.000000;  yaw    342;  press _
-for   1 frames;  mag 32.000000;  yaw     87;  press _
-for   1 frames;  mag 32.000000;  yaw  -1300;  press _
-for   1 frames;  mag 32.000000;  yaw  -4468;  press _
-for   1 frames;  mag 32.000000;  yaw  -8192;  press _
-for   1 frames;  mag 32.000000;  yaw -11277;  press _
-for   1 frames;  mag 32.000000;  yaw -16808;  press _
-for   1 frames;  mag 32.000000;  yaw -17183;  press _
-for   1 frames;  mag 32.000000;  yaw -18965;  press _
-for   1 frames;  mag 32.000000;  yaw -24576;  press _
-for   1 frames;  mag 32.000000;  yaw -25843;  press _
-for   1 frames;  mag 32.000000;  yaw -30526;  press _
-for   3 frames;  mag 32.000000;  yaw -32597;  press _
-for   1 frames;  mag 32.000000;  yaw  28548;  press _
-for   1 frames;  mag 32.000000;  yaw  24576;  press _
-for   1 frames;  mag 32.000000;  yaw  17130;  press _
-for   1 frames;  mag 32.000000;  yaw  15290;  press _
-for   1 frames;  mag 32.000000;  yaw  11462;  press _
-for   1 frames;  mag 32.000000;  yaw   8192;  press _
-for   1 frames;  mag 32.000000;  yaw   3968;  press _
-for   1 frames;  mag 32.000000;  yaw    256;  press _
-for   2 frames;  mag 32.000000;  yaw    336;  press _
-for   1 frames;  mag 32.000000;  yaw   -176;  press _
-for   1 frames;  mag 32.000000;  yaw  -2134;  press _
-for   1 frames;  mag 32.000000;  yaw  -7005;  press _
-for   1 frames;  mag 32.000000;  yaw  -8192;  press _
-for   1 frames;  mag 32.000000;  yaw -13467;  press _
-for   1 frames;  mag 32.000000;  yaw -16560;  press _
-for   1 frames;  mag 32.000000;  yaw -18920;  press _
-for   1 frames;  mag 32.000000;  yaw -24576;  press _
-for   1 frames;  mag 32.000000;  yaw -30232;  press _
-for   1 frames;  mag 32.000000;  yaw -32507;  press _
-for   1 frames;  mag 32.000000;  yaw -32421;  press _
-for   1 frames;  mag 32.000000;  yaw -32592;  press _
-for   1 frames;  mag 32.000000;  yaw  28211;  press _
-for   1 frames;  mag 32.000000;  yaw  22930;  press _
-for   1 frames;  mag 32.000000;  yaw  18056;  press _
-for   1 frames;  mag 32.000000;  yaw  15855;  press _
-for   1 frames;  mag 32.000000;  yaw  12596;  press _
-for   1 frames;  mag 32.000000;  yaw   8192;  press _
-for   1 frames;  mag 32.000000;  yaw   4922;  press _
-for   3 frames;  mag 32.000000;  yaw    256;  press _
-for   1 frames;  mag 32.000000;  yaw  -1094;  press _
-for   1 frames;  mag 32.000000;  yaw  -4931;  press _
-for   1 frames;  mag 32.000000;  yaw  -8192;  press _
-for   1 frames;  mag 32.000000;  yaw -11453;  press _
-for   1 frames;  mag 32.000000;  yaw -16731;  press _
-for   1 frames;  mag 32.000000;  yaw -17362;  press _
-for   1 frames;  mag 32.000000;  yaw -21445;  press _
-for   1 frames;  mag 32.000000;  yaw -28363;  press _
-for   1 frames;  mag 32.000000;  yaw -32421;  press _
-for   1 frames;  mag 32.000000;  yaw -32507;  press _
-for   1 frames;  mag 32.000000;  yaw  32681;  press _
-for   1 frames;  mag 32.000000;  yaw  26842;  press _
-for   1 frames;  mag 32.000000;  yaw  21697;  press _
-for   1 frames;  mag 32.000000;  yaw  17435;  press _
-for   1 frames;  mag 32.000000;  yaw  16123;  press _
-for   1 frames;  mag 32.000000;  yaw  13621;  press _
-for   1 frames;  mag 32.000000;  yaw   9177;  press _
-for   1 frames;  mag 32.000000;  yaw   8192;  press _
-for   1 frames;  mag 32.000000;  yaw   2021;  press _
-for   2 frames;  mag 32.000000;  yaw    256;  press _
-for   1 frames;  mag 32.000000;  yaw      0;  press _
-for   1 frames;  mag 32.000000;  yaw  -1402;  press _
-for   1 frames;  mag 32.000000;  yaw  -5675;  press _
-for   1 frames;  mag 32.000000;  yaw  -9799;  press _
-for   1 frames;  mag 32.000000;  yaw -15567;  press _
-for   1 frames;  mag 32.000000;  yaw -16560;  press _
-for   1 frames;  mag 32.000000;  yaw -17943;  press _
-for   1 frames;  mag 32.000000;  yaw -24576;  press _
-for   1 frames;  mag 32.000000;  yaw -28238;  press _
-for   1 frames;  mag 32.000000;  yaw -32328;  press _
-for   1 frames;  mag 32.000000;  yaw -32507;  press _
-for   1 frames;  mag 32.000000;  yaw  29542;  press _
-for   1 frames;  mag 32.000000;  yaw  24576;  press _
-for   1 frames;  mag 32.000000;  yaw  19610;  press _
-for   1 frames;  mag 32.000000;  yaw  16208;  press _
-for   1 frames;  mag 32.000000;  yaw  15210;  press _
-for   1 frames;  mag 32.000000;  yaw  10027;  press _
-for   1 frames;  mag 32.000000;  yaw   7207;  press _
-for   1 frames;  mag 32.000000;  yaw    171;  press _
-for   2 frames;  mag 32.000000;  yaw    336;  press _
-for   1 frames;  mag 32.000000;  yaw   -176;  press _
-for   1 frames;  mag 32.000000;  yaw  -1725;  press _
-for   1 frames;  mag 32.000000;  yaw  -4468;  press _
-for   1 frames;  mag 32.000000;  yaw  -8192;  press _
-for   1 frames;  mag 32.000000;  yaw -13590;  press _
-for   1 frames;  mag 32.000000;  yaw -16726;  press _
-for   1 frames;  mag 32.000000;  yaw -18808;  press _
-for   1 frames;  mag 32.000000;  yaw -24576;  press _
-for   1 frames;  mag 32.000000;  yaw -32681;  press _
-for   2 frames;  mag 32.000000;  yaw -32426;  press _
-for   1 frames;  mag 32.000000;  yaw  29412;  press _
-for   1 frames;  mag 32.000000;  yaw  23540;  press _
-for   1 frames;  mag 32.000000;  yaw  18253;  press _
-for   1 frames;  mag 32.000000;  yaw  16123;  press _
-for   1 frames;  mag 32.000000;  yaw  12847;  press _
-for   1 frames;  mag 32.000000;  yaw   7490;  press _
-for   1 frames;  mag 32.000000;  yaw    171;  press _
-for   1 frames;  mag 32.000000;  yaw    424;  press _
-for   1 frames;  mag 32.000000;  yaw   -637;  press _
-for   1 frames;  mag 32.000000;  yaw  -3226;  press _
-for   1 frames;  mag 32.000000;  yaw  -8192;  press _
-for   1 frames;  mag 32.000000;  yaw -15290;  press _
-for   1 frames;  mag 32.000000;  yaw -17171;  press _
-for   2 frames;  mag 32.000000;  yaw -24576;  press _
-for   1 frames;  mag 32.000000;  yaw -32597;  press _
-for   1 frames;  mag 32.000000;  yaw -32768;  press _
-for   1 frames;  mag 32.000000;  yaw  28120;  press _
-for   1 frames;  mag 32.000000;  yaw  24576;  press _
-for   1 frames;  mag 32.000000;  yaw  19109;  press _
-for   1 frames;  mag 32.000000;  yaw  15944;  press _
-for   1 frames;  mag 32.000000;  yaw  12287;  press _
-for   1 frames;  mag 32.000000;  yaw   6655;  press _
-for   1 frames;  mag 32.000000;  yaw    171;  press _
-for   1 frames;  mag 32.000000;  yaw      0;  press _
-for   1 frames;  mag 32.000000;  yaw  -3670;  press _
-for   1 frames;  mag 32.000000;  yaw -11314;  press _
-for   1 frames;  mag 32.000000;  yaw -16808;  press _
-for   1 frames;  mag 32.000000;  yaw -24576;  press _
-for   1 frames;  mag 32.000000;  yaw -31538;  press _
-for   1 frames;  mag 32.000000;  yaw -32512;  press B
-for   1 frames;  mag 32.000000;  yaw  32676;  press B
-for   3 frames;  mag 0.000000;  yaw -23921;  press B
-for 120 frames;  mag 0.000000;  yaw -23921;  press _
-for   1 frames;  mag 0.125000;  yaw   8192;  press _
-for   1 frames;  mag 1.531250;  yaw   8192;  press _
-for   1 frames;  mag 7.507813;  yaw   8192;  press _
-for   1 frames;  mag 14.445313;  yaw   8192;  press _
-for   1 frames;  mag 21.125000;  yaw   8192;  press _
-for   1 frames;  mag 31.007813;  yaw   8192;  press _
-for  58 frames;  mag 32.000000;  yaw   8192;  press _
-for   1 frames;  mag 30.031250;  yaw   8192;  press _
-for   1 frames;  mag 21.945313;  yaw   8192;  press _
-for   1 frames;  mag 16.531250;  yaw   8192;  press _
-for   1 frames;  mag 13.132813;  yaw   8192;  press _
-for   1 frames;  mag 10.125000;  yaw   8192;  press _
-for   1 frames;  mag 7.031250;  yaw   8192;  press _
-for   1 frames;  mag 3.445313;  yaw   8192;  press _
-for  30 frames;  mag 0.000000;  yaw      0;  press _
+for  42 frames;  stick    0,    0;  press _
+for   1 frames;  stick    0,    8;  press _
+for   1 frames;  stick    0,   13;  press _
+for   1 frames;  stick    0,   20;  press _
+for   1 frames;  stick    0,   31;  press _
+for   1 frames;  stick    0,   44;  press _
+for   1 frames;  stick    0,   52;  press _
+for   1 frames;  stick    0,   56;  press _
+for   1 frames;  stick    0,   62;  press _
+for   1 frames;  stick    0,   67;  press _
+for   1 frames;  stick    0,   71;  press _
+for   1 frames;  stick    0,   74;  press _
+for   1 frames;  stick    0,   76;  press _
+for   2 frames;  stick    0,   77;  press _
+for   1 frames;  stick    0,   78;  press _
+for  26 frames;  stick    0,   80;  press _
+for   1 frames;  stick    9,   80;  press _
+for   1 frames;  stick   15,   79;  press _
+for   1 frames;  stick   26,   76;  press _
+for   1 frames;  stick   27,   76;  press _
+for   1 frames;  stick   32,   74;  press _
+for   1 frames;  stick   37,   72;  press _
+for   1 frames;  stick   47,   69;  press _
+for   3 frames;  stick   55,   67;  press _
+for   1 frames;  stick   55,   66;  press _
+for   1 frames;  stick   55,   65;  press _
+for   1 frames;  stick   55,   63;  press _
+for   1 frames;  stick   55,   61;  press _
+for   1 frames;  stick   55,   57;  press _
+for   1 frames;  stick   53,   52;  press _
+for   1 frames;  stick   51,   49;  press _
+for   1 frames;  stick   48,   46;  press _
+for   1 frames;  stick   44,   42;  press _
+for   1 frames;  stick   38,   36;  press _
+for   1 frames;  stick   33,   30;  press _
+for   1 frames;  stick   28,   25;  press _
+for   1 frames;  stick   24,   20;  press _
+for   1 frames;  stick   20,   15;  press _
+for   1 frames;  stick   16,    9;  press _
+for   1 frames;  stick   14,    0;  press _
+for   1 frames;  stick   12,    0;  press _
+for   1 frames;  stick   11,    0;  press _
+for   4 frames;  stick   10,    0;  press _
+for   1 frames;  stick   12,    0;  press _
+for   1 frames;  stick   27,    0;  press _
+for   1 frames;  stick   31,    0;  press _
+for   6 frames;  stick   33,    0;  press _
+for   1 frames;  stick   33,   -9;  press _
+for   1 frames;  stick   33,  -13;  press _
+for   1 frames;  stick   33,  -17;  press _
+for   1 frames;  stick   33,  -23;  press _
+for   1 frames;  stick   32,  -29;  press _
+for   1 frames;  stick   32,  -33;  press _
+for   1 frames;  stick   33,  -34;  press _
+for   1 frames;  stick   38,  -41;  press _
+for   1 frames;  stick   54,  -56;  press _
+for   9 frames;  stick   63,  -65;  press _
+for   3 frames;  stick   63,  -66;  press _
+for   3 frames;  stick   63,  -67;  press _
+for   2 frames;  stick   61,  -67;  press _
+for   1 frames;  stick   59,  -68;  press _
+for   1 frames;  stick   53,  -69;  press _
+for   1 frames;  stick   46,  -71;  press _
+for   1 frames;  stick   34,  -74;  press _
+for   1 frames;  stick   21,  -75;  press _
+for   1 frames;  stick   12,  -75;  press _
+for   1 frames;  stick    0,  -75;  press _
+for  11 frames;  stick    0,  -76;  press _
+for   1 frames;  stick    0,  -75;  press _
+for   1 frames;  stick  -23,  -65;  press _
+for   1 frames;  stick  -40,  -57;  press _
+for   1 frames;  stick  -43,  -54;  press _
+for   1 frames;  stick  -48,  -54;  press _
+for   1 frames;  stick  -51,  -54;  press _
+for   1 frames;  stick  -55,  -54;  press _
+for   1 frames;  stick  -61,  -53;  press _
+for   1 frames;  stick  -69,  -49;  press _
+for   1 frames;  stick  -70,  -45;  press _
+for   1 frames;  stick  -71,  -40;  press _
+for   1 frames;  stick  -71,  -35;  press _
+for   1 frames;  stick  -73,  -30;  press _
+for   1 frames;  stick  -74,  -24;  press _
+for   1 frames;  stick  -74,  -18;  press _
+for   1 frames;  stick  -74,  -13;  press _
+for   4 frames;  stick  -74,    0;  press _
+for   1 frames;  stick  -72,    0;  press _
+for   1 frames;  stick  -69,    0;  press _
+for   1 frames;  stick  -53,   10;  press _
+for   1 frames;  stick  -25,   16;  press _
+for   1 frames;  stick    0,   13;  press _
+for   2 frames;  stick    0,    8;  press _
+for   1 frames;  stick    0,   10;  press _
+for   1 frames;  stick    0,   12;  press _
+for   1 frames;  stick   12,   14;  press _
+for   1 frames;  stick   17,   17;  press _
+for   1 frames;  stick   19,   19;  press _
+for   1 frames;  stick   21,   20;  press _
+for   5 frames;  stick   23,   22;  press _
+for   1 frames;  stick   22,   22;  press _
+for   1 frames;  stick   22,   21;  press _
+for   1 frames;  stick   21,   21;  press _
+for   1 frames;  stick   20,   20;  press _
+for   1 frames;  stick   16,   18;  press _
+for   1 frames;  stick   10,   15;  press _
+for   1 frames;  stick    0,    9;  press _
+for   6 frames;  stick    0,    0;  press B
+for   8 frames;  stick    0,    0;  press _
+for   1 frames;  stick    0,  -15;  press _
+for   1 frames;  stick    0,  -25;  press _
+for   1 frames;  stick    0,  -37;  press _
+for   1 frames;  stick    0,  -54;  press _
+for   1 frames;  stick    0,  -76;  press _
+for   1 frames;  stick    0,  -83;  press _
+for   1 frames;  stick  -10,  -81;  press _
+for   1 frames;  stick  -45,  -74;  press _
+for   3 frames;  stick  -67,  -69;  press _
+for   1 frames;  stick  -67,  -61;  press _
+for   1 frames;  stick  -70,  -49;  press _
+for   1 frames;  stick  -72,  -36;  press _
+for   1 frames;  stick  -76,  -15;  press _
+for   1 frames;  stick  -77,   11;  press _
+for   1 frames;  stick  -73,   37;  press _
+for   1 frames;  stick  -68,   56;  press _
+for   1 frames;  stick  -65,   69;  press _
+for   1 frames;  stick  -65,   68;  press _
+for   1 frames;  stick  -61,   69;  press _
+for   1 frames;  stick  -29,   77;  press _
+for   2 frames;  stick    0,   83;  press _
+for   1 frames;  stick   17,   80;  press _
+for   1 frames;  stick   39,   76;  press _
+for   1 frames;  stick   64,   70;  press _
+for   3 frames;  stick   66,   69;  press _
+for   2 frames;  stick   67,   69;  press _
+for   1 frames;  stick   67,   60;  press _
+for   1 frames;  stick   70,   38;  press _
+for   1 frames;  stick   75,   11;  press _
+for   1 frames;  stick   77,    0;  press _
+for   1 frames;  stick   77,  -12;  press _
+for   1 frames;  stick   74,  -27;  press _
+for   1 frames;  stick   71,  -42;  press _
+for   1 frames;  stick   67,  -57;  press _
+for   4 frames;  stick   67,  -68;  press _
+for   1 frames;  stick   65,  -68;  press _
+for   1 frames;  stick   59,  -69;  press _
+for   1 frames;  stick   48,  -72;  press _
+for   1 frames;  stick   31,  -76;  press _
+for   1 frames;  stick   13,  -80;  press _
+for   2 frames;  stick    0,  -81;  press _
+for   1 frames;  stick  -29,  -77;  press _
+for   1 frames;  stick  -65,  -70;  press _
+for   2 frames;  stick  -66,  -69;  press _
+for   1 frames;  stick  -66,  -68;  press _
+for   1 frames;  stick  -67,  -58;  press _
+for   1 frames;  stick  -71,  -42;  press _
+for   1 frames;  stick  -75,  -21;  press _
+for   1 frames;  stick  -77,    0;  press _
+for   1 frames;  stick  -75,   20;  press _
+for   1 frames;  stick  -69,   51;  press _
+for   1 frames;  stick  -64,   69;  press _
+for   1 frames;  stick  -64,   67;  press _
+for   1 frames;  stick  -45,   74;  press _
+for   1 frames;  stick    0,   84;  press _
+for   1 frames;  stick    0,   83;  press _
+for   1 frames;  stick   16,   81;  press _
+for   1 frames;  stick   58,   71;  press _
+for   1 frames;  stick   65,   70;  press _
+for   2 frames;  stick   67,   70;  press _
+for   1 frames;  stick   67,   68;  press _
+for   1 frames;  stick   69,   45;  press _
+for   1 frames;  stick   76,    0;  press _
+for   1 frames;  stick   76,  -15;  press _
+for   1 frames;  stick   70,  -46;  press _
+for   1 frames;  stick   66,  -66;  press _
+for   1 frames;  stick   66,  -67;  press _
+for   1 frames;  stick   57,  -70;  press _
+for   1 frames;  stick   36,  -75;  press _
+for   1 frames;  stick   15,  -79;  press _
+for   1 frames;  stick  -10,  -80;  press _
+for   1 frames;  stick  -53,  -72;  press _
+for   1 frames;  stick  -66,  -69;  press _
+for   1 frames;  stick  -66,  -68;  press _
+for   1 frames;  stick  -67,  -60;  press _
+for   1 frames;  stick  -71,  -43;  press _
+for   1 frames;  stick  -75,  -19;  press _
+for   1 frames;  stick  -78,    0;  press _
+for   1 frames;  stick  -72,   38;  press _
+for   1 frames;  stick  -64,   68;  press _
+for   1 frames;  stick  -64,   67;  press _
+for   1 frames;  stick  -42,   74;  press _
+for   1 frames;  stick    0,   82;  press _
+for   1 frames;  stick   21,   80;  press _
+for   3 frames;  stick   65,   70;  press _
+for   1 frames;  stick   65,   69;  press _
+for   1 frames;  stick   66,   56;  press _
+for   1 frames;  stick   72,   29;  press _
+for   1 frames;  stick   78,    0;  press _
+for   1 frames;  stick   73,  -30;  press _
+for   1 frames;  stick   68,  -57;  press _
+for   1 frames;  stick   66,  -67;  press _
+for   1 frames;  stick   65,  -67;  press _
+for   1 frames;  stick   54,  -71;  press _
+for   1 frames;  stick   31,  -77;  press _
+for   1 frames;  stick    0,  -81;  press _
+for   1 frames;  stick    0,  -82;  press _
+for   1 frames;  stick  -33,  -77;  press _
+for   1 frames;  stick  -66,  -69;  press _
+for   2 frames;  stick  -65,  -69;  press _
+for   1 frames;  stick  -65,  -66;  press _
+for   1 frames;  stick  -69,  -55;  press _
+for   1 frames;  stick  -73,  -31;  press _
+for   1 frames;  stick  -79,    0;  press _
+for   1 frames;  stick  -75,   27;  press _
+for   1 frames;  stick  -65,   70;  press _
+for   1 frames;  stick  -60,   69;  press _
+for   1 frames;  stick  -46,   73;  press _
+for   1 frames;  stick    0,   84;  press _
+for   1 frames;  stick   15,   80;  press _
+for   1 frames;  stick   49,   73;  press _
+for   3 frames;  stick   66,   68;  press _
+for   1 frames;  stick   71,   32;  press _
+for   1 frames;  stick   77,    0;  press _
+for   1 frames;  stick   66,  -58;  press _
+for   1 frames;  stick   57,  -69;  press _
+for   1 frames;  stick   29,  -77;  press _
+for   1 frames;  stick    0,  -82;  press _
+for   1 frames;  stick  -36,  -76;  press _
+for   1 frames;  stick  -66,  -69;  press _
+for   2 frames;  stick  -66,  -70;  press _
+for   1 frames;  stick  -66,  -64;  press _
+for   1 frames;  stick  -70,  -48;  press _
+for   1 frames;  stick  -76,  -14;  press _
+for   1 frames;  stick  -78,    0;  press _
+for   1 frames;  stick  -71,   42;  press _
+for   1 frames;  stick  -64,   66;  press _
+for   1 frames;  stick  -47,   74;  press _
+for   1 frames;  stick    0,   83;  press _
+for   1 frames;  stick   47,   74;  press _
+for   1 frames;  stick   65,   68;  press _
+for   1 frames;  stick   64,   68;  press _
+for   1 frames;  stick   65,   67;  press _
+for   1 frames;  stick   72,   30;  press _
+for   1 frames;  stick   75,  -17;  press _
+for   1 frames;  stick   67,  -50;  press _
+for   1 frames;  stick   62,  -68;  press _
+for   1 frames;  stick   37,  -75;  press _
+for   1 frames;  stick    0,  -82;  press _
+for   1 frames;  stick  -29,  -77;  press _
+for   3 frames;  stick  -66,  -69;  press _
+for   1 frames;  stick  -69,  -57;  press _
+for   1 frames;  stick  -74,  -28;  press _
+for   1 frames;  stick  -78,    0;  press _
+for   1 frames;  stick  -74,   28;  press _
+for   1 frames;  stick  -64,   68;  press _
+for   1 frames;  stick  -59,   70;  press _
+for   1 frames;  stick  -28,   77;  press _
+for   1 frames;  stick   33,   77;  press _
+for   1 frames;  stick   64,   68;  press _
+for   1 frames;  stick   64,   67;  press _
+for   1 frames;  stick   65,   64;  press _
+for   1 frames;  stick   74,   21;  press _
+for   1 frames;  stick   73,  -25;  press _
+for   1 frames;  stick   66,  -55;  press _
+for   1 frames;  stick   64,  -67;  press _
+for   1 frames;  stick   45,  -74;  press _
+for   1 frames;  stick   13,  -80;  press _
+for   1 frames;  stick    0,  -81;  press _
+for   1 frames;  stick  -51,  -73;  press _
+for   2 frames;  stick  -66,  -69;  press _
+for   1 frames;  stick  -66,  -66;  press _
+for   1 frames;  stick  -69,  -54;  press _
+for   1 frames;  stick  -75,  -23;  press _
+for   1 frames;  stick  -77,   17;  press _
+for   1 frames;  stick  -68,   59;  press _
+for   1 frames;  stick  -64,   66;  press _
+for   1 frames;  stick  -54,   71;  press _
+for   1 frames;  stick    0,   83;  press _
+for   1 frames;  stick   32,   77;  press _
+for   1 frames;  stick   63,   68;  press _
+for   1 frames;  stick   64,   67;  press _
+for   1 frames;  stick   70,   39;  press _
+for   1 frames;  stick   78,    0;  press _
+for   1 frames;  stick   70,  -39;  press _
+for   1 frames;  stick   65,  -67;  press _
+for   1 frames;  stick   57,  -70;  press _
+for   1 frames;  stick   19,  -79;  press _
+for   1 frames;  stick  -13,  -80;  press _
+for   1 frames;  stick  -67,  -69;  press _
+for   2 frames;  stick  -66,  -70;  press _
+for   1 frames;  stick  -66,  -64;  press _
+for   1 frames;  stick  -69,  -51;  press _
+for   1 frames;  stick  -73,  -31;  press _
+for   1 frames;  stick  -77,    0;  press _
+for   1 frames;  stick  -71,   43;  press _
+for   1 frames;  stick  -65,   69;  press _
+for   1 frames;  stick  -48,   74;  press _
+for   1 frames;  stick    0,   84;  press _
+for   1 frames;  stick   67,   68;  press _
+for   2 frames;  stick   65,   69;  press _
+for   1 frames;  stick   70,   38;  press _
+for   1 frames;  stick   76,  -13;  press _
+for   1 frames;  stick   68,  -49;  press _
+for   1 frames;  stick   64,  -67;  press _
+for   1 frames;  stick   39,  -75;  press _
+for   1 frames;  stick  -11,  -80;  press _
+for   1 frames;  stick  -67,  -69;  press _
+for   1 frames;  stick  -65,  -70;  press _
+for   1 frames;  stick  -67,  -60;  press _
+for   1 frames;  stick  -72,  -40;  press _
+for   1 frames;  stick  -77,    0;  press _
+for   1 frames;  stick  -69,   57;  press _
+for   1 frames;  stick  -61,   70;  press _
+for   1 frames;  stick    0,   83;  press _
+for   1 frames;  stick    0,   82;  press _
+for   1 frames;  stick   66,   68;  press _
+for   1 frames;  stick   65,   65;  press _
+for   1 frames;  stick   71,   29;  press _
+for   1 frames;  stick   76,    0;  press _
+for   1 frames;  stick   70,  -43;  press _
+for   1 frames;  stick   63,  -68;  press _
+for   1 frames;  stick   35,  -76;  press _
+for   1 frames;  stick  -17,  -80;  press _
+for   1 frames;  stick  -66,  -68;  press _
+for   1 frames;  stick  -66,  -66;  press _
+for   1 frames;  stick  -73,  -37;  press _
+for   1 frames;  stick  -74,   27;  press _
+for   1 frames;  stick  -65,   70;  press _
+for   1 frames;  stick    0,   84;  press _
+for   1 frames;  stick   58,   72;  press _
+for   1 frames;  stick   66,   69;  press _
+for   1 frames;  stick   62,   61;  press B
+for   4 frames;  stick    0,    0;  press B
+for 119 frames;  stick    0,    0;  press _
+for   1 frames;  stick    0,  -10;  press _
+for   1 frames;  stick    0,  -20;  press _
+for   1 frames;  stick    0,  -37;  press _
+for   1 frames;  stick    0,  -49;  press _
+for   1 frames;  stick    0,  -58;  press _
+for   1 frames;  stick    0,  -69;  press _
+for   4 frames;  stick    0,  -75;  press _
+for  46 frames;  stick    0,  -80;  press _
+for   1 frames;  stick    0,  -77;  press _
+for   1 frames;  stick    0,  -72;  press _
+for   6 frames;  stick    0,  -71;  press _
+for   1 frames;  stick    0,  -68;  press _
+for   1 frames;  stick    0,  -59;  press _
+for   1 frames;  stick    0,  -52;  press _
+for   1 frames;  stick    0,  -47;  press _
+for   1 frames;  stick    0,  -42;  press _
+for   1 frames;  stick    0,  -36;  press _
+for   1 frames;  stick    0,  -27;  press _
+for  30 frames;  stick    0,    0;  press _
 end_demo

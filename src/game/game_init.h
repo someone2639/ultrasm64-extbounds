@@ -20,14 +20,11 @@ struct GfxPool {
 };
 
 struct DemoInput {
-    u8 timer; // time until next input. if this value is 0, it means the demo is over
-    f32 stickMag;
-    // Yaw is sufficient for most situations, but some Mario actions read the stick
-    union {
-        s16 stickYaw;
-        u8 stickPos[2];
-    };
+    u16 timer; // time until next input. if this value is 0, it means the demo is over
+    u8 stickX;
+    u8 stickY;
     u16 buttonMask;
+    u16 pad;
 };
 
 enum ZBmodes {

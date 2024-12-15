@@ -6,7 +6,6 @@
 #include "behavior_actions.h"
 #include "behavior_data.h"
 #include "camera.h"
-#include "demo_system.h"
 #include "engine/graph_node.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
@@ -1262,12 +1261,6 @@ void update_mario_joystick_inputs(struct MarioState *m) {
     } else {
         m->intendedYaw = m->faceAngle[1];
     }
-
-#ifndef DISABLE_DEMO
-    if (gCurrDemoInput != NULL) {
-        apply_demo_inputs_to_player(m);
-    }
-#endif // DISABLE_DEMO
 }
 
 /**

@@ -2,6 +2,7 @@
 #include "types.h"
 #include "segments.h"
 
+#include "config/config_debug.h"
 #include "engine/math_util.h"
 #include "demo_system.h"
 #include "game_init.h"
@@ -19,7 +20,7 @@ u16 gFinalDemoLevel = 0;
 u8 gDemoActive = FALSE;
 
 void print_demo_input(struct DemoInput *d) {
-    char buttonStr[20];
+    char buttonStr[40];
     char *buttonPtr = buttonStr;
     u16 button = d->buttonMask & ~(START_BUTTON);
 
@@ -62,44 +63,14 @@ void print_demo_input(struct DemoInput *d) {
 
     char text[100];
 
-    if (player_action_reads_stick(gMarioState)) {
-        sprintf(text, "for %3d frames;  mag %2f;  stick %3d, %3d;  press %s\n",
-            d->timer,
-            d->stickMag,
-            gPlayer1Controller->rawStickX,
-            gPlayer1Controller->rawStickY,
-            buttonStr
-        );
-    } else {
-        sprintf(text, "for %3d frames;  mag %2f;  yaw %6d;  press %s\n",
-            d->timer,
-            d->stickMag,
-            d->stickYaw,
-            buttonStr
-        );
-    }
+    sprintf(text, "for %3d frames; stick %4d, %4d;  press %s\n",
+        d->timer,
+        d->stickX,
+        d->stickY,
+        buttonStr
+    );
     osSyncPrintf(text);
 }
-
-u8 player_action_reads_stick(struct MarioState *m) {
-    if (m->action & (ACT_FLAG_SWIMMING | ACT_FLAG_ON_POLE)) {
-        return TRUE;
-    }
-    return FALSE;
-}
-
-void apply_demo_inputs_to_player(struct MarioState *m) {
-    if (player_action_reads_stick(m)) {
-        // do nothing
-        return;
-    }
-    if (gCurrDemoInput->stickMag > 0.0f) {
-        m->intendedMag = gCurrDemoInput->stickMag;
-        m->input |= INPUT_NONZERO_ANALOG;
-    }
-    m->intendedYaw = gCurrDemoInput->stickYaw;
-}
-
 
 void dma_new_demo_data() {
     void *demoBank = get_segment_base_addr(SEGMENT_DEMO_INPUTS);
@@ -129,7 +100,6 @@ void run_demo_inputs(void) {
     if (gCurrDemoInput != NULL) {
         // The timer variable being 0 at the current input means the demo is over.
         // Set the button to the END_DEMO mask to end the demo.
-        print_demo_input(gCurrDemoInput);
         if (gCurrDemoInput->timer == 0) {
             gPlayer1Controller->controllerData->stick_x = 0;
             gPlayer1Controller->controllerData->stick_y = 0;
@@ -141,18 +111,14 @@ void run_demo_inputs(void) {
             u16 startPushed = (gPlayer1Controller->controllerData->button & START_BUTTON);
 
             // Perform the demo inputs by assigning the current button mask and the stick inputs.
-            if (player_action_reads_stick(gMarioState)) {
-                gPlayer1Controller->controllerData->stick_x = gCurrDemoInput->stickPos[0];
-                gPlayer1Controller->controllerData->stick_y = gCurrDemoInput->stickPos[1];
-            }
+            gPlayer1Controller->controllerData->stick_x = gCurrDemoInput->stickX;
+            gPlayer1Controller->controllerData->stick_y = gCurrDemoInput->stickY;
 
-            // To assign the demo input, the button information is stored in
-            // an 8-bit mask rather than a 16-bit mask. this is because only
-            // A, B, Z, Start, and the C-Buttons are used in a demo, as bits
-            // in that order. In order to assign the mask, we need to take the
-            // upper 4 bits (A, B, Z, and Start) and shift then left by 8 to
-            // match the correct input mask. We then add this to the masked
-            // lower 4 bits to get the correct button mask.
+            // FEATURE
+            // In Vanilla SM64, only a limited amount of buttons are recorded,
+            //  so that it fits in 8 bytes instead of 16. This saves ROM space.
+            // We do not care about this, since we are not constrained by ROM size
+            //  Additionally, demos are simply not included in the final build if not used.
             gPlayer1Controller->controllerData->button = gCurrDemoInput->buttonMask;
 
             // If start was pushed, put it into the demo sequence being input to end the demo.
@@ -183,9 +149,7 @@ s32 run_level_id_or_demo(s32 level) {
 
     if (level == LEVEL_NONE) {
         if (!gPlayer1Controller->buttonDown && !gPlayer1Controller->stickMag) {
-            // start the demo. 800 frames has passed while
-            // player is idle on PRESS START screen.
-            if ((++sDemoCountdown) == PRESS_START_DEMO_TIMER) {
+            if ((++sDemoCountdown) >= PRESS_START_DEMO_TIMER) {
                 u32 demoCount = 0;
 
                 // DMA in the Level Demo List
@@ -227,6 +191,7 @@ s32 run_level_id_or_demo(s32 level) {
                 level = gDemoLevel + 1;
                 gCurrSaveFileNum = 1;
                 gCurrActNum = 1;
+                sDemoCountdown = 0;
             }
         } else { // activity was detected, so reset the demo countdown.
             sDemoCountdown = 0;
@@ -237,6 +202,8 @@ s32 run_level_id_or_demo(s32 level) {
 
 #ifdef DEMO_RECORDING_MODE
 
+static u32 demo_input_count = 0;
+
 // TODO: When libcart is merged, replace all these print functions
 //       with file i/o that automatically saves the file to the SD Card.
 void print_demo_header() {
@@ -246,6 +213,8 @@ void print_demo_header() {
 }
 
 s32 print_demo_footer(UNUSED s32 arg) {
+    char footer[300];
+
 #define STUB_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, _8) "stub_level",
 #define DEFINE_LEVEL(_0, _1, _2, filename, _4, _5, _6, _7, _8, _9, _10) #filename,
     // Level to String conversion for telling the player where to save the file
@@ -255,34 +224,33 @@ s32 print_demo_footer(UNUSED s32 arg) {
 #undef STUB_LEVEL
 #undef DEFINE_LEVEL
 
-    char footer[300];
     sprintf(footer, R"(
 end_demo
 /* Copy the above output to 'assets/demos/%s.s' */
-)", sLevel2Str[START_LEVEL - 1]);
+)", sLevel2Str[TEST_LEVEL - 1]);
     osSyncPrintf(footer);
     return 0;
 }
 
-// this function records distinct inputs over a 255-frame interval to RAM locations and was likely
-// used to record the demo sequences seen in the final game. This function is unused.
 void record_demo() {
     // record the player's button mask and current rawStickX and rawStickY.
     u16 buttonMask = gPlayer1Controller->buttonDown;
-    s16 intendedYaw = gMarioState->intendedYaw;
-    f32 stickMag = gMarioState->intendedMag;
-
-    print_demo_input(&gRecordedDemoInput);
+    s8 stickX = gPlayer1Controller->rawStickX;
+    s8 stickY = gPlayer1Controller->rawStickY;
 
     // Rrecord the distinct input and timer so long as they are unique.
-    // If the timer hits 0xFF, reset the timer for the next demo input.
-    if (gRecordedDemoInput.timer == 0xFF || buttonMask != gRecordedDemoInput.buttonMask
-        || intendedYaw != gRecordedDemoInput.stickYaw || stickMag != gRecordedDemoInput.stickMag) {
+    // If the timer hits 0xFFFF, reset the timer for the next demo input.
+    if (gRecordedDemoInput.timer == 0xFFFF || buttonMask != gRecordedDemoInput.buttonMask
+        || stickX != gRecordedDemoInput.stickX || stickY != gRecordedDemoInput.stickY) {
+        if (demo_input_count == 0) {
+            gRecordedDemoInput.timer += 4;
+        }
         print_demo_input(&gRecordedDemoInput);
         gRecordedDemoInput.timer = 0;
         gRecordedDemoInput.buttonMask = buttonMask;
-        gRecordedDemoInput.stickYaw = intendedYaw;
-        gRecordedDemoInput.stickMag = stickMag;
+        gRecordedDemoInput.stickX = stickX;
+        gRecordedDemoInput.stickY = stickY;
+        demo_input_count++;
     }
     gRecordedDemoInput.timer++;
 }

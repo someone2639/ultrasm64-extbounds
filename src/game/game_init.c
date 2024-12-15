@@ -694,6 +694,7 @@ void setup_game_memory(void) {
 /**
  * Main game loop thread. Runs forever as long as the game continues.
  */
+// extern u32 randomcalls;
 void thread5_game_loop(UNUSED void *arg) {
     setup_game_memory();
 #if ENABLE_RUMBLE
@@ -724,6 +725,7 @@ void thread5_game_loop(UNUSED void *arg) {
     render_init();
 
     while (TRUE) {
+        // randomcalls = 0;
         profiler_frame_setup();
         // If the reset timer is active, run the process to reset the game.
         if (gResetTimer != 0) {
@@ -771,5 +773,8 @@ void thread5_game_loop(UNUSED void *arg) {
             osRecvMesg(&gDmaMesgQueue, NULL, OS_MESG_BLOCK);
         }
 #endif
+        // char tt[50];
+        // sprintf(tt, "%d randoms/frame",randomcalls);
+        // osSyncPrintf(tt);
     }
 }
