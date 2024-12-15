@@ -94,6 +94,7 @@ s32 run_level_id_or_demo(s32 level) {
     gCurrDemoInput = NULL;
 
     if (level == LEVEL_NONE) {
+#ifndef DISABLE_DEMO
         if (!gPlayer1Controller->buttonDown && !gPlayer1Controller->stickMag) {
             if ((++sDemoCountdown) >= PRESS_START_DEMO_TIMER) {
                 u32 demoCount = 0;
@@ -140,14 +141,15 @@ s32 run_level_id_or_demo(s32 level) {
         } else { // activity was detected, so reset the demo countdown.
             sDemoCountdown = 0;
         }
+#endif // DISABLE_DEMO
     }
     return level;
 }
 
 #ifdef DEMO_RECORDING_MODE
 
-static u32 demo_input_count = 0;
-static u8 demo_in_progress = FALSE;
+static u32 sDemoInputCount = 0;
+static u8 sDemoRecordingActive = FALSE;
 
 void print_demo_input(struct DemoInput *d) {
     char buttonStr[100];
@@ -221,7 +223,7 @@ void print_demo_header() {
     char header[500];
     sprintf(header, "#include \"demo_macros.inc\"\n \n");
     osSyncPrintf(header);
-    demo_in_progress = TRUE;
+    sDemoRecordingActive = TRUE;
 }
 
 s32 print_demo_footer(UNUSED s32 arg) {
@@ -241,7 +243,7 @@ end_demo
 /* Copy the above output to 'assets/demos/%s.s' */
 )", sLevel2Str[TEST_LEVEL - 1]);
     osSyncPrintf(footer);
-    demo_in_progress = FALSE;
+    sDemoRecordingActive = FALSE;
     return 0;
 }
 
@@ -255,18 +257,18 @@ void record_demo() {
     // If the timer hits 0xFFFF, reset the timer for the next demo input.
     if (gRecordedDemoInput.timer == 0xFFFF || buttonMask != gRecordedDemoInput.buttonMask
         || stickX != gRecordedDemoInput.stickX || stickY != gRecordedDemoInput.stickY) {
-        if (demo_input_count == 0) {
+        if (sDemoInputCount == 0) {
             // Wait 4 frames in the demo so that the RNG lines up while recording and during playback.
             gRecordedDemoInput.timer += 4;
         }
-        if (demo_in_progress) {
+        if (sDemoRecordingActive) {
             print_demo_input(&gRecordedDemoInput);
         }
         gRecordedDemoInput.timer = 0;
         gRecordedDemoInput.buttonMask = buttonMask;
         gRecordedDemoInput.stickX = stickX;
         gRecordedDemoInput.stickY = stickY;
-        demo_input_count++;
+        sDemoInputCount++;
     }
     gRecordedDemoInput.timer++;
 }
