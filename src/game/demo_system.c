@@ -20,7 +20,7 @@ u16 gFinalDemoLevel = 0;
 u8 gDemoActive = FALSE;
 
 void print_demo_input(struct DemoInput *d) {
-    char buttonStr[40];
+    char buttonStr[100];
     char *buttonPtr = buttonStr;
     u16 button = d->buttonMask & ~(START_BUTTON);
 
@@ -55,6 +55,19 @@ void print_demo_input(struct DemoInput *d) {
         }
         if (button & R_CBUTTONS) {
             buttonPtr += sprintf(buttonPtr, "C_Right | ");
+        }
+
+        if (button & U_JPAD) {
+            buttonPtr += sprintf(buttonPtr, "U_JPAD | ");
+        }
+        if (button & D_JPAD) {
+            buttonPtr += sprintf(buttonPtr, "D_JPAD | ");
+        }
+        if (button & L_JPAD) {
+            buttonPtr += sprintf(buttonPtr, "L_JPAD | ");
+        }
+        if (button & R_JPAD) {
+            buttonPtr += sprintf(buttonPtr, "R_JPAD | ");
         }
 
         u32 len = strlen(buttonStr);
@@ -243,6 +256,7 @@ void record_demo() {
     if (gRecordedDemoInput.timer == 0xFFFF || buttonMask != gRecordedDemoInput.buttonMask
         || stickX != gRecordedDemoInput.stickX || stickY != gRecordedDemoInput.stickY) {
         if (demo_input_count == 0) {
+            // Wait 4 frames in the demo so that the RNG lines up while recording and during playback.
             gRecordedDemoInput.timer += 4;
         }
         print_demo_input(&gRecordedDemoInput);
