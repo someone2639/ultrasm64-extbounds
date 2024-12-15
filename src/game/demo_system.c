@@ -125,8 +125,6 @@ s32 run_level_id_or_demo(s32 level) {
                     }
                 }
 
-                gDemoLevel = LEVEL_BOB - 1;
-
                 gCurrentDemoSize = (u32) gDemos[gDemoLevel].romEnd - (u32) gDemos[gDemoLevel].romStart;
                 gCurrentDemoIdx = 0;
                 dma_new_demo_data();
@@ -149,6 +147,7 @@ s32 run_level_id_or_demo(s32 level) {
 #ifdef DEMO_RECORDING_MODE
 
 static u32 demo_input_count = 0;
+static u8 demo_in_progress = FALSE;
 
 void print_demo_input(struct DemoInput *d) {
     char buttonStr[100];
@@ -222,6 +221,7 @@ void print_demo_header() {
     char header[500];
     sprintf(header, "#include \"demo_macros.inc\"\n \n");
     osSyncPrintf(header);
+    demo_in_progress = TRUE;
 }
 
 s32 print_demo_footer(UNUSED s32 arg) {
@@ -241,6 +241,7 @@ end_demo
 /* Copy the above output to 'assets/demos/%s.s' */
 )", sLevel2Str[TEST_LEVEL - 1]);
     osSyncPrintf(footer);
+    demo_in_progress = FALSE;
     return 0;
 }
 
@@ -258,7 +259,9 @@ void record_demo() {
             // Wait 4 frames in the demo so that the RNG lines up while recording and during playback.
             gRecordedDemoInput.timer += 4;
         }
-        print_demo_input(&gRecordedDemoInput);
+        if (demo_in_progress) {
+            print_demo_input(&gRecordedDemoInput);
+        }
         gRecordedDemoInput.timer = 0;
         gRecordedDemoInput.buttonMask = buttonMask;
         gRecordedDemoInput.stickX = stickX;
