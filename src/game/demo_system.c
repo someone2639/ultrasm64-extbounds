@@ -19,72 +19,6 @@ u16 gDemoLevel = 0;
 u16 gFinalDemoLevel = 0;
 u8 gDemoActive = FALSE;
 
-void print_demo_input(struct DemoInput *d) {
-    char buttonStr[100];
-    char *buttonPtr = buttonStr;
-    u16 button = d->buttonMask & ~(START_BUTTON);
-
-    if (button == 0) {
-        sprintf(buttonStr, "_");
-    } else {
-
-        if (button & A_BUTTON) {
-            buttonPtr += sprintf(buttonPtr, "A | ");
-        }
-        if (button & B_BUTTON) {
-            buttonPtr += sprintf(buttonPtr, "B | ");
-        }
-        if (button & L_TRIG) {
-            buttonPtr += sprintf(buttonPtr, "L | ");
-        }
-        if (button & R_TRIG) {
-            buttonPtr += sprintf(buttonPtr, "R | ");
-        }
-        if (button & Z_TRIG) {
-            buttonPtr += sprintf(buttonPtr, "Z | ");
-        }
-
-        if (button & U_CBUTTONS) {
-            buttonPtr += sprintf(buttonPtr, "C_Up | ");
-        }
-        if (button & D_CBUTTONS) {
-            buttonPtr += sprintf(buttonPtr, "C_Down | ");
-        }
-        if (button & L_CBUTTONS) {
-            buttonPtr += sprintf(buttonPtr, "C_Left | ");
-        }
-        if (button & R_CBUTTONS) {
-            buttonPtr += sprintf(buttonPtr, "C_Right | ");
-        }
-
-        if (button & U_JPAD) {
-            buttonPtr += sprintf(buttonPtr, "U_JPAD | ");
-        }
-        if (button & D_JPAD) {
-            buttonPtr += sprintf(buttonPtr, "D_JPAD | ");
-        }
-        if (button & L_JPAD) {
-            buttonPtr += sprintf(buttonPtr, "L_JPAD | ");
-        }
-        if (button & R_JPAD) {
-            buttonPtr += sprintf(buttonPtr, "R_JPAD | ");
-        }
-
-        u32 len = strlen(buttonStr);
-        buttonStr[len - 3] = 0; // Remove the trailing ' | '
-    }
-
-    char text[100];
-
-    sprintf(text, "for %3d frames; stick %4d, %4d;  press %s\n",
-        d->timer,
-        d->stickX,
-        d->stickY,
-        buttonStr
-    );
-    osSyncPrintf(text);
-}
-
 void dma_new_demo_data() {
     void *demoBank = get_segment_base_addr(SEGMENT_DEMO_INPUTS);
 
@@ -153,9 +87,8 @@ void run_demo_inputs(void) {
 }
 
 /**
- * Run the demo timer on the PRESS START screen after a number of frames.
- * This function returns the level ID from the first byte of a demo file.
- * It also returns the level ID from intro_regular (file select or level select menu)
+ * If level is a valid value, tell the level script up the chain to jump there.
+ * If level is LEVEL_NONE, do nothing unless a demo is ready to play.
  */
 s32 run_level_id_or_demo(s32 level) {
     gCurrDemoInput = NULL;
@@ -216,6 +149,72 @@ s32 run_level_id_or_demo(s32 level) {
 #ifdef DEMO_RECORDING_MODE
 
 static u32 demo_input_count = 0;
+
+void print_demo_input(struct DemoInput *d) {
+    char buttonStr[100];
+    char *buttonPtr = buttonStr;
+    u16 button = d->buttonMask & ~(START_BUTTON);
+
+    if (button == 0) {
+        sprintf(buttonStr, "_");
+    } else {
+
+        if (button & A_BUTTON) {
+            buttonPtr += sprintf(buttonPtr, "A | ");
+        }
+        if (button & B_BUTTON) {
+            buttonPtr += sprintf(buttonPtr, "B | ");
+        }
+        if (button & L_TRIG) {
+            buttonPtr += sprintf(buttonPtr, "L | ");
+        }
+        if (button & R_TRIG) {
+            buttonPtr += sprintf(buttonPtr, "R | ");
+        }
+        if (button & Z_TRIG) {
+            buttonPtr += sprintf(buttonPtr, "Z | ");
+        }
+
+        if (button & U_CBUTTONS) {
+            buttonPtr += sprintf(buttonPtr, "C_Up | ");
+        }
+        if (button & D_CBUTTONS) {
+            buttonPtr += sprintf(buttonPtr, "C_Down | ");
+        }
+        if (button & L_CBUTTONS) {
+            buttonPtr += sprintf(buttonPtr, "C_Left | ");
+        }
+        if (button & R_CBUTTONS) {
+            buttonPtr += sprintf(buttonPtr, "C_Right | ");
+        }
+
+        if (button & U_JPAD) {
+            buttonPtr += sprintf(buttonPtr, "U_JPAD | ");
+        }
+        if (button & D_JPAD) {
+            buttonPtr += sprintf(buttonPtr, "D_JPAD | ");
+        }
+        if (button & L_JPAD) {
+            buttonPtr += sprintf(buttonPtr, "L_JPAD | ");
+        }
+        if (button & R_JPAD) {
+            buttonPtr += sprintf(buttonPtr, "R_JPAD | ");
+        }
+
+        u32 len = strlen(buttonStr);
+        buttonStr[len - 3] = 0; // Remove the trailing ' | '
+    }
+
+    char text[100];
+
+    sprintf(text, "for %3d frames; stick %4d, %4d;  press %s\n",
+        d->timer,
+        d->stickX,
+        d->stickY,
+        buttonStr
+    );
+    osSyncPrintf(text);
+}
 
 // TODO: When libcart is merged, replace all these print functions
 //       with file i/o that automatically saves the file to the SD Card.
