@@ -5,7 +5,7 @@
 #include "level_table.h"
 
 #define DEMO_BANK_INPUT_CAPACITY (DEMO_INPUTS_POOL_SIZE / sizeof(struct DemoInput))
-#define PRESS_START_DEMO_TIMER 30
+#define PRESS_START_DEMO_TIMER 800
 
 struct DemoFile {
     void *romStart;
