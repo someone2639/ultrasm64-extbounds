@@ -1260,7 +1260,6 @@ s32 init_level(void) {
         if (gPlayerSpawnInfos[0].areaIndex >= 0) {
             load_mario_area();
             init_mario();
-            gRecordedDemoInput.stickYaw = gMarioState->faceAngle[1];
             gDemoActive = TRUE;
         }
 
@@ -1319,6 +1318,15 @@ s32 init_level(void) {
         gInitLevelTime = 0;
     }
 #endif
+
+#ifdef DEMO_RECORDING_MODE
+    print_demo_header();
+    set_random_seed(0);
+#else // DEMO_RECORDING_MODE
+    if (gCurrDemoInput != NULL) {
+        set_random_seed(0);
+    }
+#endif // DEMO_RECORDING_MODE
 
     return TRUE;
 }

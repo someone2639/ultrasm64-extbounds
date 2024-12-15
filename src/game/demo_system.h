@@ -12,13 +12,6 @@ struct DemoFile {
     void *romEnd;
 };
 
-struct DemoHeader {
-    u32 magic; // 'DEMO'
-    u32 *demoStart;
-    u16 rng;
-    u8 reserved[6];
-}; // Current size: 0x10
-
 u8 player_action_reads_stick(struct MarioState *m);
 void apply_demo_inputs_to_player(struct MarioState *m);
 

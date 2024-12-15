@@ -26,9 +26,12 @@ Vec3i gVec3iZero = {     0,     0,     0 };
 Vec3s gVec3sOne  = {     1,     1,     1 };
 
 static u16 gRandomSeed16;
+u32 randomcalls = 0;
 
 void set_random_seed(u16 seed) {
-    // osSyncPrintf("Reset RNG");
+    char ff[44];
+    sprintf(ff, "Reset RNG to %d\n", seed);
+    osSyncPrintf(ff);
     gRandomSeed16 = seed;
 }
 
@@ -58,6 +61,7 @@ u16 random_u16(void) {
     char rdb[50];
     sprintf(rdb, "New RNG: 0x%04X\n", gRandomSeed16);
     // osSyncPrintf(rdb);
+    randomcalls++;
     return gRandomSeed16;
 }
 
