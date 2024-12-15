@@ -1276,7 +1276,9 @@ s32 init_level(void) {
         if (gPlayerSpawnInfos[0].areaIndex >= 0) {
             load_mario_area();
             init_mario();
+#ifndef DISABLE_DEMO
             gDemoActive = TRUE;
+#endif // DISABLE_DEMO
         }
 
         if (gCurrentArea != NULL) {

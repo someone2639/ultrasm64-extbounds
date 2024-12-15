@@ -10,6 +10,7 @@
 #include "memory.h"
 #include "save_file.h"
 
+#ifndef DISABLE_DEMO
 void *demoInputsMalloc = NULL;
 u32 gCurrentDemoSize = 0;
 u32 gCurrentDemoIdx = 0;
@@ -85,6 +86,7 @@ void run_demo_inputs(void) {
         }
     }
 }
+#endif // DISABLE_DEMO
 
 /**
  * If level is a valid value, tell the level script up the chain to jump there.

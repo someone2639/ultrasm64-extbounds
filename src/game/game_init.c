@@ -528,13 +528,11 @@ void read_controller_inputs(s32 threadID) {
     }
 #ifdef DEMO_RECORDING_MODE
     if (gMarioState != NULL) {
-        // osSyncPrintf("FRAME %d", gGlobalTimer);
         record_demo();
     }
 #endif // DEMO_RECORDING_MODE
 #if !defined(DISABLE_DEMO) && defined(KEEP_MARIO_HEAD)
     if (gCurrDemoInput != NULL) {
-        // osSyncPrintf("FRAME %d", gGlobalTimer);
         run_demo_inputs();
     }
 #endif
