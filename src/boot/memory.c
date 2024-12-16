@@ -83,6 +83,9 @@ UNUSED void *get_segment_base_addr(s32 segment) {
 void *segmented_to_virtual(const void *addr) {
     size_t segment = ((uintptr_t) addr >> 24);
     size_t offset  = ((uintptr_t) addr & 0x00FFFFFF);
+    if (segment == 0x80) {
+        return addr;
+    }
 
     return (void *) ((sSegmentTable[segment] + offset) | 0x80000000);
 }

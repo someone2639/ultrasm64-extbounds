@@ -396,6 +396,7 @@ C_FILES           := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c)) $(LEVEL_C
 CPP_FILES         := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
 LIBZ_C_FILES      := $(foreach dir,$(LIBZ_SRC_DIRS),$(wildcard $(dir)/*.c))
 GODDARD_C_FILES   := $(foreach dir,$(GODDARD_SRC_DIRS),$(wildcard $(dir)/*.c))
+BEHAVIOR_C_FILES  := $(wildcard actors/**/behavior.c)
 S_FILES           := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.s))
 GENERATED_C_FILES := $(BUILD_DIR)/assets/mario_anim_data.c $(BUILD_DIR)/assets/demo_data.c
 
@@ -417,17 +418,19 @@ SOUND_SEQUENCE_FILES := \
   )
 
 # Object files
+BEHAVIOR_O_FILES  := $(foreach file,$(BEHAVIOR_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
 O_FILES := $(foreach file,$(C_FILES),$(BUILD_DIR)/$(file:.c=.o)) \
            $(foreach file,$(CPP_FILES),$(BUILD_DIR)/$(file:.cpp=.o)) \
            $(foreach file,$(S_FILES),$(BUILD_DIR)/$(file:.s=.o)) \
            $(foreach file,$(GENERATED_C_FILES),$(file:.c=.o)) \
+           $(BEHAVIOR_O_FILES) \
            lib/PR/hvqm/hvqm2sp1.o lib/PR/hvqm/hvqm2sp2.o
 
 LIBZ_O_FILES := $(foreach file,$(LIBZ_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
 GODDARD_O_FILES := $(foreach file,$(GODDARD_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
 
 # Automatic dependency files
-DEP_FILES := $(O_FILES:.o=.d) $(LIBZ_O_FILES:.o=.d) $(GODDARD_O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
+DEP_FILES := $(O_FILES:.o=.d) $(LIBZ_O_FILES:.o=.d) $(GODDARD_O_FILES:.o=.d) $(BEHAVIOR_O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
 
 #==============================================================================#
 # Compiler Options                                                             #
@@ -827,6 +830,10 @@ endif
 $(BUILD_DIR)/%.o: %.c
 	$(call print,Compiling:,$<,$@)
 	$(V)$(CC) -c $(CFLAGS) -MMD -MF $(BUILD_DIR)/$*.d  -o $@ $<
+$(BUILD_DIR)/actors/%/behavior.o: actors/%/behavior.c
+	$(call print,Compiling:,$<,$@)
+	$(V)$(CC) -c $(CFLAGS) -MMD -MF $(@D)/$(@F:.o=).d  -o $@ $<
+	$(V)$(CROSS)strip $@
 $(BUILD_DIR)/%.o: %.cpp
 	$(call print,Compiling (C++):,$<,$@)
 	$(V)$(CXX) -c $(CFLAGS) -std=c++17 -Wno-register -MMD -MF $(BUILD_DIR)/$*.d  -o $@ $<
@@ -859,8 +866,17 @@ $(BUILD_DIR)/libz.a: $(LIBZ_O_FILES)
 	@$(PRINT) "$(GREEN)Linking libz:  $(BLUE)$@ $(NO_COL)\n"
 	$(V)$(AR) rcs -o $@ $(LIBZ_O_FILES)
 
+$(BUILD_DIR)/objects.ld: $(BEHAVIOR_O_FILES)
+	@$(PRINT) "$(GREEN)Generating Object Table...$(NO_COL)\n"
+	$(V)$(PYTHON) tools/write_object_table.py $(BUILD_DIR) $^
+
+$(BUILD_DIR)/object_table.s: $(BUILD_DIR)/objects.ld
+
+$(BUILD_DIR)/object_table.o: $(BUILD_DIR)/object_table.s
+	$(V)$(CROSS)gcc -c $(ASMFLAGS) $(foreach i,$(INCLUDE_DIRS),-Wa,-I$(i)) -x assembler-with-cpp -MMD -MF $(BUILD_DIR)/$*.d  -o $@ $<
+
 # SS2: Goddard rules to get size
-$(BUILD_DIR)/sm64_prelim.ld: sm64.ld $(O_FILES) $(YAY0_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/libgoddard.a $(BUILD_DIR)/libz.a
+$(BUILD_DIR)/sm64_prelim.ld: sm64.ld $(O_FILES) $(YAY0_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/object_table.o $(BUILD_DIR)/libgoddard.a $(BUILD_DIR)/libz.a
 	$(call print,Preprocessing preliminary linker script:,$<,$@)
 	$(V)$(CPP) $(CPPFLAGS) -DPRELIMINARY=1 -DBUILD_DIR=$(BUILD_DIR) -DULTRALIB=lib$(ULTRALIB) -MMD -MP -MT $@ -MF $@.d -o $@ $<
 

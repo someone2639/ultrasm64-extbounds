@@ -24,6 +24,7 @@
 #include "level_commands.h"
 #include "math_util.h"
 #include "surface_collision.h"
+#include "object_load.h"
 #include "surface_load.h"
 #include "string.h"
 #include "game/puppycam2.h"
@@ -504,7 +505,11 @@ static void level_cmd_place_object(void) {
         spawnInfo->respawnInfo = RESPAWN_INFO_NONE;
 
         spawnInfo->behaviorArg = CMD_GET(u32, 16);
-        spawnInfo->behaviorScript = CMD_GET(void *, 20);
+        void *bhvScript = CMD_GET(void *, 20);
+        if (((u32)bhvScript & (SEGMENT_BEHAVIOR_DATA << 24)) == 0) {
+            bhvScript = get_streamed_bhv((u32)bhvScript);
+        }
+        spawnInfo->behaviorScript = bhvScript;
         spawnInfo->model = gLoadedGraphNodes[model];
         spawnInfo->next = gAreas[sCurrAreaIndex].objectSpawnInfos;
 
@@ -673,12 +678,14 @@ static void level_cmd_load_area(void) {
 
     stop_sounds_in_continuous_banks();
     load_area(areaIndex);
+    load_bhv_table();
 
     sCurrentCmd = CMD_NEXT;
 }
 
 static void level_cmd_unload_area(void) {
     unload_area();
+    unload_bhv_table();
     sCurrentCmd = CMD_NEXT;
 }
 

@@ -527,6 +527,9 @@ SECTIONS
 	END_SEG(capcom)
 #endif
 
+   #include "object_defs.ld"
+   #include "objects.ld"
+
 #ifdef DEBUG_MAP_STACKTRACE
    BEGIN_SEG(mapData, (RAM_END - 0x00100000)) {
       KEEP(BUILD_DIR/asm/debug/map.o(.data*));
