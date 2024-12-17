@@ -435,6 +435,10 @@ void render_game(void) {
         s2d_handle_deferred();
         s2d_stop();
 #endif
+            extern u32 sPoolFreeSpace;
+        char ee3[500];
+        sprintf(ee3, "%d bytes free\n", sPoolFreeSpace);
+        osSyncPrintf(ee3);
     } else {
         render_text_labels();
 #ifdef PUPPYPRINT

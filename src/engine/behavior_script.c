@@ -312,10 +312,6 @@ typedef void (*NativeBhvFunc)(void);
 static s32 bhv_cmd_call_native(void) {
     NativeBhvFunc behaviorFunc = BHV_CMD_GET_VPTR_SMALL(0);
 
-    // char tt[30];
-    // sprintf(tt, "calling %08X\n", behaviorFunc);
-    // osSyncPrintf(tt);
-
     behaviorFunc();
 
     gCurBhvCommand++;
