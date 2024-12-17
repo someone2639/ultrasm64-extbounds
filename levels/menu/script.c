@@ -25,7 +25,6 @@ const LevelScript level_main_menu_entry_file_select[] = {
     INIT_LEVEL(),
     LOAD_GODDARD(),
     LOAD_LEVEL_DATA(menu),
-    LOAD_BEHAVIOR_DATA(),
     ALLOC_LEVEL_POOL(),
     LOAD_MODEL_FROM_GEO(MODEL_MAIN_MENU_MARIO_SAVE_BUTTON,      geo_menu_mario_save_button),
     LOAD_MODEL_FROM_GEO(MODEL_MAIN_MENU_RED_ERASE_BUTTON,       geo_menu_erase_button),

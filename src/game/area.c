@@ -7,6 +7,7 @@
 #include "behavior_data.h"
 #include "game_init.h"
 #include "object_list_processor.h"
+#include "engine/object_load.h"
 #include "engine/surface_load.h"
 #include "ingame_menu.h"
 #include "screen_transition.h"
@@ -125,10 +126,10 @@ void print_intro_text(void) {
 
 u32 get_mario_spawn_type(struct Object *obj) {
     s32 i;
-    const BehaviorScript *behavior = virtual_to_segmented(SEGMENT_BEHAVIOR_DATA, obj->behavior);
+    const BehaviorScript *behavior = obj->behavior;
 
     for (i = 0; i < ARRAY_COUNT(sWarpBhvSpawnTable); i++) {
-        if (sWarpBhvSpawnTable[i] == behavior) {
+        if (sWarpBhvSpawnTable[i] == get_idx_from_bhv(behavior)) {
             return sSpawnTypeFromWarpBhv[i];
         }
     }

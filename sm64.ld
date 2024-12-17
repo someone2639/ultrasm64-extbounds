@@ -341,7 +341,7 @@ SECTIONS
    STANDARD_OBJECTS(common1, 0x03000000, 0x16000000)
 
    /* use segmented addressing for behaviors */
-   BEGIN_SEG(behavior, 0x13000000)
+ /*  BEGIN_SEG(behavior, 0x13000000)
    {
       KEEP(BUILD_DIR/data/behavior_data.o(.data*));
       KEEP(BUILD_DIR/data/behavior_data.o(.rodata*));
@@ -352,7 +352,7 @@ SECTIONS
    {
       KEEP(BUILD_DIR/data/behavior_data.o(.bss*));
    }
-   END_NOLOAD(behavior)
+   END_NOLOAD(behavior)*/
 
 
    /* 0x8016F000 21D7D0-255EC0 [386F0] */

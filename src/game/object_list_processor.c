@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "engine/behavior_script.h"
 #include "engine/graph_node.h"
+#include "engine/object_load.h"
 #include "engine/surface_collision.h"
 #include "engine/surface_load.h"
 #include "engine/math_util.h"
@@ -443,12 +444,15 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
 
     while (spawnInfo != NULL) {
         struct Object *object;
-        const BehaviorScript *script;
+        const BehaviorScript *script = NULL;
 
-        script = segmented_to_virtual(spawnInfo->behaviorScript);
+        script = get_streamed_bhv(spawnInfo->behaviorScript);
 
         // If the object was previously killed/collected, don't respawn it
         if ((spawnInfo->respawnInfo & RESPAWN_INFO_DONT_RESPAWN) != RESPAWN_INFO_DONT_RESPAWN) {
+            char d[100];
+            sprintf(d, "[OUTFUNC] Creating Obj @ %08X\n", script);
+            osSyncPrintf(d);
             object = create_object(script);
 
             // Behavior parameters are often treated as four separate bytes, but
@@ -467,7 +471,7 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
 
             // Usually this checks if bparam4 is 1 to decide if this is mario
             // This change allows any object to use that param
-            if (object->behavior == segmented_to_virtual(bhvMario)) {
+            if (object->behavior == gMarioBhvScript) {
                 gMarioObject = object;
                 geo_make_first_child(&object->header.gfx.node);
             }

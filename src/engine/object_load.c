@@ -1,43 +1,90 @@
 #include <ultra64.h>
 
 #include "sm64.h"
+#include "behavior_data.h"
 #include "game/memory.h"
 #include "game/object_helpers.h"
-#include "game/object_list_processor.h"
+#include "object_load.h"
 
-BehaviorScript *gLoadedBehaviors[OBJECT_POOL_CAPACITY] = {0};
+LoadedScript gLoadedBehaviors[OBJECT_POOL_CAPACITY] = {0};
 
-u32 *gBhvTable = NULL;
+BhvFile *gBhvTable = NULL;
 u32 gBhvTableSize = 0;
+u32 gBhvTableLoaded = FALSE;
+u32 numBhvs = 0;
+u32 numBhvsLoaded = 0;
+BehaviorScript *gMarioBhvScript;
 
-extern u8 _object_tableSegmentRomStart[];
-extern u8 _object_tableSegmentRomEnd[];
+extern u8 gObjectTable[];
+extern u8 gObjectTableEnd[];
 
 void load_bhv_table() {
-    gBhvTableSize = (u32)_object_tableSegmentRomEnd - (u32)_object_tableSegmentRomStart;
+    gBhvTableSize = ALIGN16((u32)gObjectTableEnd - (u32)gObjectTable);
     gBhvTable = main_pool_alloc(gBhvTableSize, MEMORY_POOL_LEFT);
-    dma_read((u8*)gBhvTable, _object_tableSegmentRomStart, _object_tableSegmentRomEnd);
 
-    u32 numBhvs = gBhvTableSize / 8;
+    dma_read(
+        (u8*)gBhvTable,
+        gObjectTable,
+        (u8*)gObjectTableEnd
+    );
 
-    for (u32 i = 0; i < numBhvs; i++) {
-        u32 *bhvRom = (u32*)gBhvTable[(i * 2) + 0];
-        u32 bhvSize = gBhvTable[(i * 2) + 1];
-        gLoadedBehaviors[i] = main_pool_alloc(bhvSize, MEMORY_POOL_LEFT);
-        dma_read((u8*)gLoadedBehaviors[i], (u8*)bhvRom, (u8*)((u32)bhvRom + bhvSize));
-    }
+    numBhvs = gBhvTableSize / sizeof(BhvFile);
+    gBhvTableLoaded = TRUE;
+    numBhvsLoaded = 0;
 }
 
 void unload_bhv_table() {
-    u32 numBhvs = gBhvTableSize / 8;
-
-    for (u32 i = 0; i < numBhvs; i++) {
-        main_pool_free(gLoadedBehaviors[i]);
+    if (gBhvTable) {
+        main_pool_free(gBhvTable);
+        gBhvTable = NULL;
     }
-    main_pool_free(gBhvTable);
+    for (u32 i = 0; i < numBhvsLoaded; i++) {
+        gLoadedBehaviors[i].index = 0;
+        main_pool_free(gLoadedBehaviors[i].bhvScript);
+        gLoadedBehaviors[i].bhvScript = NULL;
+    }
+    gBhvTableLoaded = FALSE;
+    numBhvsLoaded = 0;
 }
 
-void *get_streamed_bhv(u32 index) {
-    return gLoadedBehaviors[index - 1];
+int get_idx_from_bhv (void *bhv) {
+    for (u32 i = 0; i < numBhvsLoaded; i++) {
+        if (gLoadedBehaviors[i].bhvScript == bhv) {
+            return gLoadedBehaviors[i].index;
+        }
+    }
+
+    return -1;
+}
+
+const BehaviorScript *get_streamed_bhv(u32 index) {
+    char buf[500];
+
+    // check if object exists
+    for (u32 i = 0; i < numBhvsLoaded; i++) {
+        if (gLoadedBehaviors[i].index == index) {
+            return gLoadedBehaviors[i].bhvScript;
+        }
+    }
+    // sprintf(buf, "loading %d\n", index);
+    // osSyncPrintf(buf);
+
+    // otherwise, load it
+    gLoadedBehaviors[numBhvsLoaded].index = index;
+    gLoadedBehaviors[numBhvsLoaded].bhvScript = main_pool_alloc(ALIGN8(gBhvTable[index].size), MEMORY_POOL_LEFT);
+    dma_read(
+        (u8*)gLoadedBehaviors[numBhvsLoaded].bhvScript,
+        (u8*)gBhvTable[index].offset,
+        (u8*)((u32)gBhvTable[index].offset + gBhvTable[index].size)
+    );
+
+    if (index == (u32)bhvMario) {
+        gMarioBhvScript = gLoadedBehaviors[numBhvsLoaded].bhvScript;
+    }
+
+    // sprintf(buf, "   to %08X\n", gLoadedBehaviors[numBhvsLoaded].bhvScript);
+    // osSyncPrintf(buf);
+
+    return gLoadedBehaviors[numBhvsLoaded++].bhvScript;
 }
 

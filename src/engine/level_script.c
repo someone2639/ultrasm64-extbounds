@@ -284,8 +284,10 @@ static void level_cmd_load_to_fixed_address(void) {
 }
 
 static void level_cmd_load_raw(void) {
-    load_segment(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8),
-            MEMORY_POOL_LEFT, CMD_GET(void *, 12), CMD_GET(void *, 16));
+    if (CMD_GET(s16, 2) != SEGMENT_BEHAVIOR_DATA) {
+        load_segment(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8),
+                MEMORY_POOL_LEFT, CMD_GET(void *, 12), CMD_GET(void *, 16));
+    }
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -331,6 +333,8 @@ static void level_cmd_init_level(void) {
         gAreaSkyboxEnd[clearPointers] = 0;
     }
 
+    load_bhv_table();
+
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -368,6 +372,7 @@ static void level_cmd_clear_level(void) {
     // the game does a push on level load and a pop on level unload, we need to add another push to store state after the level has been loaded, so one more pop is needed
     main_pool_pop_state();
     unmap_tlbs();
+    unload_bhv_table();
 
     sCurrentCmd = CMD_NEXT;
 }
@@ -477,7 +482,7 @@ static void level_cmd_init_mario(void) {
     gMarioSpawnInfo->areaIndex = 0;
     gMarioSpawnInfo->respawnInfo = RESPAWN_INFO_NONE;
     gMarioSpawnInfo->behaviorArg = CMD_GET(u32, 4);
-    gMarioSpawnInfo->behaviorScript = CMD_GET(void *, 8);
+    gMarioSpawnInfo->behaviorScript = CMD_GET(u32, 8);
     gMarioSpawnInfo->model = gLoadedGraphNodes[CMD_GET(ModelID16, 0x2)]; // u8, 3?
     gMarioSpawnInfo->next = NULL;
 
@@ -505,11 +510,7 @@ static void level_cmd_place_object(void) {
         spawnInfo->respawnInfo = RESPAWN_INFO_NONE;
 
         spawnInfo->behaviorArg = CMD_GET(u32, 16);
-        void *bhvScript = CMD_GET(void *, 20);
-        if (((u32)bhvScript & (SEGMENT_BEHAVIOR_DATA << 24)) == 0) {
-            bhvScript = get_streamed_bhv((u32)bhvScript);
-        }
-        spawnInfo->behaviorScript = bhvScript;
+        spawnInfo->behaviorScript = CMD_GET(u32, 20);
         spawnInfo->model = gLoadedGraphNodes[model];
         spawnInfo->next = gAreas[sCurrAreaIndex].objectSpawnInfos;
 
@@ -678,14 +679,12 @@ static void level_cmd_load_area(void) {
 
     stop_sounds_in_continuous_banks();
     load_area(areaIndex);
-    load_bhv_table();
 
     sCurrentCmd = CMD_NEXT;
 }
 
 static void level_cmd_unload_area(void) {
     unload_area();
-    unload_bhv_table();
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -932,11 +931,94 @@ static void (*LevelScriptJumpTable[])(void) = {
     /*LEVEL_CMD_SET_ECHO                    */ level_cmd_set_echo,
 };
 
+static char *lcmdtrans[] = {
+    [LEVEL_CMD_LOAD_AND_EXECUTE] = "LEVEL_CMD_LOAD_AND_EXECUTE",
+    [LEVEL_CMD_EXIT_AND_EXECUTE] = "LEVEL_CMD_EXIT_AND_EXECUTE",
+    [LEVEL_CMD_EXIT] = "LEVEL_CMD_EXIT",
+    [LEVEL_CMD_SLEEP] = "LEVEL_CMD_SLEEP",
+    [LEVEL_CMD_SLEEP2] = "LEVEL_CMD_SLEEP2",
+    [LEVEL_CMD_JUMP] = "LEVEL_CMD_JUMP",
+    [LEVEL_CMD_JUMP_AND_LINK] = "LEVEL_CMD_JUMP_AND_LINK",
+    [LEVEL_CMD_RETURN] = "LEVEL_CMD_RETURN",
+    [LEVEL_CMD_JUMP_AND_LINK_PUSH_ARG] = "LEVEL_CMD_JUMP_AND_LINK_PUSH_ARG",
+    [LEVEL_CMD_JUMP_REPEAT] = "LEVEL_CMD_JUMP_REPEAT",
+    [LEVEL_CMD_LOOP_BEGIN] = "LEVEL_CMD_LOOP_BEGIN",
+    [LEVEL_CMD_LOOP_UNTIL] = "LEVEL_CMD_LOOP_UNTIL",
+    [LEVEL_CMD_JUMP_IF] = "LEVEL_CMD_JUMP_IF",
+    [LEVEL_CMD_JUMP_AND_LINK_IF] = "LEVEL_CMD_JUMP_AND_LINK_IF",
+    [LEVEL_CMD_SKIP_IF] = "LEVEL_CMD_SKIP_IF",
+    [LEVEL_CMD_SKIP] = "LEVEL_CMD_SKIP",
+    [LEVEL_CMD_SKIPPABLE_NOP] = "LEVEL_CMD_SKIPPABLE_NOP",
+    [LEVEL_CMD_CALL] = "LEVEL_CMD_CALL",
+    [LEVEL_CMD_CALL_LOOP] = "LEVEL_CMD_CALL_LOOP",
+    [LEVEL_CMD_SET_REGISTER] = "LEVEL_CMD_SET_REGISTER",
+    [LEVEL_CMD_PUSH_POOL_STATE] = "LEVEL_CMD_PUSH_POOL_STATE",
+    [LEVEL_CMD_POP_POOL_STATE] = "LEVEL_CMD_POP_POOL_STATE",
+    [LEVEL_CMD_LOAD_TO_FIXED_ADDRESS] = "LEVEL_CMD_LOAD_TO_FIXED_ADDRESS",
+    [LEVEL_CMD_LOAD_RAW] = "LEVEL_CMD_LOAD_RAW",
+    [LEVEL_CMD_LOAD_YAY0] = "LEVEL_CMD_LOAD_YAY0",
+    [LEVEL_CMD_LOAD_MARIO_HEAD] = "LEVEL_CMD_LOAD_MARIO_HEAD",
+    [LEVEL_CMD_LOAD_YAY0_TEXTURE] = "LEVEL_CMD_LOAD_YAY0_TEXTURE",
+    [LEVEL_CMD_INIT_LEVEL] = "LEVEL_CMD_INIT_LEVEL",
+    [LEVEL_CMD_CLEAR_LEVEL] = "LEVEL_CMD_CLEAR_LEVEL",
+    [LEVEL_CMD_ALLOC_LEVEL_POOL] = "LEVEL_CMD_ALLOC_LEVEL_POOL",
+    [LEVEL_CMD_FREE_LEVEL_POOL] = "LEVEL_CMD_FREE_LEVEL_POOL",
+    [LEVEL_CMD_BEGIN_AREA] = "LEVEL_CMD_BEGIN_AREA",
+    [LEVEL_CMD_END_AREA] = "LEVEL_CMD_END_AREA",
+    [LEVEL_CMD_LOAD_MODEL_FROM_DL] = "LEVEL_CMD_LOAD_MODEL_FROM_DL",
+    [LEVEL_CMD_LOAD_MODEL_FROM_GEO] = "LEVEL_CMD_LOAD_MODEL_FROM_GEO",
+    [LEVEL_CMD_23] = "LEVEL_CMD_23",
+    [LEVEL_CMD_PLACE_OBJECT] = "LEVEL_CMD_PLACE_OBJECT",
+    [LEVEL_CMD_INIT_MARIO] = "LEVEL_CMD_INIT_MARIO",
+    [LEVEL_CMD_CREATE_WARP_NODE] = "LEVEL_CMD_CREATE_WARP_NODE",
+    [LEVEL_CMD_CREATE_PAINTING_WARP_NODE] = "LEVEL_CMD_CREATE_PAINTING_WARP_NODE",
+    [LEVEL_CMD_CREATE_INSTANT_WARP] = "LEVEL_CMD_CREATE_INSTANT_WARP",
+    [LEVEL_CMD_LOAD_AREA] = "LEVEL_CMD_LOAD_AREA",
+    [LEVEL_CMD_UNLOAD_AREA] = "LEVEL_CMD_UNLOAD_AREA",
+    [LEVEL_CMD_SET_MARIO_START_POS] = "LEVEL_CMD_SET_MARIO_START_POS",
+    [LEVEL_CMD_UNLOAD_MARIO_AREA] = "LEVEL_CMD_UNLOAD_MARIO_AREA",
+    [LEVEL_CMD_UPDATE_OBJECTS] = "LEVEL_CMD_UPDATE_OBJECTS",
+    [LEVEL_CMD_SET_TERRAIN_DATA] = "LEVEL_CMD_SET_TERRAIN_DATA",
+    [LEVEL_CMD_SET_ROOMS] = "LEVEL_CMD_SET_ROOMS",
+    [LEVEL_CMD_SHOW_DIALOG] = "LEVEL_CMD_SHOW_DIALOG",
+    [LEVEL_CMD_SET_TERRAIN_TYPE] = "LEVEL_CMD_SET_TERRAIN_TYPE",
+    [LEVEL_CMD_NOP] = "LEVEL_CMD_NOP",
+    [LEVEL_CMD_SET_TRANSITION] = "LEVEL_CMD_SET_TRANSITION",
+    [LEVEL_CMD_SET_BLACKOUT] = "LEVEL_CMD_SET_BLACKOUT",
+    [LEVEL_CMD_SET_GAMMA] = "LEVEL_CMD_SET_GAMMA",
+    [LEVEL_CMD_SET_MUSIC] = "LEVEL_CMD_SET_MUSIC",
+    [LEVEL_CMD_SET_MENU_MUSIC] = "LEVEL_CMD_SET_MENU_MUSIC",
+    [LEVEL_CMD_FADEOUT_MUSIC] = "LEVEL_CMD_FADEOUT_MUSIC",
+    [LEVEL_CMD_39] = "LEVEL_CMD_39",
+    [LEVEL_CMD_3A] = "LEVEL_CMD_3A",
+    [LEVEL_CMD_CREATE_WHIRLPOOL] = "LEVEL_CMD_CREATE_WHIRLPOOL",
+    [LEVEL_CMD_GET_OR_SET_VAR] = "LEVEL_CMD_GET_OR_SET_VAR",
+    [LEVEL_CMD_PUPPYVOLUME] = "LEVEL_CMD_PUPPYVOLUME",
+    [LEVEL_CMD_CHANGE_AREA_SKYBOX] = "LEVEL_CMD_CHANGE_AREA_SKYBOX",
+    [LEVEL_CMD_SET_ECHO] = "LEVEL_CMD_SET_ECHO",
+};
+void printCmd() {
+    char t[300];
+        char *head = t;
+        if (sCurrentCmd->type > LEVEL_CMD_SET_ECHO) {
+            head += sprintf(head, "[%08X] %02X %02X ", sCurrentCmd, sCurrentCmd->type, sCurrentCmd->size);
+        } else {
+            head += sprintf(head, "[%08X] %s %02X ", sCurrentCmd, lcmdtrans[sCurrentCmd->type], sCurrentCmd->size);
+        }
+        for (int i = 2; i < sCurrentCmd->size; i++) {
+            head += sprintf(head, "%02X ", CMD_GET(u8, i));
+        }
+        head += sprintf(head, "\n");
+        osSyncPrintf(t);
+}
+
 struct LevelCommand *level_script_execute(struct LevelCommand *cmd) {
     sScriptStatus = SCRIPT_RUNNING;
     sCurrentCmd = cmd;
 
+
     while (sScriptStatus == SCRIPT_RUNNING) {
+        // printCmd();
         LevelScriptJumpTable[sCurrentCmd->type]();
     }
 

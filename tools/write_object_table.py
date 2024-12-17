@@ -9,7 +9,7 @@ obj_s_file = sys.argv[1]+"/object_table.s"
 obj_behaviors = sys.argv[2:]
 
 packet = """BEGIN_SEG(%s, 0) {
-    KEEP(%s(.rodata));
+    KEEP(%s(.rodata*));
 }
 END_SEG(%s)
 """
@@ -18,16 +18,27 @@ END_SEG(%s)
 bhvTable = {}
 sizeTable = {}
 
+def ToCamelCase(s):
+    ret = [i.capitalize() for i in s.split("_")]
+    for i in range(len(ret)):
+        if ret[i].upper() in ["TTC", "DDD", "SL"]:
+            ret[i] = ret[i].upper()
+        elif ret[i].upper() in ["HMC", "CCM","LLL"]:
+            ret[i] = ret[i].lower().capitalize()
+    return "".join(ret)
+
 with open(obj_ld_file, "w+") as f:
     for i, nm in enumerate(obj_behaviors):
         p = subprocess.Popen(["readelf", "-S", nm], stdout=subprocess.PIPE)
-        name = os.path.dirname(nm).split("/")[-1]
-        bhvTable[i + 1] = name
+        name = nm.split("/")[-1].replace(".o","")
+        if name[0].isdigit():
+            name = "_" + name
+        bhvTable[i] = name
         name += "_bhv"
         sizes = p.communicate()[0].decode('ascii')
         for l in sizes.split("\n"):
-            if ".rodata" in l:
-                sizeTable[i + 1] = int(l.split()[5], 16)
+            if ".rodata.bhv" in l:
+                sizeTable[i] = int(l.split()[6], 16)
 
         f.write(packet % (name, nm, name))
 
@@ -38,8 +49,9 @@ with open(obj_defs_file, "w+") as f:
 END_SEG(object_table)
 """)
     for k in bhvTable:
-        f.write(f"bhv{bhvTable[k].capitalize()} = {k};\n")
+        f.write(f"bhv{ToCamelCase(bhvTable[k])} = {k};\n")
 
+# TODO: write this in linker script format instead of using 500 readelf invocs
 with open(obj_s_file, "w+") as f:
     f.write('#include "macros.inc"\n')
     f.write(".section .rodata\n")

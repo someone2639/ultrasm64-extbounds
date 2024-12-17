@@ -31,7 +31,7 @@
 
 // Unused function that directly jumps to a behavior command and resets the object's stack index.
 UNUSED static void goto_behavior_unused(const BehaviorScript *bhvAddr) {
-    gCurBhvCommand = segmented_to_virtual(bhvAddr);
+    gCurBhvCommand = bhvAddr;
     gCurrentObject->bhvStackIndex = 0;
 }
 
@@ -173,7 +173,7 @@ static s32 bhv_cmd_call(void) {
     gCurBhvCommand++;
 
     cur_obj_bhv_stack_push(BHV_CMD_GET_ADDR_OF_CMD(1)); // Store address of the next bhv command in the stack.
-    jumpAddress = segmented_to_virtual(BHV_CMD_GET_VPTR(0));
+    jumpAddress = BHV_CMD_GET_VPTR(0);
     gCurBhvCommand = jumpAddress; // Jump to the new address.
 
     return BHV_PROC_CONTINUE;
@@ -221,7 +221,7 @@ static s32 bhv_cmd_delay_var(void) {
 // Usage: GOTO(addr)
 static s32 bhv_cmd_goto(void) {
     gCurBhvCommand++; // Useless
-    gCurBhvCommand = segmented_to_virtual(BHV_CMD_GET_VPTR(0)); // Jump directly to address
+    gCurBhvCommand = BHV_CMD_GET_VPTR(0); // Jump directly to address
     return BHV_PROC_CONTINUE;
 }
 
@@ -311,6 +311,10 @@ static s32 bhv_cmd_end_loop(void) {
 typedef void (*NativeBhvFunc)(void);
 static s32 bhv_cmd_call_native(void) {
     NativeBhvFunc behaviorFunc = BHV_CMD_GET_VPTR_SMALL(0);
+
+    // char tt[30];
+    // sprintf(tt, "calling %08X\n", behaviorFunc);
+    // osSyncPrintf(tt);
 
     behaviorFunc();
 
@@ -811,6 +815,21 @@ static BhvCommandProc BehaviorCmdTable[] = {
     /*BHV_CMD_SPAWN_WATER_DROPLET   */ bhv_cmd_spawn_water_droplet,
 };
 
+#include "object_load.h"
+
+void print_bhv_cmd(BehaviorScript *bhv) {
+    char tt[300];
+    u32 *b = (u32*)bhv;
+    while (*b != 0x09000000) {
+        char *th = tt;
+        th += sprintf(th, "[%d] %08X ", get_idx_from_bhv(bhv), *b);
+        b++;
+        osSyncPrintf(tt);
+    }
+
+    osSyncPrintf("\n \n");
+}
+
 // Execute the behavior script of the current object, process the object flags, and other miscellaneous code for updating objects.
 void cur_obj_update(void) {
     u32 objFlags = o->oFlags;
@@ -848,6 +867,7 @@ void cur_obj_update(void) {
     // Execute the behavior script.
     gCurBhvCommand = o->curBhvCommand;
 
+    // print_bhv_cmd(o->behavior);
     do {
         bhvCmdProc = BehaviorCmdTable[*gCurBhvCommand >> 24];
         bhvProcResult = bhvCmdProc();

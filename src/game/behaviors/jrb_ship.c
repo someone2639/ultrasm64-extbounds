@@ -27,6 +27,13 @@ struct ObjectHitbox sSkullSlidingBoxHitbox = {
     /* hurtboxHeight:     */ 0,
 };
 
+// formerly a behavior script
+void bhvSunkenShipSetRotation(void) {
+    o->oFaceAnglePitch = 0xE958;
+    o->oFaceAngleYaw = 0xEE6C;
+    o->oFaceAngleRoll = 0x0C80;
+}
+
 void bhv_sunken_ship_part_loop(void) {
     if (o->oDistanceToMario > 10000.0f) {
         o->oOpacity = 140;

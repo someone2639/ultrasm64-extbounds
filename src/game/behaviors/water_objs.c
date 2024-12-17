@@ -76,6 +76,16 @@ void bhv_bubble_maybe_loop(void) {
     o->oWaterObjScaleYAngle += o->oWaterObjScaleYAngleVel;
 }
 
+// Formerly a behavior script
+void bhvSmallWaterWave398(void) {
+    o->oAnimState += 1;
+    o->oPosY += 7.0f;
+    o->oWaterObjScaleXAngle = (5 * random_float()) - 2;
+    o->oWaterObjScaleYAngle = (5 * random_float()) - 2;
+    o->oPosX += o->oWaterObjScaleXAngle;
+    o->oPosZ += o->oWaterObjScaleYAngle;
+};
+
 void bhv_small_water_wave_loop(void) {
     o->header.gfx.scale[0] = sins(o->oWaterObjScaleXAngle) * 0.2f + 1.0f;
     o->oWaterObjScaleXAngle += o->oWaterObjScaleXAngleVel;

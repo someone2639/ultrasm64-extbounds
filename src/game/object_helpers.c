@@ -26,6 +26,7 @@
 #include "rendering_graph_node.h"
 #include "spawn_object.h"
 #include "spawn_sound.h"
+#include "engine/object_load.h"
 
 static s32 clear_move_flag(u32 *bitSet, s32 flag);
 
@@ -371,8 +372,7 @@ struct Object *spawn_water_droplet(struct Object *parent, struct WaterDropletPar
 
 struct Object *spawn_object_at_origin(struct Object *parent, UNUSED s32 unusedArg, ModelID32 model,
                                       const BehaviorScript *behavior) {
-    const BehaviorScript *behaviorAddr = segmented_to_virtual(behavior);
-    struct Object *obj = create_object(behaviorAddr);
+    struct Object *obj = create_object(get_streamed_bhv((u32)behavior));
 
     obj->parentObj = parent;
     obj->header.gfx.areaIndex = parent->header.gfx.areaIndex;
@@ -597,7 +597,7 @@ f32 cur_obj_dist_to_nearest_object_with_behavior(const BehaviorScript *behavior)
 }
 
 struct Object *cur_obj_find_nearest_object_with_behavior(const BehaviorScript *behavior, f32 *dist) {
-    uintptr_t *behaviorAddr = segmented_to_virtual(behavior);
+    uintptr_t *behaviorAddr = get_streamed_bhv((u32)behavior);
     struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(behaviorAddr)];
     struct Object *obj = (struct Object *) listHead->next;
     struct Object *closestObj = NULL;
@@ -647,7 +647,7 @@ s32 count_unimportant_objects(void) {
 }
 
 s32 count_objects_with_behavior(const BehaviorScript *behavior) {
-    uintptr_t *behaviorAddr = segmented_to_virtual(behavior);
+    uintptr_t *behaviorAddr = get_streamed_bhv((u32)behavior);
     struct ObjectNode *listHead = &gObjectLists[get_object_list_from_behavior(behaviorAddr)];
     struct ObjectNode *obj = listHead->next;
     s32 count = 0;
@@ -664,7 +664,7 @@ s32 count_objects_with_behavior(const BehaviorScript *behavior) {
 }
 
 struct Object *cur_obj_find_nearby_held_actor(const BehaviorScript *behavior, f32 maxDist) {
-    const BehaviorScript *behaviorAddr = segmented_to_virtual(behavior);
+    const BehaviorScript *behaviorAddr = get_streamed_bhv((u32)behavior);
     struct ObjectNode *listHead = &gObjectLists[OBJ_LIST_GENACTOR];
     struct Object *obj = (struct Object *) listHead->next;
     struct Object *foundObj = NULL;
@@ -1174,19 +1174,19 @@ s32 obj_check_if_collided_with_object(struct Object *obj1, struct Object *obj2) 
 }
 
 void cur_obj_set_behavior(const BehaviorScript *behavior) {
-    o->behavior = segmented_to_virtual(behavior);
+    o->behavior = get_streamed_bhv((u32)behavior);
 }
 
 void obj_set_behavior(struct Object *obj, const BehaviorScript *behavior) {
-    obj->behavior = segmented_to_virtual(behavior);
+    obj->behavior = get_streamed_bhv((u32)behavior);
 }
 
 s32 cur_obj_has_behavior(const BehaviorScript *behavior) {
-    return (o->behavior == segmented_to_virtual(behavior));
+    return (o->behavior == get_streamed_bhv((u32)behavior));
 }
 
 s32 obj_has_behavior(struct Object *obj, const BehaviorScript *behavior) {
-    return (obj->behavior == segmented_to_virtual(behavior));
+    return (obj->behavior == get_streamed_bhv((u32)behavior));
 }
 
 f32 cur_obj_lateral_dist_from_mario_to_home(void) {

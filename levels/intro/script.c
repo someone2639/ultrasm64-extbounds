@@ -31,7 +31,6 @@ const LevelScript level_intro_splash_screen[] = {
 #endif
     INIT_LEVEL(),
     LOAD_GODDARD(),
-    LOAD_BEHAVIOR_DATA(),
     LOAD_LEVEL_DATA(intro),
 #if defined(FLOOMBAS) && defined(INTRO_FLOOMBAS)
     LOAD_COMMON0(),
@@ -89,7 +88,6 @@ const LevelScript level_intro_mario_head_regular[] = {
     LOAD_GODDARD(),
 #ifdef KEEP_MARIO_HEAD
     LOAD_MARIO_HEAD(/*loadHeadID*/ REGULAR_FACE),
-    LOAD_BEHAVIOR_DATA(),
     LOAD_TITLE_SCREEN_BG(),
 
     ALLOC_LEVEL_POOL(),
@@ -120,7 +118,6 @@ const LevelScript level_intro_mario_head_dizzy[] = {
 #ifdef KEEP_MARIO_HEAD
     LOAD_MARIO_HEAD(/*loadHeadID*/ DIZZY_FACE),
 #endif
-    LOAD_BEHAVIOR_DATA(),
     LOAD_TITLE_SCREEN_BG(),
     ALLOC_LEVEL_POOL(),
 
@@ -142,7 +139,6 @@ const LevelScript level_intro_mario_head_dizzy[] = {
 
 const LevelScript level_intro_entry_level_select[] = {
     INIT_LEVEL(),
-    LOAD_BEHAVIOR_DATA(),
     LOAD_TITLE_SCREEN_BG(),
     LOAD_YAY0(/*seg*/ SEGMENT_LEVEL_DATA, _debug_level_select_yay0SegmentRomStart, _debug_level_select_yay0SegmentRomEnd),
     FIXED_LOAD(/*loadAddr*/ _goddardSegmentStart, /*romStart*/ _goddardSegmentRomStart, /*romEnd*/ _goddardSegmentRomEnd),

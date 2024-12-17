@@ -53,6 +53,12 @@ void bhv_bobomb_explosion_bubble_init(void) {
     o->oVelY = (s32)(random_float() * 4.0f) + 4;
 }
 
+// formerly a behavior script
+void bhvBobombExplosionBubble3600(void) {
+    o->oPosX = (random_float() * 4.0f) - 2;
+    o->oPosZ = (random_float() * 4.0f) - 2;
+}
+
 void bhv_bobomb_explosion_bubble_loop(void) {
     f32 waterY = gMarioState->waterLevel;
 
