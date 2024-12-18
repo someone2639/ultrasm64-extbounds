@@ -5,7 +5,6 @@ def usage():
 
 obj_ld_file = sys.argv[1]+"/objects.ld"
 obj_defs_file = sys.argv[1]+"/object_defs.ld"
-obj_s_file = sys.argv[1]+"/object_table.s"
 obj_behaviors = sys.argv[2:]
 
 packet = """BEGIN_SEG(%s, 0) {
@@ -29,7 +28,6 @@ def ToCamelCase(s):
 
 with open(obj_ld_file, "w+") as f:
     for i, nm in enumerate(obj_behaviors):
-        # p = subprocess.Popen(["readelf", "-S", nm], stdout=subprocess.PIPE)
         name = nm.split("/")[-1].replace(".o","")
         if name[0].isdigit():
             name = "_" + name

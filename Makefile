@@ -866,13 +866,8 @@ $(BUILD_DIR)/objects.ld: $(BEHAVIOR_O_FILES)
 	@$(PRINT) "$(GREEN)Generating Object Table...$(NO_COL)\n"
 	$(V)$(PYTHON) tools/write_object_table.py $(BUILD_DIR) $^
 
-$(BUILD_DIR)/object_table.s: $(BUILD_DIR)/objects.ld
-
-$(BUILD_DIR)/object_table.o: $(BUILD_DIR)/object_table.s
-	$(V)$(CROSS)gcc -c $(ASMFLAGS) $(foreach i,$(INCLUDE_DIRS),-Wa,-I$(i)) -x assembler-with-cpp -MMD -MF $(BUILD_DIR)/$*.d  -o $@ $<
-
 # SS2: Goddard rules to get size
-$(BUILD_DIR)/sm64_prelim.ld: sm64.ld $(O_FILES) $(YAY0_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/object_table.o $(BUILD_DIR)/libgoddard.a $(BUILD_DIR)/libz.a
+$(BUILD_DIR)/sm64_prelim.ld: sm64.ld $(O_FILES) $(YAY0_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/objects.ld $(BUILD_DIR)/libgoddard.a $(BUILD_DIR)/libz.a
 	$(call print,Preprocessing preliminary linker script:,$<,$@)
 	$(V)$(CPP) $(CPPFLAGS) -DPRELIMINARY=1 -DBUILD_DIR=$(BUILD_DIR) -DULTRALIB=lib$(ULTRALIB) -MMD -MP -MT $@ -MF $@.d -o $@ $<
 
