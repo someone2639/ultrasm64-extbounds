@@ -15,17 +15,17 @@ u32 numBhvs = 0;
 u32 numBhvsLoaded = 0;
 BehaviorScript *gMarioBhvScript;
 
-extern u8 gObjectTable[];
-extern u8 gObjectTableEnd[];
+extern u8 _object_tableSegmentStart[];
+extern u8 _object_tableSegmentEnd[];
 
 void load_bhv_table() {
-    gBhvTableSize = ALIGN16((u32)gObjectTableEnd - (u32)gObjectTable);
+    gBhvTableSize = ALIGN16((u32)_object_tableSegmentEnd - (u32)_object_tableSegmentStart);
     gBhvTable = main_pool_alloc(gBhvTableSize, MEMORY_POOL_LEFT);
 
     dma_read(
         (u8*)gBhvTable,
-        gObjectTable,
-        (u8*)gObjectTableEnd
+        _object_tableSegmentStart,
+        _object_tableSegmentEnd
     );
 
     numBhvs = gBhvTableSize / sizeof(BhvFile);
