@@ -130,11 +130,18 @@ ifeq ($(TEXT_ENGINE), s2dex_text_engine)
 endif
 # add more text engines here
 
+# RECOMP
+#   Turn this switch on to optimize the repo for N64Recomp ports
+#   (Requires a `make clean`)
+#   (Only COMPRESS=yay0 has been tested)
+RECOMP ?= 0
+
 #==============================================================================#
 # Optimization flags                                                           #
 #==============================================================================#
 
 # Default non-gcc opt flags
+ifeq ($(RECOMP), 0)
 DEFAULT_OPT_FLAGS = -Ofast -falign-functions=32
 # Note: -fno-associative-math is used here to suppress warnings, ideally we would enable this as an optimization but
 # this conflicts with -ftrapping-math apparently.
@@ -204,6 +211,10 @@ else ifeq ($(COMPILER),clang)
   MATH_UTIL_OPT_FLAGS  = $(DEFAULT_OPT_FLAGS)
   GRAPH_NODE_OPT_FLAGS = $(DEFAULT_OPT_FLAGS)
 endif
+
+else # RECOMP
+  OPT_FLAGS := -O0 -g
+endif # RECOMP
 
 # UNF - whether to use UNFLoader flashcart library
 #   1 - includes code in ROM
@@ -684,6 +695,8 @@ $(BUILD_DIR)/src/usb/usb.o: OPT_FLAGS := -O0
 $(BUILD_DIR)/src/usb/usb.o: CFLAGS += -Wno-unused-variable -Wno-sign-compare -Wno-unused-function
 $(BUILD_DIR)/src/usb/debug.o: OPT_FLAGS := -O0
 $(BUILD_DIR)/src/usb/debug.o: CFLAGS += -Wno-unused-parameter -Wno-maybe-uninitialized
+
+ifeq ($(RECOMP), 0)
 # File specific opt flags
 $(BUILD_DIR)/src/audio/heap.o:          OPT_FLAGS := -Os -fno-jump-tables
 $(BUILD_DIR)/src/audio/synthesis.o:     OPT_FLAGS := -Os -fno-jump-tables
@@ -691,6 +704,7 @@ $(BUILD_DIR)/src/audio/synthesis.o:     OPT_FLAGS := -Os -fno-jump-tables
 $(BUILD_DIR)/src/engine/surface_collision.o:  OPT_FLAGS := $(COLLISION_OPT_FLAGS)
 $(BUILD_DIR)/src/engine/math_util.o:          OPT_FLAGS := $(MATH_UTIL_OPT_FLAGS)
 $(BUILD_DIR)/src/game/rendering_graph_node.o: OPT_FLAGS := $(GRAPH_NODE_OPT_FLAGS)
+endif # RECOMP
 
 # $(info OPT_FLAGS:            $(OPT_FLAGS))
 # $(info COLLISION_OPT_FLAGS:  $(COLLISION_OPT_FLAGS))
