@@ -201,10 +201,6 @@ struct Object *create_object(const BehaviorScript *bhvScript) {
     struct Object *obj;
     struct ObjectNode *objList;
 
-    char d[100];
-    sprintf(d, "[INFUNC] Creating Obj @ %08X\n", bhvScript);
-    osSyncPrintf(d);
-
     // If the first behavior script command is "begin <object list>", then
     // extract the object list from it
     if ((bhvScript[0] >> 24) == 0) {

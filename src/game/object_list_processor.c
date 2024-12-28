@@ -450,9 +450,6 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
 
         // If the object was previously killed/collected, don't respawn it
         if ((spawnInfo->respawnInfo & RESPAWN_INFO_DONT_RESPAWN) != RESPAWN_INFO_DONT_RESPAWN) {
-            char d[100];
-            sprintf(d, "[OUTFUNC] Creating Obj @ %08X\n", script);
-            osSyncPrintf(d);
             object = create_object(script);
 
             // Behavior parameters are often treated as four separate bytes, but
