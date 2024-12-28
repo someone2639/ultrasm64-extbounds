@@ -28,6 +28,7 @@ u8 gSupportsLibpl = FALSE;
 u32 pj64_get_count_factor_asm(void); // defined in asm/pj64_get_count_factor_asm.s
 u32 emux_detect(void); // defined in asm/emux.s
 
+#ifndef RECOMP
 static inline u32 check_count_factor() {
     const u32 saved = __osDisableInt();
     const u32 cf = pj64_get_count_factor_asm();
@@ -177,4 +178,5 @@ void detect_emulator() {
             gEmulator = 0;
             return;
     }
-} 
+}
+#endif // RECOMP

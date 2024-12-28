@@ -349,7 +349,9 @@ void thread3_main(UNUSED void *arg) {
     setup_mesg_queues();
     alloc_pool();
     load_engine_code_segment();
+#ifndef RECOMP
     detect_emulator();
+#endif
 #ifndef UNF
     crash_screen_init();
 #endif

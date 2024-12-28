@@ -135,6 +135,10 @@ endif
 #   (Requires a `make clean`)
 #   (Only COMPRESS=yay0 has been tested)
 RECOMP ?= 0
+ifeq ($(RECOMP), 1)
+  DEFINES += RECOMP=1
+endif
+
 
 #==============================================================================#
 # Optimization flags                                                           #
