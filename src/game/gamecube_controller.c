@@ -3,6 +3,12 @@
 
 #include "game_init.h"
 
+#ifdef RECOMP
+// Recomp attaches the literal address to static library functions that it detects,
+//  so we avoid this here
+#define static
+#endif // RECOMP
+
 /////////////////////////////////////////////////
 // Libultra structs and macros (from ultralib) //
 /////////////////////////////////////////////////
