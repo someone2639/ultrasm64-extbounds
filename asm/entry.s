@@ -9,8 +9,7 @@
 .section .text, "ax"
 
 glabel entry_point
-
-entry_point:
+.type entry_point, @function
     lui   $t0, %hi(_mainSegmentBssStart)
     lui   $t1, %hi(_mainSegmentBssSize)
     addiu $t0, %lo(_mainSegmentBssStart)
@@ -26,3 +25,4 @@ entry_point:
     addiu $t2, %lo(main_func) # Get the low half of the init function address
     jr    $t2 # Jump to the init function
      addiu $sp, %lo(gIdleThreadStack) # Set the low half of the stack pointer to that of the idle thread stack
+.size entry_point, . - entry_point
