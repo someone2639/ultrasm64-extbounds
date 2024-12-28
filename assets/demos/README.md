@@ -5,7 +5,7 @@ To record a demo, a few steps have to be taken.
 - Set `ISVPRINT=1` in the `Makefile` (or `UNF=1` if using the Ares emulator or a USB-enabled flashcart on console)
 - Rebuild the repo, and launch an emulator with debug console support such as Parallel Launcher.
 
-The demo recording mode will boot into the level you set, from which you can start moving around and interacting with the level and camera.
+The demo recording mode will boot into the level you set, from which you can start moving around and interacting with the level and camera. Press the Start button to end the demo
 
 To test the demo after it's done:
 
