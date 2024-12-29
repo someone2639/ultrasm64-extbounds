@@ -90,13 +90,6 @@
 #define CAM_MODE_LAKITU_WAS_ZOOMED_OUT  0x02
 #define CAM_MODE_MARIO_SELECTED         0x04
 
-/**
- * Object fields which are global to former camera.c objects
- **/
-
-/* End Birds */
-#define /*0x104*/ oEndBirdCutsceneVars9PointX OBJECT_FIELD_F32(0x1F)
-
 enum CameraSelection {
     CAM_SELECTION_NONE,
     CAM_SELECTION_MARIO,
