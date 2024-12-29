@@ -328,6 +328,9 @@
 /* Triplet Butterfly */
 #define /*0x0F4*/ oTripletButterflyScale             OBJECT_FIELD_F32(0x1B)
 
+/* End Birds, Intro Scene Bird Spawner */
+#define /*0x104*/ oEndBirdCutsceneVars9PointX OBJECT_FIELD_F32(0x1F)
+
 /**
  * These are just wrong
  **/
