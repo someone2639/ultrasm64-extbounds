@@ -70,8 +70,7 @@ s32 obj_update_standard_actions(f32 scale);
 s32 obj_check_attacks(struct ObjectHitbox *hitbox, s32 attackedMarioAction);
 s32 obj_move_for_one_second(s32 endAction);
 
-// declared in individual behavior files
-// TODO: move into behavior specific headers or into one of the object helpers
+// Cross-referenced functions that don't belong in individual behavior files.
 extern s32 mario_is_far_below_object(f32 min); // king_bobomb.c
 extern void set_yoshi_as_not_dead(void); // yoshi.c
 void create_respawner(ModelID32 model, const BehaviorScript *behToSpawn, s32 minSpawnDist); // respawner.c
