@@ -56,19 +56,17 @@ extern u32 detect_emulator();
  * Test for Console or Parallel Launcher:
  * if (gEmulator & (EMU_CONSOLE | EMU_PARALLEL_LAUNCHER))
  */
-extern u8 gEmulator;
+extern enum Emulator gEmulator;
 
 /**
  * Bitflag that lists all system capabilities, for more granular
  * feature detection than gEmulator.
  */
-extern u32 gSystemCapabilities;
+extern enum SystemCapabilities gSystemCapabilities;
 
-/**
- * Whether the emulator supports libpl.
- *  Left in for backwards compatibility.
- */
-#define gSupportsLibpl (gSystemCapabilities & SUPPORTS_LIBPL)
+// determines the most recent libpl ABI version supported (0 if not supported)
+// Set LIBPL ?= 1 in your Makefile to enable libpl support
+extern int gLibplABI;
 
 // Included for backwards compatibility when upgrading from HackerSM64 2.0
 #define gIsConsole ((gEmulator & EMU_CONSOLE) != 0)

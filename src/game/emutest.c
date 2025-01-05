@@ -11,7 +11,8 @@
 #include "float.h"
 
 #ifdef LIBPL
-#include "lib/libpl/libpl-emu.h"
+#include "lib/libpl2/libpl2-init.h"
+#include "lib/libpl2/libpl2-emu.h"
 #endif
 
 extern OSMesgQueue gSIEventMesgQueue;
@@ -22,8 +23,9 @@ extern void __osSiRelAccess(void);
 extern void __osPiGetAccess(void);
 extern void __osPiRelAccess(void);
 
-u8 gEmulator = EMU_CONSOLE;
-u32 gSystemCapabilities = 0;
+enum Emulator gEmulator = EMU_CONSOLE;
+enum SystemCapabilities gSystemCapabilities = 0;
+int gLibplABI = 0;
 
 static inline u32 get_pj64_version() {
     // When calling this function, we know that the emulator is some version of Project 64,
@@ -78,26 +80,33 @@ static u8 check_cache_emulation() {
 //  Also initializes gSystemCapabilities.
 u32 detect_emulator() {
     u32 magic;
-    // Test to see if the libpl emulator extension is present.
-#ifdef LIBPL
-    // We have libpl downloaded as a submodule, just use the API call.
-    if (libpl_is_supported(LPL_ABI_VERSION_CURRENT)) {
-        const lpl_plugin_info *plugin_info = libpl_get_graphics_plugin();
 
-        // We can query framebuffer emulation from libpl
-        if (plugin_info->capabilities & LPL_FRAMEBUFFER_EMULATION) {
-            gSystemCapabilities |= SUPPORTS_SOFTWARE_FRAMEBUFFER;
-        }
-#else // LIBPL
     // libpl interacts with the hardware register at 0x1FFB0000,
     //  so we can still _detect_ it by clearing the register and
     //  seeing if we get a specific value back.
     osPiWriteIo(0x1ffb0000u, 0u);
     osPiReadIo(0x1ffb0000u, &magic);
     if (magic == 0x00500000u) {
-#endif // LIBPL
-        gSystemCapabilities |= SUPPORTS_LIBPL;
-        // If libpl is supported, we're on Parallel Launcher
+#ifdef LIBPL
+        // Test to see if the libpl emulator extension is present.
+        lpl2_err err;
+        if( lpl2_init( LIBPL_ABI_VERSION_CURRENT, &err ) ) {
+            gLibplABI = LIBPL_ABI_VERSION_CURRENT;
+        } else if( err == LPL2_ERR_LIBPL_OLD_ABI ) {
+            gLibplABI = LIBPL_ABI_VERSION_CURRENT;
+            while( --gLibplABI > 0 && !lpl2_init( gLibplABI, NULL ) );
+        }
+
+        if (gLibplABI > 0) {
+            gSystemCapabilities |= SUPPORTS_LIBPL;
+
+            // We can query framebuffer emulation from libpl
+            lpl2_plugin_info plugin_info;
+            if (lpl2_get_graphics_plugin( &plugin_info, &err ) && plugin_info.capabilities & LPL2_GFX_FRAMEBUFFER_EMULATION) {
+                gSystemCapabilities |= SUPPORTS_SOFTWARE_FRAMEBUFFER;
+            }
+        }
+#endif
         return EMU_PARALLEL_LAUNCHER;
     }
 
