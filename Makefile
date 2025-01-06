@@ -258,7 +258,7 @@ endif
 #   1 - includes code in ROM
 #   0 - does not
 LIBPL ?= 0
-LIBPL_DIR := lib/libpl
+LIBPL_DIR := lib/libpl2
 $(eval $(call validate-option,LIBPL,0 1))
 ifeq ($(LIBPL),1)
   DEFINES += LIBPL=1
@@ -351,10 +351,10 @@ ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
   # Clone any needed submodules
   ifeq ($(LIBPL),1)
     ifeq ($(wildcard $(LIBPL_DIR)/*.h),)
-      $(info Cloning libpl submodule...)
+      $(info Cloning libpl2 submodule...)
       DUMMY != git submodule update --init $(LIBPL_DIR) > /dev/null || echo FAIL
       ifeq ($(DUMMY),FAIL)
-        $(error Failed to clone libpl submodule)
+        $(error Failed to clone libpl2 submodule)
       endif
     endif
   endif
