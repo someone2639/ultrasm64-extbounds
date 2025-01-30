@@ -13,9 +13,7 @@ def get_latest_build_artifacts_url():
     return os.path.join(body['value'][0]['url'], 'artifacts')
 
 def main():
-    destpath = sys.argv[1] if len(sys.argv) > 1 else '.'
-    unfloader_zip_path = os.path.join(destpath, "UNFLoader.zip")
-    os.makedirs(destpath, exist_ok=True)
+    destpath = sys.argv[1] if len(sys.argv) > 1 else './'
     is_wsl = 'microsoft-standard' in str(platform.uname()).lower()
     unf_fn = 'UNFLoader.exe' if is_wsl else 'UNFLoader'
     artifact_url = get_latest_build_artifacts_url()
@@ -34,24 +32,24 @@ def main():
 
     # download unf zipfile
     artifact_res = request('GET', platform_artifact_url)
-    with open(unfloader_zip_path, 'wb') as unf_fp:
+    with open('UNFLoader.zip', 'wb') as unf_fp:
         unf_fp.write(artifact_res.content)
 
     # only extract the specific file that we need
     unfpath = None
-    with zipfile.ZipFile(unfloader_zip_path, 'r') as zip_ref:
+    with zipfile.ZipFile('UNFLoader.zip', 'r') as zip_ref:
         for zipinfo in zip_ref.infolist():
             if not zipinfo.is_dir():
-                unfpath = zip_ref.extract(zipinfo, destpath)
+                unfpath = zip_ref.extract(zipinfo)
 
     unf_bin_path = os.path.join(destpath, unf_fn)
-    # file gets extracted to [destpath]/unfloader-{platform}/UNFLoader[.exe],
-    # so move binary to [destpath]/UNFLoader[.exe]
+    # file gets extracted to ./unfloader-{platform}/UNFLoader[.exe],
+    # so move binary to ./UNFLoader[.exe]
     os.rename(unfpath, unf_bin_path)
-    # remove [destpath]/unfloader-{platform}/ directory
+    # remove ./unfloader-{platform}/ directory
     os.rmdir(unfpath.rstrip(unf_fn))
     # remove UNFLoader.zip
-    os.remove(unfloader_zip_path)
+    os.remove('UNFLoader.zip')
     
     # now need to add executable file permissions to unfloader 
     st = os.stat(unf_bin_path)
