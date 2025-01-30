@@ -17,6 +17,10 @@
 #define /*0x0F8*/ oBBallSpawnerSpawnOdds    OBJECT_FIELD_F32(0x1C)
 #define /*0x0FC*/ oBBallSpawnerPeriodMinus1 OBJECT_FIELD_S32(0x1D)
 
+// There is no good way to handle this
+#include "levels/bob/header.h"
+#include "levels/ttm/header.h"
+
 static struct ObjectHitbox sBowlingBallHitbox = {
     /* interactType:      */ INTERACT_DAMAGE,
     /* downOffset:        */ 0,
