@@ -1,8 +1,8 @@
 #include <ultra64.h>
+#include "actors/vanilla_actors/ttc/header.h"
 #include "global_object_fields.h"
 #include "game/object_helpers.h"
 #include "game/spawn_sound.h"
-#include "levels/ttc/header.h"
 
 /**
  * Behavior for bhvTTCRotatingSolid, which are the rotating cube and triangular

@@ -1,8 +1,8 @@
 #include <ultra64.h>
+#include "actors/vanilla_actors/ttc/header.h"
 #include "global_object_fields.h"
 #include "engine/math_util.h"
 #include "game/object_helpers.h"
-#include "levels/ttc/header.h"
 
 /**
  * Behavior for bhvTTCPitBlock. This is the block that moves up and down near the

@@ -1,8 +1,8 @@
 #include <ultra64.h>
+#include "actors/vanilla_actors/bits/header.h"
+#include "actors/vanilla_actors/rr/header.h"
 #include "global_object_fields.h"
 #include "game/object_helpers.h"
-#include "levels/bits/header.h"
-#include "levels/rr/header.h"
 
 static const Collision *sOctagonalPlatformCollision[] = {
     bits_seg7_collision_0701AA84,

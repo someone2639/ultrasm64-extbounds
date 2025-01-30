@@ -1,4 +1,5 @@
 #include <ultra64.h>
+#include "actors/vanilla_actors/ssl/header.h"
 #include "behavior_data.h"
 #include "dialog_ids.h"
 #include "model_ids.h"
@@ -10,7 +11,6 @@
 #include "game/interaction.h"
 #include "game/object_helpers.h"
 #include "game/spawn_sound.h"
-#include "levels/ssl/header.h"
 
 /* Eyerok Boss */
 #define /*0x0F8*/ oEyerokBossNumHands         OBJECT_FIELD_S32(0x1C)

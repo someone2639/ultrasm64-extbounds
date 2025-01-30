@@ -1,11 +1,11 @@
 #include <ultra64.h>
+#include "actors/vanilla_actors/bob/header.h"
+#include "actors/vanilla_actors/hmc/header.h"
 #include "behavior_data.h"
 #include "global_object_fields.h"
 #include "audio/external.h"
 #include "game/object_helpers.h"
 #include "game/spawn_sound.h"
-#include "levels/bob/header.h"
-#include "levels/hmc/header.h"
 
 /* Openable Grill */
 #define /*0x088*/ oOpenableGrillIsOpen         OBJECT_FIELD_S32(0x00)

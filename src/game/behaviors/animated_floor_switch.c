@@ -1,11 +1,11 @@
 #include <ultra64.h>
+#include "actors/vanilla_actors/bitdw/header.h"
+#include "actors/vanilla_actors/bits/header.h"
+#include "actors/vanilla_actors/rr/header.h"
 #include "behavior_data.h"
 #include "global_object_fields.h"
 #include "game/object_helpers.h"
 #include "game/spawn_sound.h"
-#include "levels/bitdw/header.h"
-#include "levels/bits/header.h"
-#include "levels/rr/header.h"
 
 /* Floor Switch Press Animation */
 #define /*0x0F4*/ oFloorSwitchPressAnimationTickTimer        OBJECT_FIELD_S32(0x1B)

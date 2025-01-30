@@ -1,4 +1,7 @@
 #include <ultra64.h>
+#include "actors/vanilla_actors/bitfs/header.h"
+#include "actors/vanilla_actors/ccm/header.h"
+#include "actors/vanilla_actors/rr/header.h"
 #include "behavior_data.h"
 #include "global_object_fields.h"
 #include "actors/common0.h"
