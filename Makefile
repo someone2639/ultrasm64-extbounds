@@ -450,8 +450,6 @@ else ifneq ($(call find-command,mips64-none-elf-ld),)
   CROSS := mips64-none-elf-
 else ifneq ($(call find-command,mips-ld),)
   CROSS := mips-
-else ifneq ($(call find-command,mips-suse-linux-ld ),)
-  CROSS := mips-suse-linux-
 else
   $(error Unable to detect a suitable MIPS toolchain installed)
 endif
@@ -565,19 +563,10 @@ endif
 
 EMU_FLAGS =
 
-# Adding a txt file to this location will then reference a UNFLoader path specified in the file, instead of locally.
-# This is expecially important for WSL users because UNFLoader.exe is incredibly slow when run within WSL's filesystem, so this can be used to point to the C drive.
-# The file should only contain the directory path that contains UNFLoader[.exe] (do not specify the filename).
-LOADER_DIR_FILE_SPECIFICATION_PATH = ~/.local/share/HackerSM64/UNFLoader-dir.txt
-LOADER_DIR = ./$(TOOLS_DIR)
-
-ifneq (,$(wildcard $(LOADER_DIR_FILE_SPECIFICATION_PATH)))
-  LOADER_DIR = $(shell cat $(LOADER_DIR_FILE_SPECIFICATION_PATH))
-endif
 ifneq (,$(call find-command,wslview))
-  LOADER_EXEC = $(LOADER_DIR)/UNFLoader.exe
+    LOADER = ./$(TOOLS_DIR)/UNFLoader.exe
 else
-  LOADER_EXEC = $(LOADER_DIR)/UNFLoader
+    LOADER = ./$(TOOLS_DIR)/UNFLoader
 endif
 
 SHA1SUM = sha1sum
@@ -633,17 +622,17 @@ test-pj64: $(ROM)
 # someone2639
 
 # download and extract most recent unfloader build if needed
-$(LOADER_EXEC):
-ifeq (,$(wildcard $(LOADER_EXEC)))
+$(LOADER):
+ifeq (,$(wildcard $(LOADER)))
 	@$(PRINT) "Downloading latest UNFLoader...$(NO_COL)\n"
-	$(PYTHON) $(TOOLS_DIR)/get_latest_unfloader.py $(LOADER_DIR)
+	$(PYTHON) $(TOOLS_DIR)/get_latest_unfloader.py $(TOOLS_DIR)
 endif
 
-load: $(ROM) $(LOADER_EXEC)
-	$(LOADER_EXEC) -r $<
+load: $(ROM) $(LOADER)
+	$(LOADER) -r $<
 
-unf: $(ROM) $(LOADER_EXEC)
-	$(LOADER_EXEC) -d -r $<
+unf: $(ROM) $(LOADER)
+	$(LOADER) -d -r $<
 
 libultra: $(BUILD_DIR)/libultra.a
 
@@ -653,7 +642,6 @@ patch: $(ROM)
 # Extra object file dependencies
 $(BUILD_DIR)/asm/ipl3.o:              $(IPL3_RAW_FILES)
 $(BUILD_DIR)/src/game/crash_screen.o: $(CRASH_TEXTURE_C_FILES)
-$(BUILD_DIR)/src/game/fasttext.o:     $(FASTTEXT_TEXTURE_C_FILES)
 $(BUILD_DIR)/src/game/version.o:      $(BUILD_DIR)/src/game/version_data.h
 $(BUILD_DIR)/lib/aspMain.o:           $(BUILD_DIR)/rsp/audio.bin
 $(SOUND_BIN_DIR)/sound_data.o:        $(SOUND_BIN_DIR)/sound_data.ctl $(SOUND_BIN_DIR)/sound_data.tbl $(SOUND_BIN_DIR)/sequences.bin $(SOUND_BIN_DIR)/bank_sets
@@ -704,13 +692,9 @@ $(BUILD_DIR)/%: %.png
 	$(call print,Converting:,$<,$@)
 	$(V)$(N64GRAPHICS) -s raw -i $@ -g $< -f $(lastword $(subst ., ,$@))
 
-$(BUILD_DIR)/%.preswap.inc.c: %.preswap.png
-	$(call print,Converting:,$<,$@)
-	$(V)$(N64GRAPHICS) -s $(TEXTURE_ENCODING) -i $@ -g $< -f $(lastword ,$(subst ., ,$*)) -S
-
 $(BUILD_DIR)/%.inc.c: %.png
 	$(call print,Converting:,$<,$@)
-	$(V)$(N64GRAPHICS) -s $(TEXTURE_ENCODING) -i $@ -g $< -f $(lastword ,$(subst ., ,$*))
+	$(V)$(N64GRAPHICS) -s $(TEXTURE_ENCODING) -i $@ -g $< -f $(lastword ,$(subst ., ,$(basename $<)))
 
 # Color Index CI8
 $(BUILD_DIR)/%.ci8.inc.c: %.ci8.png
