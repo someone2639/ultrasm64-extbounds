@@ -11,8 +11,6 @@
 #define /*0x0F8*/ oBitsPlatformBowser   OBJECT_FIELD_OBJ(0x1C)
 #define /*0x0FC*/ oBitsPlatformTimer    OBJECT_FIELD_S32(0x1D)
 
-#include "levels/bowser_3/header.h"
-
 struct BowserFallingPlatformData {
     const Collision *collision;
     s16 posX;

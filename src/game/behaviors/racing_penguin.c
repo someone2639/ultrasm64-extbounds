@@ -17,8 +17,6 @@
 #define /*0x1B0*/ oRacingPenguinReachedBottom          OBJECT_FIELD_S16(0x4A, 0)
 #define /*0x1B2*/ oRacingPenguinMarioCheated           OBJECT_FIELD_S16(0x4A, 1)
 
-#include "levels/ccm/header.h"
-
 struct RacingPenguinData {
     s16 text;
     f32 radius;

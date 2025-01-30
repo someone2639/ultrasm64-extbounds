@@ -6,6 +6,7 @@
 #include "game/object_helpers.h"
 #include "levels/jrb/header.h"
 #include "game/spawn_sound.h"
+#include "actors/group4.h"
 
 /* Unagi */
 #define /*0x0F4*/ oUnagiDistFromHome         OBJECT_FIELD_F32(0x1B)
@@ -15,8 +16,6 @@
 #define /*0x1AC*/ oUnagiDistanceToMario      OBJECT_FIELD_F32(0x49)
 #define /*0x1B0*/ oUnagiInitMoveYaw          OBJECT_FIELD_S16(0x4A, 0)
 #define /*0x1B2*/ oUnagiHasStar              OBJECT_FIELD_S16(0x4A, 1)
-
-#include "actors/group4.h"
 
 struct ObjectHitbox sUnagiHitbox = {
     /* interactType:      */ INTERACT_CLAM_OR_BUBBA,
