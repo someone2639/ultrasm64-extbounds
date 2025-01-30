@@ -1,13 +1,13 @@
 #include <ultra64.h>
+#include "actors/vanilla_actors/wf/header.h"
+#include "actors/vanilla_actors/bbh/header.h"
+#include "actors/vanilla_actors/lll/header.h"
+#include "actors/vanilla_actors/bitfs/header.h"
 #include "behavior_data.h"
 #include "global_object_fields.h"
 #include "engine/math_util.h"
 #include "game/object_helpers.h"
 #include "game/spawn_sound.h"
-#include "levels/wf/header.h"
-#include "levels/bbh/header.h"
-#include "levels/lll/header.h"
-#include "levels/bitfs/header.h"
 
 /* Tumbling Bridge */
 #define /*0x0F4*/ oTumblingBridgeRollAccel OBJECT_FIELD_S32(0x1B)

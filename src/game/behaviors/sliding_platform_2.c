@@ -1,10 +1,10 @@
 #include <ultra64.h>
+#include "actors/vanilla_actors/bitdw/header.h"
+#include "actors/vanilla_actors/bitfs/header.h"
+#include "actors/vanilla_actors/bits/header.h"
+#include "actors/vanilla_actors/rr/header.h"
 #include "global_object_fields.h"
 #include "game/object_helpers.h"
-#include "levels/bitdw/header.h"
-#include "levels/bitfs/header.h"
-#include "levels/bits/header.h"
-#include "levels/rr/header.h"
 
 /* Back-and-Forth Platform */
 #define /*0x0F4*/ oBackAndForthPlatformDirection  OBJECT_FIELD_F32(0x1B)
