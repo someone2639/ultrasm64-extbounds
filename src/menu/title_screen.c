@@ -158,11 +158,11 @@ s32 intro_regular(void) {
         level = (LEVEL_FILE_SELECT + gDebugLevelSelect);
         sPlayMarioGreeting = TRUE;
     }
-#if !defined(DISABLE_DEMO) && defined(KEEP_MARIO_HEAD)
+#if defined(ENABLE_DEMO_SYSTEM) && defined(KEEP_MARIO_HEAD)
     return run_level_id_or_demo(level);
 #else
     return level;
-#endif // DISABLE_DEMO && KEEP_MARIO_HEAD
+#endif // ENABLE_DEMO_SYSTEM && KEEP_MARIO_HEAD
 }
 
 /**
@@ -188,11 +188,11 @@ s32 intro_game_over(void) {
         level = LEVEL_FILE_SELECT + gDebugLevelSelect;
         sPlayMarioGameOver = TRUE;
     }
-#if !defined(DISABLE_DEMO) && defined(KEEP_MARIO_HEAD)
+#if defined(ENABLE_DEMO_SYSTEM) && defined(KEEP_MARIO_HEAD)
     return run_level_id_or_demo(level);
 #else
     return level;
-#endif // DISABLE_DEMO && KEEP_MARIO_HEAD
+#endif // ENABLE_DEMO_SYSTEM && KEEP_MARIO_HEAD
 }
 
 #endif // KEEP_MARIO_HEAD

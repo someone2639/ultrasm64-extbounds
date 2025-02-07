@@ -1005,7 +1005,7 @@ void basic_update(void) {
 }
 
 s32 play_mode_normal(void) {
-#ifndef DISABLE_DEMO
+#ifdef ENABLE_DEMO_SYSTEM
     if (gCurrDemoInput != NULL) {
         print_intro_text();
         if (gPlayer1Controller->buttonPressed & END_DEMO) {
@@ -1276,9 +1276,9 @@ s32 init_level(void) {
         if (gPlayerSpawnInfos[0].areaIndex >= 0) {
             load_mario_area();
             init_mario();
-#ifndef DISABLE_DEMO
+#ifdef ENABLE_DEMO_SYSTEM
             gDemoActive = TRUE;
-#endif // DISABLE_DEMO
+#endif // ENABLE_DEMO_SYSTEM
         }
 
         if (gCurrentArea != NULL) {

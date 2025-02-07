@@ -531,7 +531,7 @@ void read_controller_inputs(s32 threadID) {
         record_demo();
     }
 #endif // DEMO_RECORDING_MODE
-#if !defined(DISABLE_DEMO) && defined(KEEP_MARIO_HEAD)
+#if defined(ENABLE_DEMO_SYSTEM) && defined(KEEP_MARIO_HEAD)
     if (gCurrDemoInput != NULL) {
         run_demo_inputs();
     }
@@ -672,16 +672,16 @@ void setup_game_memory(void) {
     setup_dma_table_list(&gMarioAnimsBuf, gMarioAnims, gMarioAnimsMemAlloc);
 #ifdef PUPPYPRINT_DEBUG
     set_segment_memory_printout(SEGMENT_MARIO_ANIMS, MARIO_ANIMS_POOL_SIZE);
-#ifndef DISABLE_DEMO
+#ifdef ENABLE_DEMO_SYSTEM
     set_segment_memory_printout(SEGMENT_DEMO_INPUTS, DEMO_INPUTS_POOL_SIZE);
-#endif // DISABLE_DEMO
+#endif // ENABLE_DEMO_SYSTEM
 #endif // PUPPYPRINT_DEBUG
 
-#ifndef DISABLE_DEMO
+#ifdef ENABLE_DEMO_SYSTEM
     // Setup Demo Inputs Memory, otherwise save 0x800 bytes
     demoInputsMalloc = main_pool_alloc(DEMO_INPUTS_POOL_SIZE, MEMORY_POOL_LEFT);
     set_segment_base_addr(SEGMENT_DEMO_INPUTS, (void *) demoInputsMalloc);
-#endif // DISABLE_DEMO
+#endif // ENABLE_DEMO_SYSTEM
 
     // Setup Level Script Entry
     load_segment(SEGMENT_LEVEL_ENTRY, _entrySegmentRomStart, _entrySegmentRomEnd, MEMORY_POOL_LEFT, NULL, NULL);

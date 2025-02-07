@@ -10,7 +10,7 @@
 #include "memory.h"
 #include "save_file.h"
 
-#ifndef DISABLE_DEMO
+#ifdef ENABLE_DEMO_SYSTEM
 void *demoInputsMalloc = NULL;
 u32 gCurrentDemoSize = 0;
 u32 gCurrentDemoIdx = 0;
@@ -86,7 +86,7 @@ void run_demo_inputs(void) {
         }
     }
 }
-#endif // DISABLE_DEMO
+#endif // ENABLE_DEMO_SYSTEM
 
 /**
  * If level is a valid value, tell the level script up the chain to jump there.
@@ -96,7 +96,7 @@ s32 run_level_id_or_demo(s32 level) {
     gCurrDemoInput = NULL;
 
     if (level == LEVEL_NONE) {
-#ifndef DISABLE_DEMO
+#ifdef ENABLE_DEMO_SYSTEM
         if (!gPlayer1Controller->buttonDown && !gPlayer1Controller->stickMag) {
             if ((++sDemoCountdown) >= PRESS_START_DEMO_TIMER) {
                 u32 demoCount = 0;
@@ -143,7 +143,7 @@ s32 run_level_id_or_demo(s32 level) {
         } else { // activity was detected, so reset the demo countdown.
             sDemoCountdown = 0;
         }
-#endif // DISABLE_DEMO
+#endif // ENABLE_DEMO_SYSTEM
     }
     return level;
 }
