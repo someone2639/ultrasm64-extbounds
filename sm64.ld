@@ -516,9 +516,9 @@ SECTIONS
    {
       KEEP(BUILD_DIR/assets/mario_anim_data.o(.data*));
       KEEP(BUILD_DIR/assets/mario_anim_data.o(.rodata*));
-#ifndef DISABLE_DEMO
+#ifdef ENABLE_DEMO_SYSTEM
       KEEP(BUILD_DIR/assets/demo_data.o(.data*));
-#endif /* DISABLE_DEMO */
+#endif /* ENABLE_DEMO_SYSTEM */
       KEEP(BUILD_DIR/sound/sound_data.o(.data*));
    }
    END_SEG(assets)
