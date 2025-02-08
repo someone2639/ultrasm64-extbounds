@@ -390,6 +390,8 @@ void render_game(void) {
                       SCREEN_HEIGHT - gBorderHeight);
         render_hud();
 
+        print_text_fmt_int(10, 10, "%d", MODEL_ID_COUNT);
+
         gDPSetScissor(gDisplayListHead++, G_SC_NON_INTERLACE, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         render_text_labels();
 #ifdef PUPPYPRINT
