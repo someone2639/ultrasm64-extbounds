@@ -249,7 +249,14 @@ struct GraphNodeObject {
     /*0x4C*/ struct SpawnInfo *spawnInfo;
     /*0x50*/ Mat4 *throwMatrix; // matrix ptr
     /*0x54*/ Vec3f cameraToObject;
+             void *data;
 };
+
+typedef struct {
+    void *romStart;
+    void *romEnd;
+    const void *geo;
+} Actor;
 
 struct ObjectNode {
     struct GraphNodeObject gfx;

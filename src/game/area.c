@@ -225,6 +225,9 @@ void load_area(s32 index) {
         gMarioCurrentRoom = 0;
 
         if (gCurrentArea->terrainData != NULL) {
+            char rr[200];
+            sprintf(rr, "LOADING TERRAIN %08X %08X\n", gCurrentArea->terrainData, gCurrentArea->surfaceRooms);
+            osSyncPrintf(rr);
             load_area_terrain(gCurrentArea->terrainData, gCurrentArea->surfaceRooms);
         }
 

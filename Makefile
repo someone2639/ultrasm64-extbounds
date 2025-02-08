@@ -225,7 +225,7 @@ endif
 # allowing for usage of CEN64 (and possibly Project64) to print messages to terminal.
 #   1 - includes code in ROM
 #   0 - does not
-ISVPRINT ?= 0
+ISVPRINT ?= 1
 $(eval $(call validate-option,ISVPRINT,0 1))
 ifeq ($(ISVPRINT),1)
   DEFINES += ISVPRINT=1
@@ -393,13 +393,15 @@ include Makefile.split
 
 # Source code files
 LEVEL_C_FILES     := $(wildcard levels/*/leveldata.c) $(wildcard levels/*/script.c) $(wildcard levels/*/geo.c)
-VNL_ACTRS_C_FILES := $(wildcard actors/vanilla_actors/*/data.c) $(wildcard actors/vanilla_actors/*/geo.c)
+VNL_ACTRS_C_FILES := $(wildcard actors/*/data.c) $(wildcard actors/vanilla_actors/*/data.c) $(wildcard actors/vanilla_actors/*/geo.c)
 C_FILES           := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c)) $(LEVEL_C_FILES) $(VNL_ACTRS_C_FILES)
 CPP_FILES         := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
 LIBZ_C_FILES      := $(foreach dir,$(LIBZ_SRC_DIRS),$(wildcard $(dir)/*.c))
 GODDARD_C_FILES   := $(foreach dir,$(GODDARD_SRC_DIRS),$(wildcard $(dir)/*.c))
 S_FILES           := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.s))
 GENERATED_C_FILES := $(BUILD_DIR)/assets/mario_anim_data.c $(BUILD_DIR)/assets/demo_data.c
+ACTOR_C_FILES := $(foreach dir, $(ACTOR_DIR), $(wildcard $(dir)/*/data.c))
+ACTOR_OBJS := $(foreach file,$(ACTOR_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
 
 # Ignore all .inc.c files
 C_FILES           := $(filter-out %.inc.c,$(C_FILES))

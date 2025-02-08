@@ -37,8 +37,6 @@ const LevelScript level_bowser_2_entry[] = {
     LOAD_YAY0_TEXTURE(/*seg*/ 0x09, _fire_yay0SegmentRomStart, _fire_yay0SegmentRomEnd),
     LOAD_YAY0(        /*seg*/ 0x0B, _effect_yay0SegmentRomStart, _effect_yay0SegmentRomEnd),
     LOAD_YAY0(        /*seg*/ 0x07, _bowser_2_segment_7SegmentRomStart, _bowser_2_segment_7SegmentRomEnd),
-    LOAD_YAY0(        /*seg*/ 0x06, _group12_yay0SegmentRomStart, _group12_yay0SegmentRomEnd),
-    LOAD_RAW(         /*seg*/ 0x0D, _group12_geoSegmentRomStart, _group12_geoSegmentRomEnd),
     ALLOC_LEVEL_POOL(),
     MARIO(/*model*/ MODEL_MARIO, /*behParam*/ 0x00000001, /*beh*/ bhvMario),
     JUMP_LINK(script_func_global_13),

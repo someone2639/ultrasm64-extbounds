@@ -33,6 +33,7 @@ for i in actorfolders:
     with open(i+"/data.c", "w+") as f:
         f.write('#include <PR/ultratypes.h>\n')
         f.write('#include "types.h"\n')
+        f.write('#include "sm64.h"\n')
         if "model.inc.c" in files:
             f.write('#include <PR/mbi.h>\n') # for _SHIFTL (even though some compile fine without?)
             f.write('#include <PR/gbi.h>\n')

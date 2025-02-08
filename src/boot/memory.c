@@ -329,11 +329,15 @@ void *load_segment(s32 segment, u8 *srcStart, u8 *srcEnd, u32 side, u8 *bssStart
             u8 *realAddr = (u8 *)ALIGN((uintptr_t)addr, TLB_PAGE_SIZE);
             set_segment_base_addr(segment, realAddr);
             mapTLBPages((segment << 24), VIRTUAL_TO_PHYSICAL(realAddr), ((srcEnd - srcStart) + ((uintptr_t)bssEnd - (uintptr_t)bssStart)), segment);
+        } else {
+            osSyncPrintf("ALLOCFAIL!! TOP COND");
         }
     } else {
         addr = dynamic_dma_read(srcStart, srcEnd, side, 0, 0);
         if (addr != NULL) {
             set_segment_base_addr(segment, addr);
+        } else {
+            osSyncPrintf("ALLOCFAIL!! BTTOM COND");
         }
     }
 #ifdef PUPPYPRINT_DEBUG

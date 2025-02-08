@@ -772,7 +772,11 @@ struct GraphNode *process_geo_layout(struct AllocOnlyPool *pool, void *segptr) {
     gGeoLayoutStack[1] = 0;
 
     while (gGeoLayoutCommand != NULL) {
-        assert((gGeoLayoutCommand[0x00] < GEO_CMD_COUNT), "Invalid or unloaded geo layout detected.");
+        if (gGeoLayoutCommand[0x00] >= GEO_CMD_COUNT) {
+            char t[232];
+            sprintf(t, "Invalid or unloaded geo layout detected: %08X %d\n", gGeoLayoutCommand, gGeoLayoutCommand[0x00]);
+            osSyncPrintf(t);
+        }
         GeoLayoutJumpTable[gGeoLayoutCommand[0x00]]();
     }
 
