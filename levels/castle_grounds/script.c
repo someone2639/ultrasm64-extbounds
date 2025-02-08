@@ -64,9 +64,9 @@ static const LevelScript script_castle_grounds_macro_objects[] = {
     OBJECT(/*model*/ MODEL_BUBBLY_TREE,    /*pos*/  5774,   413, -1114, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTree),
     OBJECT(/*model*/ MODEL_BUBBLY_TREE,    /*pos*/  5954,   526, -2846, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTree),
     OBJECT(/*model*/ MODEL_BUBBLY_TREE,    /*pos*/ -5204,   296,   811, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTree),
-    OBJECT(/*model*/ MODEL_CASTLE_METAL_DOOR,  /*pos*/  3292,  -511, -2931, /*angle*/ 0, 225, 0, /*behParam*/ (2 << 16), /*beh*/ bhvDoorWarp),
-    OBJECT(/*model*/ MODEL_CASTLE_CASTLE_DOOR, /*pos*/   -76,   803, -3155, /*angle*/ 0,   0, 0, /*behParam*/ (0 << 16), /*beh*/ bhvDoorWarp),
-    OBJECT(/*model*/ MODEL_CASTLE_CASTLE_DOOR, /*pos*/    77,   803, -3155, /*angle*/ 0, 180, 0, /*behParam*/ (1 << 16), /*beh*/ bhvDoorWarp),
+    OBJECT(/*model*/ MODEL_METAL_DOOR,  /*pos*/  3292,  -511, -2931, /*angle*/ 0, 225, 0, /*behParam*/ (2 << 16), /*beh*/ bhvDoorWarp),
+    OBJECT(/*model*/ MODEL_CASTLE_DOOR, /*pos*/   -76,   803, -3155, /*angle*/ 0,   0, 0, /*behParam*/ (0 << 16), /*beh*/ bhvDoorWarp),
+    OBJECT(/*model*/ MODEL_CASTLE_DOOR, /*pos*/    77,   803, -3155, /*angle*/ 0, 180, 0, /*behParam*/ (1 << 16), /*beh*/ bhvDoorWarp),
     RETURN(),
 };
 

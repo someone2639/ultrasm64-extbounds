@@ -34,8 +34,8 @@ static const LevelScript script_inside_castle_area_1_macro_objects[] = {
     // Special objects
     OBJECT(/*model*/ MODEL_WOODEN_DOOR, /*pos*/  -271,     0,  -824, /*angle*/ 0,  45, 0, /*behParam*/ (0 << 24), /*beh*/ bhvDoor),
     OBJECT(/*model*/ MODEL_WOODEN_DOOR, /*pos*/ -1775,     0,  -824, /*angle*/ 0, 315, 0, /*behParam*/ (0 << 24), /*beh*/ bhvDoor),
-    OBJECT(/*model*/ MODEL_CASTLE_CASTLE_DOOR,        /*pos*/ -1100,     0,  2202, /*angle*/ 0,   0, 0, /*behParam*/ (0 << 16), /*beh*/ bhvDoorWarp),
-    OBJECT(/*model*/ MODEL_CASTLE_CASTLE_DOOR,        /*pos*/  -946,     0,  2202, /*angle*/ 0, 180, 0, /*behParam*/ (1 << 16), /*beh*/ bhvDoorWarp),
+    OBJECT(/*model*/ MODEL_CASTLE_DOOR,        /*pos*/ -1100,     0,  2202, /*angle*/ 0,   0, 0, /*behParam*/ (0 << 16), /*beh*/ bhvDoorWarp),
+    OBJECT(/*model*/ MODEL_CASTLE_DOOR,        /*pos*/  -946,     0,  2202, /*angle*/ 0, 180, 0, /*behParam*/ (1 << 16), /*beh*/ bhvDoorWarp),
     OBJECT(/*model*/ MODEL_WOODEN_DOOR,        /*pos*/ -1023,  -101, -5170, /*angle*/ 0,   0, 0, /*behParam*/ (2 << 16), /*beh*/ bhvDoorWarp),
     OBJECT(/*model*/ MODEL_CASTLE_DOOR_0_STARS,       /*pos*/ -3122,   205,  -793, /*angle*/ 0,  90, 0, /*behParam*/ (0 << 24), /*beh*/ bhvDoor),
     OBJECT(/*model*/ MODEL_CASTLE_DOOR_1_STAR,        /*pos*/   256,     0, -1074, /*angle*/ 0,   0, 0, /*behParam*/ (1 << 24), /*beh*/ bhvDoor),
@@ -69,7 +69,7 @@ static const LevelScript script_inside_castle_area_3_macro_objects[] = {
     OBJECT(/*model*/ MODEL_WOODEN_DOOR, /*pos*/  -332,  -767,   205, /*angle*/ 0,   0, 0, /*behParam*/ (0 << 24), /*beh*/ bhvDoor),
     OBJECT(/*model*/ MODEL_WOODEN_DOOR, /*pos*/   717, -1177,  -869, /*angle*/ 0, 270, 0, /*behParam*/ (0 << 24), /*beh*/ bhvDoor),
     OBJECT(/*model*/ MODEL_CASTLE_DOOR_0_STARS,       /*pos*/  1126, -1074, -2661, /*angle*/ 0, 270, 0, /*behParam*/ (0 << 24), /*beh*/ bhvDoor),
-    OBJECT(/*model*/ MODEL_CASTLE_METAL_DOOR,         /*pos*/  7885, -1586,  -511, /*angle*/ 0, 270, 0, /*behParam*/ (2 << 16), /*beh*/ bhvDoorWarp),
+    OBJECT(/*model*/ MODEL_METAL_DOOR,         /*pos*/  7885, -1586,  -511, /*angle*/ 0, 270, 0, /*behParam*/ (2 << 16), /*beh*/ bhvDoorWarp),
     RETURN(),
 };
 

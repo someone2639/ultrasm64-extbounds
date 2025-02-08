@@ -76,7 +76,7 @@ static const LevelScript script_ccm_area_1_macro_objects[] = {
     OBJECT(/*model*/ MODEL_SNOW_TREE,      /*pos*/ -1146, -3583,  5919, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTree),
     OBJECT(/*model*/ MODEL_SNOW_TREE,      /*pos*/ -1768,  2560, -1793, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTree),
     OBJECT(/*model*/ MODEL_SNOW_TREE,      /*pos*/ -3443,   807, -2713, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTree),
-    // OBJECT(/*model*/ MODEL_WOODEN_DOOR, /*pos*/  2464, -4607,  4302, /*angle*/ 0, 222, 0, /*behParam*/ (20 << 16), /*beh*/ bhvDoorWarp),
+    OBJECT(/*model*/ MODEL_WOODEN_DOOR, /*pos*/  2464, -4607,  4302, /*angle*/ 0, 222, 0, /*behParam*/ (20 << 16), /*beh*/ bhvDoorWarp),
     RETURN(),
 };
 
