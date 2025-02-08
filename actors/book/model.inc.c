@@ -9,6 +9,11 @@ ALIGNED8 static const Texture book_seg5_texture_05002570[] = {
 #include "actors/book/book_cover.rgba16.inc.c"
 };
 
+// 0x05000C60
+ALIGNED8 static const Texture bookend_seg5_texture_05000C60[] = {
+#include "actors/bookend/bookend_pages.rgba16.inc.c"
+};
+
 // 0x05002D70
 static const Vtx book_seg5_vertex_05002D70[] = {
     {{{    -9,     31,    -50}, 0, {   990,      0}, {0x00, 0x7f, 0x00, 0xff}}},
