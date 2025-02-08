@@ -66,11 +66,11 @@ static const LevelScript script_ssl_area_1_macro_objects[] = {
     OBJECT(/*model*/ MODEL_EXCLAMATION_BOX,   /*pos*/ -1200,   500,   800, /*angle*/ 0,   0, 0, /*behParam*/ (EXCLAMATION_BOX_BP_1UP_RUNNING_AWAY << 16), /*beh*/ bhvExclamationBox),
     OBJECT(/*model*/ MODEL_WOODEN_SIGNPOST,   /*pos*/  5130,    26,  -370, /*angle*/ 0,   0, 0, /*behParam*/ (DIALOG_157 << 16), /*beh*/ bhvMessagePanel),
     // Special objects
-    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03, /*pos*/  5760,     0,  5751, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
-    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03, /*pos*/ -3583,     0,  2935, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
-    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03, /*pos*/  -511,     0,  2935, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
-    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03, /*pos*/  1024,     0,  3822, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
-    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03, /*pos*/  3072,     0,   375, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_ssl_LEVEL_GEOMETRY_03, /*pos*/  5760,     0,  5751, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_ssl_LEVEL_GEOMETRY_03, /*pos*/ -3583,     0,  2935, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_ssl_LEVEL_GEOMETRY_03, /*pos*/  -511,     0,  2935, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_ssl_LEVEL_GEOMETRY_03, /*pos*/  1024,     0,  3822, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_ssl_LEVEL_GEOMETRY_03, /*pos*/  3072,     0,   375, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
     OBJECT(/*model*/ MODEL_SSL_PALM_TREE,     /*pos*/ -5989,     0, -4850, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTree),
     RETURN(),
 };
@@ -128,9 +128,9 @@ static const LevelScript script_ssl_area_2_macro_objects[] = {
     OBJECT(/*model*/ MODEL_YELLOW_COIN,       /*pos*/ -1840,  1357,  3076, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvOneCoin),
     OBJECT(/*model*/ MODEL_YELLOW_COIN,       /*pos*/ -1840,  1408,  2870, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvOneCoin),
     // Special objects
-    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_04, /*pos*/  1741,  -101,  1843, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
-    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_04, /*pos*/     0,  -101,   528, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
-    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_04, /*pos*/ -1740,  -101,  1843, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_ssl_LEVEL_GEOMETRY_04, /*pos*/  1741,  -101,  1843, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_ssl_LEVEL_GEOMETRY_04, /*pos*/     0,  -101,   528, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_ssl_LEVEL_GEOMETRY_04, /*pos*/ -1740,  -101,  1843, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
     RETURN(),
 };
 
