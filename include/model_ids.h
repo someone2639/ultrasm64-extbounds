@@ -330,7 +330,7 @@ enum ModelIDs {
     // second set of actor bins, (0x64-0x73)
     // group 12
     MODEL_BOWSER,        // bowser_geo
-    MODEL_BOWSER_BOMB_CHILD_OBJ,        // bowser_bomb_geo - Spawns as a chill object in bowser's behavior command, causing an explosion if it touches a bomb
+    MODEL_BOWSER_BOMB,        // bowser_bomb_geo - Spawns as a chill object in bowser's behavior command, causing an explosion if it touches a bomb
     MODEL_BOWSER_SMOKE,        // bowser_impact_smoke_geo
     MODEL_BOWSER_FLAMES,        // bowser_flames_geo
     MODEL_BOWSER_WAVE,        // invisible_bowser_accessory_geo
@@ -421,7 +421,6 @@ enum ModelIDs {
     MODEL_WF_TUMBLING_BRIDGE_PART,        // wf_geo_000AB0
     MODEL_WF_LARGE_BOMP,        // wf_geo_000A40
     MODEL_WF_TUMBLING_BRIDGE,        // wf_geo_000AC8
-    MODEL_BOWSER_BOMB,        // bowser_bomb_geo
     MODEL_WATER_MINE,        // water_mine_geo
     MODEL_BOWLING_BALL,        // bowling_ball_geo
     MODEL_TRAMPOLINE,        // springboard_top_geo (unused)
