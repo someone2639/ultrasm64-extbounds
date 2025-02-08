@@ -138,8 +138,6 @@ enum ModelIDs {
     MODEL_RR_TRICKY_TRIANGLES_FRAME3,        // rr_geo_0009A0
     MODEL_RR_TRICKY_TRIANGLES_FRAME4,        // rr_geo_0009B8
 
-    // castle grounds
-
     // bitdw
     MODEL_BITDW_SQUARE_PLATFORM,        // geo_bitdw_000558
     MODEL_BITDW_SEESAW_PLATFORM,        // geo_bitdw_000540
@@ -168,8 +166,6 @@ enum ModelIDs {
     MODEL_BITFS_SLIDING_PLATFORM,        // bitfs_geo_000740
     MODEL_BITFS_TUMBLING_PLATFORM_PART,        // bitfs_geo_0006D8
     MODEL_BITFS_TUMBLING_PLATFORM,        // bitfs_geo_0006F0
-
-    // sa
 
     // bits
     MODEL_BITS_SLIDING_PLATFORM,        // bits_geo_0005E0
@@ -229,22 +225,10 @@ enum ModelIDs {
     MODEL_WF_TOWER_DOOR,        // wf_geo_000BE0
     MODEL_WF_KICKABLE_BOARD_FELLED,        // wf_geo_000BC8
 
-    // ending
-
     // castle grounds
     MODEL_CASTLE_GROUNDS_VCUTM_GRILL,        // castle_grounds_geo_00070C
     MODEL_CASTLE_GROUNDS_FLAG,        // castle_grounds_geo_000660
     MODEL_CASTLE_GROUNDS_CANNON_GRILL,        // castle_grounds_geo_000724
-
-    // pss
-
-    // cotmc
-
-    // totwc
-
-    // bowser 1
-
-    // wmotr
 
     // bowser 2
     MODEL_BOWSER_2_TILTING_ARENA,        // bowser_2_geo_000170
@@ -343,10 +327,6 @@ enum ModelIDs {
     MODEL_WIGGLER_BODY,        // wiggler_body_geo
     MODEL_BUBBA,        // bubba_geo
 
-    // referenced in macro presets. Unknown usage.
-    MODEL_UNKNOWN_54,
-    MODEL_UNKNOWN_58,
-
     // second set of actor bins, (0x64-0x73)
     // group 12
     MODEL_BOWSER,        // bowser_geo
@@ -401,8 +381,6 @@ enum ModelIDs {
     MODEL_STAR,        // star_geo
     MODEL_TTM_SLIDE_EXIT_PODIUM,        // ttm_geo_000DF4
     MODEL_WOODEN_SIGNPOST,        // wooden_signpost_geo
-    MODEL_UNKNOWN_7D,        // referenced in macro presets. Unknown usage
-    // find me
     MODEL_CANNON_BARREL,        // cannon_barrel_geo
     MODEL_CANNON_BASE,        // cannon_base_geo
     MODEL_BREAKABLE_BOX,        // breakable_box_geo
@@ -418,23 +396,13 @@ enum ModelIDs {
     MODEL_DIRT_ANIMATION,        // dirt_animation_geo
     MODEL_CARTOON_STAR,        // cartoon_star_geo
     MODEL_BLUE_COIN_SWITCH,        // blue_coin_switch_geo
-    // find me
     MODEL_MIST,        // mist_geo
     MODEL_SPARKLES_ANIMATION,        // sparkles_animation_geo
     MODEL_RED_FLAME,        // red_flame_geo
     MODEL_BLUE_FLAME,        // blue_flame_geo
-    // find me
-    // find me
     MODEL_BURN_SMOKE,        // burn_smoke_geo
     MODEL_SPARKLES,        // sparkles_geo
     MODEL_SMOKE,        // smoke_geo
-    // find me
-    // find me
-    // find me
-    // find me
-    // find me
-    MODEL_BURN_SMOKE_UNUSED,        // burn_smoke_geo - unused & duplicated
-    // find me
     MODEL_WHITE_PARTICLE_DL,        // white_particle_dl
     MODEL_SAND_DUST,        // sand_seg3_dl_particle
     MODEL_WHITE_PARTICLE,        // white_particle_dl
@@ -446,10 +414,7 @@ enum ModelIDs {
     MODEL_IDLE_WATER_WAVE,        // idle_water_wave_geo
     MODEL_WATER_SPLASH,        // water_splash_geo
     MODEL_BUBBLE,        // bubble_geo
-    // find me
     MODEL_PURPLE_MARBLE,        // purple_marble_geo
-    // find me
-    MODEL_UNKNOWN_AC,        // according to an special preset, it was the original id of the castle floor trap
     MODEL_WF_SLIDING_PLATFORM,        // wf_geo_000A98
     MODEL_WF_SMALL_BOMP,        // wf_geo_000A00
     MODEL_WF_ROTATING_WOODEN_PLATFORM,        // wf_geo_000A58
@@ -462,21 +427,16 @@ enum ModelIDs {
     MODEL_TRAMPOLINE,        // springboard_top_geo (unused)
     MODEL_TRAMPOLINE_CENTER,        // springboard_spring_geo (unused)
     MODEL_TRAMPOLINE_BASE,        // springboard_bottom_geo (unused)
-    MODEL_UNKNOWN_B8,        // referenced in special presets as a static object. Unknown usage
     MODEL_FISH,        // fish_geo - fish without shadow, used
     MODEL_FISH_SHADOW,        // fish_shadow_geo - fish with shadow, unused
     MODEL_BUTTERFLY,        // butterfly_geo
     MODEL_BLACK_BOBOMB,        // black_bobomb_geo
-    // find me
     MODEL_KOOPA_SHELL,        // koopa_shell_geo
     MODEL_KOOPA_WITHOUT_SHELL,        // koopa_without_shell_geo
     MODEL_GOOMBA,        // goomba_geo
     MODEL_SEAWEED,        // seaweed_geo
     MODEL_AMP,        // dAmpGeo
     MODEL_BOBOMB_BUDDY,        // bobomb_buddy_geo
-    // find me
-    // find me
-    // find me
     MODEL_SSL_TOX_BOX,        // ssl_geo_000630
     MODEL_BOWSER_KEY_CUTSCENE,        // bowser_key_cutscene_geo
     MODEL_DL_CANNON_LID,        // cannon_closed_seg8_dl_080048E0
@@ -489,7 +449,6 @@ enum ModelIDs {
     MODEL_CASTLE_STAR_DOOR_30_STARS,        // castle_geo_000F00
     MODEL_CASTLE_STAR_DOOR_50_STARS,        // castle_geo_000F00
     MODEL_CCM_SNOWMAN_BASE,        // ccm_geo_0003F0
-    // find me
     MODEL_1UP,        // mushroom_1up_geo
     MODEL_CASTLE_STAR_DOOR_8_STARS,        // castle_geo_000F00
     MODEL_CASTLE_STAR_DOOR_70_STARS,        // castle_geo_000F00
@@ -510,7 +469,7 @@ enum ModelIDs {
     MODEL_SILVER_COIN_NO_SHADOW,        // silver_coin_no_shadow_geo
 #endif
 
-    /* Various static level geometry */
+    /* Various unnamed vanilla static level models */
     MODEL_bitdw_LEVEL_GEOMETRY_03,
     MODEL_bitdw_LEVEL_GEOMETRY_04,
     MODEL_bitdw_LEVEL_GEOMETRY_05,
