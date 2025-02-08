@@ -9,61 +9,20 @@ enum ModelIDs {
     MODEL_MARIO,        // mario_geo
     MODEL_LUIGI,        // unused
 
-    /* Various static level geometry, the geo layout differs but terrain object presets treat them the same.*/
-
-    MODEL_LEVEL_GEOMETRY_03,
-    MODEL_LEVEL_GEOMETRY_04,
-    MODEL_LEVEL_GEOMETRY_05,
-    MODEL_LEVEL_GEOMETRY_06,
-    MODEL_LEVEL_GEOMETRY_07,
-    MODEL_LEVEL_GEOMETRY_08,
-    MODEL_LEVEL_GEOMETRY_09,
-    MODEL_LEVEL_GEOMETRY_0A,
-    MODEL_LEVEL_GEOMETRY_0B,
-    MODEL_LEVEL_GEOMETRY_0C,
-    MODEL_LEVEL_GEOMETRY_0D,
-    MODEL_LEVEL_GEOMETRY_0E,
-    MODEL_LEVEL_GEOMETRY_0F,
-    MODEL_LEVEL_GEOMETRY_10,
-    MODEL_LEVEL_GEOMETRY_11,
-    MODEL_LEVEL_GEOMETRY_12,
-    MODEL_LEVEL_GEOMETRY_13,
-    MODEL_LEVEL_GEOMETRY_14,
-    MODEL_LEVEL_GEOMETRY_15,
-    MODEL_LEVEL_GEOMETRY_16,
-
-    MODEL_BOB_BUBBLY_TREE,        // bubbly_tree_geo
-    MODEL_WDW_BUBBLY_TREE,        // bubbly_tree_geo
-    MODEL_CASTLE_GROUNDS_BUBBLY_TREE,        // bubbly_tree_geo
-    MODEL_WF_BUBBLY_TREE,        // bubbly_tree_geo
-    MODEL_THI_BUBBLY_TREE,        // bubbly_tree_geo
+    MODEL_BUBBLY_TREE,        // bubbly_tree_geo
     MODEL_COURTYARD_SPIKY_TREE,        // spiky_tree_geo
-    MODEL_CCM_SNOW_TREE,        // snow_tree_geo
-    MODEL_SL_SNOW_TREE,        // snow_tree_geo
-    MODEL_UNKNOWN_TREE_1A,        // referenced in special presets, undefined
+    MODEL_SNOW_TREE,        // snow_tree_geo
     MODEL_SSL_PALM_TREE,        // palm_tree_geo
-    MODEL_CASTLE_CASTLE_DOOR_UNUSED,        // castle_door_geo - unused, original id
-    MODEL_CASTLE_WOODEN_DOOR_UNUSED,        // wooden_door_geo - unused, original id
+    MODEL_CASTLE_DOOR,        // castle_door_geo
+    MODEL_WOODEN_DOOR,        // wooden_door_geo
     MODEL_BBH_HAUNTED_DOOR,        // haunted_door_geo
-    MODEL_HMC_WOODEN_DOOR,        // wooden_door_geo
-    MODEL_UNKNOWN_DOOR_1E,        // referenced in special presets, undefined
-    MODEL_HMC_METAL_DOOR,        // metal_door_geo
+    MODEL_METAL_DOOR,        // metal_door_geo
     MODEL_HMC_HAZY_MAZE_DOOR,        // hazy_maze_door_geo
-    MODEL_UNKNOWN_DOOR_21,        // referenced in special presets, undefined
     MODEL_CASTLE_DOOR_0_STARS,        // castle_door_0_star_geo
     MODEL_CASTLE_DOOR_1_STAR,        // castle_door_1_star_geo
     MODEL_CASTLE_DOOR_3_STARS,        // castle_door_3_stars_geo
     MODEL_CASTLE_KEY_DOOR,        // key_door_geo
-    MODEL_CASTLE_CASTLE_DOOR,        // castle_door_geo - used duplicate
-    MODEL_CASTLE_GROUNDS_CASTLE_DOOR,        // castle_door_geo - used duplicate
-    MODEL_CASTLE_WOODEN_DOOR,        // wooden_door_geo
-    MODEL_COURTYARD_WOODEN_DOOR,        // wooden_door_geo
     MODEL_CCM_CABIN_DOOR,        // cabin_door_geo
-    MODEL_UNKNOWN_DOOR_28,        // referenced in special presets, undefined
-    MODEL_CASTLE_METAL_DOOR,        // metal_door_geo
-    MODEL_CASTLE_GROUNDS_METAL_DOOR,        // metal_door_geo
-    MODEL_UNKNOWN_DOOR_2A,        // referenced in special presets, undefined
-    MODEL_UNKNOWN_DOOR_2B,        // referenced in special presets, undefined
     MODEL_WF_TOWER_TRAPEZOID_PLATORM,        // wf_geo_000AF8 - unused
     MODEL_WF_TOWER_SQUARE_PLATORM,        // wf_geo_000B10
     MODEL_WF_TOWER_SQUARE_PLATORM_UNUSED,        // wf_geo_000B38 - unused & duplicated
@@ -551,29 +510,156 @@ enum ModelIDs {
     MODEL_SILVER_COIN_NO_SHADOW,        // silver_coin_no_shadow_geo
 #endif
 
+    /* Various static level geometry */
+    MODEL_bitdw_LEVEL_GEOMETRY_03,
+    MODEL_bitdw_LEVEL_GEOMETRY_04,
+    MODEL_bitdw_LEVEL_GEOMETRY_05,
+    MODEL_bitdw_LEVEL_GEOMETRY_06,
+    MODEL_bitdw_LEVEL_GEOMETRY_07,
+    MODEL_bitdw_LEVEL_GEOMETRY_08,
+    MODEL_bitdw_LEVEL_GEOMETRY_09,
+    MODEL_bitdw_LEVEL_GEOMETRY_0A,
+    MODEL_bitdw_LEVEL_GEOMETRY_0B,
+    MODEL_bitdw_LEVEL_GEOMETRY_0C,
+    MODEL_bitdw_LEVEL_GEOMETRY_0D,
+    MODEL_bitdw_LEVEL_GEOMETRY_0E,
+    MODEL_bitdw_LEVEL_GEOMETRY_0F,
+    MODEL_bitdw_LEVEL_GEOMETRY_10,
+    MODEL_bitdw_LEVEL_GEOMETRY_11,
+    MODEL_bitfs_LEVEL_GEOMETRY_03,
+    MODEL_bitfs_LEVEL_GEOMETRY_04,
+    MODEL_bitfs_LEVEL_GEOMETRY_05,
+    MODEL_bitfs_LEVEL_GEOMETRY_06,
+    MODEL_bitfs_LEVEL_GEOMETRY_07,
+    MODEL_bitfs_LEVEL_GEOMETRY_08,
+    MODEL_bitfs_LEVEL_GEOMETRY_09,
+    MODEL_bitfs_LEVEL_GEOMETRY_0A,
+    MODEL_bitfs_LEVEL_GEOMETRY_0B,
+    MODEL_bitfs_LEVEL_GEOMETRY_0C,
+    MODEL_bitfs_LEVEL_GEOMETRY_0D,
+    MODEL_bitfs_LEVEL_GEOMETRY_0E,
+    MODEL_bitfs_LEVEL_GEOMETRY_0F,
+    MODEL_bitfs_LEVEL_GEOMETRY_10,
+    MODEL_bitfs_LEVEL_GEOMETRY_11,
+    MODEL_bitfs_LEVEL_GEOMETRY_12,
+    MODEL_bitfs_LEVEL_GEOMETRY_13,
+    MODEL_bitfs_LEVEL_GEOMETRY_14,
+    MODEL_bitfs_LEVEL_GEOMETRY_15,
+    MODEL_bits_LEVEL_GEOMETRY_03,
+    MODEL_bits_LEVEL_GEOMETRY_04,
+    MODEL_bits_LEVEL_GEOMETRY_05,
+    MODEL_bits_LEVEL_GEOMETRY_06,
+    MODEL_bits_LEVEL_GEOMETRY_07,
+    MODEL_bits_LEVEL_GEOMETRY_08,
+    MODEL_bits_LEVEL_GEOMETRY_09,
+    MODEL_bits_LEVEL_GEOMETRY_0A,
+    MODEL_bits_LEVEL_GEOMETRY_0B,
+    MODEL_bits_LEVEL_GEOMETRY_0C,
+    MODEL_bits_LEVEL_GEOMETRY_0D,
+    MODEL_bits_LEVEL_GEOMETRY_0E,
+    MODEL_bits_LEVEL_GEOMETRY_0F,
+    MODEL_bits_LEVEL_GEOMETRY_10,
+    MODEL_bits_LEVEL_GEOMETRY_11,
+    MODEL_bits_LEVEL_GEOMETRY_12,
+    MODEL_bits_LEVEL_GEOMETRY_13,
+    MODEL_bits_LEVEL_GEOMETRY_14,
+    MODEL_bowser_1_LEVEL_GEOMETRY_03,
+    MODEL_bowser_3_LEVEL_GEOMETRY_03,
+    MODEL_castle_courtyard_LEVEL_GEOMETRY_03,
+    MODEL_castle_grounds_LEVEL_GEOMETRY_03,
+    MODEL_ccm_LEVEL_GEOMETRY_03,
+    MODEL_ccm_LEVEL_GEOMETRY_04,
+    MODEL_ccm_LEVEL_GEOMETRY_05,
+    MODEL_ccm_LEVEL_GEOMETRY_06,
+    MODEL_ccm_LEVEL_GEOMETRY_07,
+    MODEL_lll_LEVEL_GEOMETRY_03,
+    MODEL_lll_LEVEL_GEOMETRY_04,
+    MODEL_lll_LEVEL_GEOMETRY_05,
+    MODEL_lll_LEVEL_GEOMETRY_06,
+    MODEL_lll_LEVEL_GEOMETRY_07,
+    MODEL_lll_LEVEL_GEOMETRY_08,
+    MODEL_lll_LEVEL_GEOMETRY_0A,
+    MODEL_lll_LEVEL_GEOMETRY_0B,
+    MODEL_lll_LEVEL_GEOMETRY_0C,
+    MODEL_lll_LEVEL_GEOMETRY_0D,
+    MODEL_lll_LEVEL_GEOMETRY_0E,
+    MODEL_rr_LEVEL_GEOMETRY_03,
+    MODEL_rr_LEVEL_GEOMETRY_04,
+    MODEL_rr_LEVEL_GEOMETRY_05,
+    MODEL_rr_LEVEL_GEOMETRY_06,
+    MODEL_rr_LEVEL_GEOMETRY_07,
+    MODEL_rr_LEVEL_GEOMETRY_08,
+    MODEL_rr_LEVEL_GEOMETRY_09,
+    MODEL_rr_LEVEL_GEOMETRY_0A,
+    MODEL_rr_LEVEL_GEOMETRY_0B,
+    MODEL_rr_LEVEL_GEOMETRY_0C,
+    MODEL_rr_LEVEL_GEOMETRY_0D,
+    MODEL_rr_LEVEL_GEOMETRY_0E,
+    MODEL_rr_LEVEL_GEOMETRY_0F,
+    MODEL_rr_LEVEL_GEOMETRY_10,
+    MODEL_rr_LEVEL_GEOMETRY_11,
+    MODEL_rr_LEVEL_GEOMETRY_12,
+    MODEL_rr_LEVEL_GEOMETRY_13,
+    MODEL_rr_LEVEL_GEOMETRY_14,
+    MODEL_rr_LEVEL_GEOMETRY_15,
+    MODEL_rr_LEVEL_GEOMETRY_16,
+    MODEL_ssl_LEVEL_GEOMETRY_03,
+    MODEL_ssl_LEVEL_GEOMETRY_04,
+    MODEL_thi_LEVEL_GEOMETRY_03,
+    MODEL_totwc_LEVEL_GEOMETRY_03,
+    MODEL_ttm_LEVEL_GEOMETRY_03,
+    MODEL_ttm_LEVEL_GEOMETRY_04,
+    MODEL_ttm_LEVEL_GEOMETRY_05,
+    MODEL_ttm_LEVEL_GEOMETRY_06,
+    MODEL_ttm_LEVEL_GEOMETRY_07,
+    MODEL_ttm_LEVEL_GEOMETRY_08,
+    MODEL_ttm_LEVEL_GEOMETRY_09,
+    MODEL_ttm_LEVEL_GEOMETRY_0A,
+    MODEL_ttm_LEVEL_GEOMETRY_0B,
+    MODEL_ttm_LEVEL_GEOMETRY_0C,
+    MODEL_ttm_LEVEL_GEOMETRY_0D,
+    MODEL_ttm_LEVEL_GEOMETRY_0F,
+    MODEL_ttm_LEVEL_GEOMETRY_10,
+    MODEL_ttm_LEVEL_GEOMETRY_11,
+    MODEL_ttm_LEVEL_GEOMETRY_12,
+    MODEL_ttm_LEVEL_GEOMETRY_13,
+    MODEL_ttm_LEVEL_GEOMETRY_14,
+    MODEL_ttm_LEVEL_GEOMETRY_15,
+    MODEL_ttm_LEVEL_GEOMETRY_16,
+    MODEL_wf_LEVEL_GEOMETRY_03,
+    MODEL_wf_LEVEL_GEOMETRY_04,
+    MODEL_wf_LEVEL_GEOMETRY_05,
+    MODEL_wf_LEVEL_GEOMETRY_06,
+    MODEL_wf_LEVEL_GEOMETRY_07,
+    MODEL_wf_LEVEL_GEOMETRY_08,
+    MODEL_wf_LEVEL_GEOMETRY_09,
+    MODEL_wf_LEVEL_GEOMETRY_0A,
+    MODEL_wf_LEVEL_GEOMETRY_0C,
+    MODEL_wf_LEVEL_GEOMETRY_0E,
+    MODEL_wf_LEVEL_GEOMETRY_0F,
+    MODEL_wf_LEVEL_GEOMETRY_11,
+    MODEL_wf_LEVEL_GEOMETRY_12,
+
+    // Menu Models
+    MODEL_MAIN_MENU_MARIO_SAVE_BUTTON, // main_menu_geo_0001D0
+    MODEL_MAIN_MENU_RED_ERASE_BUTTON, // main_menu_geo_000290
+    MODEL_MAIN_MENU_BLUE_COPY_BUTTON, // main_menu_geo_0002B8
+    MODEL_MAIN_MENU_YELLOW_FILE_BUTTON, // main_menu_geo_0002E0
+    MODEL_MAIN_MENU_GREEN_SCORE_BUTTON, // main_menu_geo_000308
+    MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE, // main_menu_geo_000200
+    MODEL_MAIN_MENU_MARIO_NEW_BUTTON, // main_menu_geo_000230
+    MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE, // main_menu_geo_000260
+    MODEL_MAIN_MENU_PURPLE_SOUND_BUTTON, // main_menu_geo_000330
+    MODEL_MAIN_MENU_GENERIC_BUTTON, // main_menu_geo_000358
+
+    // level model aliases to level geometry IDs. Possibly a relic from an older level
+    // format that used to rely on level geometry objects. (seen in WF, LLL, etc)
+    MODEL_LLL_ROTATING_HEXAGONAL_PLATFORM,   // lll_geo_000A78
+    MODEL_WF_GIANT_POLE,   // wf_geo_000AE0
+    MODEL_WF_ROTATING_PLATFORM,   // wf_geo_0009B8
+    MODEL_WARP_PIPE,   // warp_pipe_geo
+
     MODEL_ID_COUNT,
 };
-
-// Menu Models (overwrites Level Geometry IDs)
-#define MODEL_MAIN_MENU_MARIO_SAVE_BUTTON         MODEL_LEVEL_GEOMETRY_03   // main_menu_geo_0001D0
-#define MODEL_MAIN_MENU_RED_ERASE_BUTTON          MODEL_LEVEL_GEOMETRY_04   // main_menu_geo_000290
-#define MODEL_MAIN_MENU_BLUE_COPY_BUTTON          MODEL_LEVEL_GEOMETRY_05   // main_menu_geo_0002B8
-#define MODEL_MAIN_MENU_YELLOW_FILE_BUTTON        MODEL_LEVEL_GEOMETRY_06   // main_menu_geo_0002E0
-#define MODEL_MAIN_MENU_GREEN_SCORE_BUTTON        MODEL_LEVEL_GEOMETRY_07   // main_menu_geo_000308
-#define MODEL_MAIN_MENU_MARIO_SAVE_BUTTON_FADE    MODEL_LEVEL_GEOMETRY_08   // main_menu_geo_000200
-#define MODEL_MAIN_MENU_MARIO_NEW_BUTTON          MODEL_LEVEL_GEOMETRY_09   // main_menu_geo_000230
-#define MODEL_MAIN_MENU_MARIO_NEW_BUTTON_FADE     MODEL_LEVEL_GEOMETRY_0A   // main_menu_geo_000260
-#define MODEL_MAIN_MENU_PURPLE_SOUND_BUTTON       MODEL_LEVEL_GEOMETRY_0B   // main_menu_geo_000330
-#define MODEL_MAIN_MENU_GENERIC_BUTTON            MODEL_LEVEL_GEOMETRY_0C   // main_menu_geo_000358
-
-// level model aliases to level geometry IDs. Possibly a relic from an older level
-// format that used to rely on level geometry objects. (seen in WF, LLL, etc)
-#define MODEL_LLL_ROTATING_HEXAGONAL_PLATFORM     MODEL_LEVEL_GEOMETRY_09   // lll_geo_000A78
-#define MODEL_WF_GIANT_POLE                       MODEL_LEVEL_GEOMETRY_0D   // wf_geo_000AE0
-#define MODEL_WF_ROTATING_PLATFORM                MODEL_LEVEL_GEOMETRY_10   // wf_geo_0009B8
-#define MODEL_BITDW_WARP_PIPE                     MODEL_LEVEL_GEOMETRY_12   // warp_pipe_geo
-#define MODEL_THI_WARP_PIPE                       MODEL_LEVEL_GEOMETRY_16   // warp_pipe_geo
-#define MODEL_VCUTM_WARP_PIPE                     MODEL_LEVEL_GEOMETRY_16   // warp_pipe_geo
-#define MODEL_CASTLE_GROUNDS_WARP_PIPE            MODEL_LEVEL_GEOMETRY_16   // warp_pipe_geo
 
 #endif // MODEL_IDS_H
