@@ -135,7 +135,7 @@ static const LevelScript script_thi_area_2_macro_objects[] = {
     OBJECT(/*model*/ MODEL_YELLOW_COIN,       /*pos*/   280,  -640, -4140, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvYellowCoin),
     OBJECT(/*model*/ MODEL_GOOMBA,            /*pos*/ -2020,  -890,  1720, /*angle*/ 0,   0, 0, /*behParam*/ (GOOMBA_SIZE_TINY << 16), /*beh*/ bhvGoomba),
     // Special objects
-    OBJECT(/*model*/ MODEL_thi_LEVEL_GEOMETRY_03, /*pos*/   -40,  -767, -4494, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03, /*pos*/   -40,  -767, -4494, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
     OBJECT(/*model*/ MODEL_BUBBLY_TREE,   /*pos*/  1444,  -153,   676, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTree),
     RETURN(),
 };

@@ -19,11 +19,11 @@
 static const LevelScript script_bowser_3_macro_objects[] = {
     // Special objects
     OBJECT(/*model*/ MODEL_BOWSER,            /*pos*/    13,   307, -1024, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvBowser),
-    OBJECT(/*model*/ MODEL_bowser_3_LEVEL_GEOMETRY_03, /*pos*/ -3362,  -204,  1121, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
-    OBJECT(/*model*/ MODEL_bowser_3_LEVEL_GEOMETRY_03, /*pos*/     0,  -204,  3584, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
-    OBJECT(/*model*/ MODEL_bowser_3_LEVEL_GEOMETRY_03, /*pos*/  3362,  -204,  1126, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
-    OBJECT(/*model*/ MODEL_bowser_3_LEVEL_GEOMETRY_03, /*pos*/  2123,  -204, -2912, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
-    OBJECT(/*model*/ MODEL_bowser_3_LEVEL_GEOMETRY_03, /*pos*/ -2122,  -204, -2912, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03, /*pos*/ -3362,  -204,  1121, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03, /*pos*/     0,  -204,  3584, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03, /*pos*/  3362,  -204,  1126, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03, /*pos*/  2123,  -204, -2912, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03, /*pos*/ -2122,  -204, -2912, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
     RETURN(),
 };
 
@@ -65,7 +65,7 @@ const LevelScript level_bowser_3_entry[] = {
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_3_FALLING_PLATFORM_8,  bowser_3_geo_000338),
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_3_FALLING_PLATFORM_9,  bowser_3_geo_000350),
     LOAD_MODEL_FROM_GEO(MODEL_BOWSER_3_FALLING_PLATFORM_10, bowser_3_geo_000368),
-    LOAD_MODEL_FROM_GEO(MODEL_bowser_3_LEVEL_GEOMETRY_03,            bowser_3_geo_000380),
+    LOAD_MODEL_FROM_GEO(MODEL_LEVEL_GEOMETRY_03,            bowser_3_geo_000380),
 
     AREA(/*index*/ 1, bowser_3_geo_000398),
         OBJECT(/*model*/ MODEL_NONE, /*pos*/ 0, 1307, 0, /*angle*/ 0, 183, 0, /*behParam*/ 0x000A0000, /*beh*/ bhvSpinAirborneCircleWarp),

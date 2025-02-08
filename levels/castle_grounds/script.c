@@ -37,7 +37,7 @@ static const LevelScript script_castle_grounds_macro_objects[] = {
     OBJECT(/*model*/ MODEL_BUTTERFLY,          /*pos*/ -6240,   295,   320, /*angle*/ 0,   0, 0, /*behParam*/ (TRIPLET_BUTTERFLY_BP_NO_BOMBS << 16), /*beh*/ bhvTripletButterfly),
     OBJECT(/*model*/ MODEL_BUTTERFLY,          /*pos*/  6330,   710, -3760, /*angle*/ 0,   0, 0, /*behParam*/ (TRIPLET_BUTTERFLY_BP_NO_BOMBS << 16), /*beh*/ bhvTripletButterfly),
     // Special objects
-    OBJECT(/*model*/ MODEL_castle_grounds_LEVEL_GEOMETRY_03,  /*pos*/     0,  2867, -3924, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
+    OBJECT(/*model*/ MODEL_LEVEL_GEOMETRY_03,  /*pos*/     0,  2867, -3924, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvStaticObject),
     OBJECT(/*model*/ MODEL_BUBBLY_TREE,    /*pos*/ -1333,   711,  1881, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTree),
     OBJECT(/*model*/ MODEL_BUBBLY_TREE,    /*pos*/ -6220,   468,  3458, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTree),
     OBJECT(/*model*/ MODEL_BUBBLY_TREE,    /*pos*/ -5069,   350,  3221, /*angle*/ 0,   0, 0, /*behParam*/ 0x00000000, /*beh*/ bhvTree),
