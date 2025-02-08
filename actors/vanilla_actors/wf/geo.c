@@ -50,7 +50,7 @@ const LevelScript script_func_vo_wf[] = {
     LOAD_MODEL_FROM_GEO(MODEL_WF_KICKABLE_BOARD_FELLED,         wf_geo_000BC8),
     LOAD_MODEL_FROM_GEO(MODEL_WF_GIANT_POLE,                    wf_geo_000AE0),
     LOAD_MODEL_FROM_GEO(MODEL_WF_ROTATING_PLATFORM,             wf_geo_0009B8),
-    LOAD_MODEL_FROM_GEO(MODEL_LEVEL_GEOMETRY_08,                wf_geo_0008A8),
-    LOAD_MODEL_FROM_GEO(MODEL_LEVEL_GEOMETRY_09,                wf_geo_0008E8),
+    LOAD_MODEL_FROM_GEO(MODEL_wf_LEVEL_GEOMETRY_08,                wf_geo_0008A8),
+    LOAD_MODEL_FROM_GEO(MODEL_wf_LEVEL_GEOMETRY_09,                wf_geo_0008E8),
     RETURN(),
 };
