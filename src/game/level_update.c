@@ -1202,6 +1202,10 @@ UNUSED static s32 play_mode_unused(void) {
 s32 update_level(void) {
     s32 changeLevel = FALSE;
 
+    char ff[50];
+    sprintf(ff, "PLAYMODE %d\n", sCurrPlayMode);
+    osSyncPrintf(ff);
+
     switch (sCurrPlayMode) {
         case PLAY_MODE_NORMAL:
             changeLevel = play_mode_normal();

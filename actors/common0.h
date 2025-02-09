@@ -63,6 +63,7 @@ extern const Gfx cannon_base_seg8_dl_080057F8[];
 extern const Gfx cannon_lid_seg8_dl_08004898[];
 extern const Gfx cannon_lid_seg8_dl_080048E0[];
 extern const Collision cannon_lid_seg8_collision_08004950[];
+extern const GeoLayout cannon_lid_geo[];
 
 // checkerboard_platform
 extern const GeoLayout checkerboard_platform_geo[];

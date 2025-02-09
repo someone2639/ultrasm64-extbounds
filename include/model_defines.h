@@ -13,6 +13,7 @@ DEFINE_MODEL(MODEL_CASTLE_DOOR_1_STAR, door,  castle_door_1_star_geo)
 DEFINE_MODEL(MODEL_CASTLE_DOOR_3_STARS, door,  castle_door_3_stars_geo)
 DEFINE_MODEL(MODEL_CASTLE_KEY_DOOR, door,  key_door_geo)
 DEFINE_MODEL(MODEL_CCM_CABIN_DOOR, door,  cabin_door_geo)
+DEFINE_MODEL(MODEL_DL_CANNON_LID, cannon_lid, cannon_lid_geo)
 // DEFINE_MODEL(MODEL_BOWSER_2_TILTING_ARENA, _,  bowser_2_geo_000170)
 // DEFINE_MODEL(MODEL_BOWSER_3_FALLING_PLATFORM_1, _,  bowser_3_geo_000290)
 // DEFINE_MODEL(MODEL_BOWSER_3_FALLING_PLATFORM_2, _,  bowser_3_geo_0002A8)
@@ -122,6 +123,11 @@ DEFINE_MODEL(MODEL_CARTOON_STAR, dirt,  cartoon_star_geo)
 DEFINE_MODEL(MODEL_BLUE_COIN_SWITCH, blue_coin_switch,  blue_coin_switch_geo)
 DEFINE_MODEL(MODEL_MIST, mist,  mist_geo)
 DEFINE_MODEL(MODEL_SPARKLES_ANIMATION, sparkle_animation,  sparkles_animation_geo)
+// LOAD_MODEL_FROM_DL( MODEL_WHITE_PARTICLE_SMALL,    white_particle_small_dl,     LAYER_OCCLUDE_SILHOUETTE_ALPHA),
+// LOAD_MODEL_FROM_GEO(MODEL_FISH_SHADOW,             fish_shadow_geo),
+// LOAD_MODEL_FROM_DL( MODEL_SAND_DUST,               sand_seg3_dl_particle,       LAYER_OCCLUDE_SILHOUETTE_ALPHA),
+// LOAD_MODEL_FROM_DL( MODEL_PEBBLE,                  pebble_seg3_dl_0301CB00,     LAYER_OCCLUDE_SILHOUETTE_ALPHA),
+// LOAD_MODEL_FROM_DL( MODEL_WHITE_PARTICLE_DL,       white_particle_dl,           LAYER_OCCLUDE_SILHOUETTE_ALPHA),
 DEFINE_MODEL(MODEL_RED_FLAME, flame,  red_flame_geo)
 DEFINE_MODEL(MODEL_BLUE_FLAME, flame,  blue_flame_geo)
 DEFINE_MODEL(MODEL_BURN_SMOKE, burn_smoke,  burn_smoke_geo)

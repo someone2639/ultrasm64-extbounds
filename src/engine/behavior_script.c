@@ -819,6 +819,10 @@ void cur_obj_update(void) {
     BhvCommandProc bhvCmdProc;
     s32 bhvProcResult;
 
+    if (o->header.gfx.data) {
+        set_segment_base_addr(0x4, o->header.gfx.data);
+    }
+
     s32 inRoom = cur_obj_is_mario_in_room();
 
     if (inRoom == MARIO_OUTSIDE_ROOM && (objFlags & OBJ_FLAG_ONLY_PROCESS_INSIDE_ROOM)) {

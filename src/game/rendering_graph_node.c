@@ -1037,6 +1037,13 @@ void visualise_object_hitbox(struct Object *node) {
  */
 void geo_process_object(struct Object *node) {
     if (node->header.gfx.areaIndex == gCurGraphNodeRoot->areaIndex) {
+        if (node->header.gfx.data) {
+            char rr[200];
+            sprintf(rr, "BASE ADDR %08X\n", node->header.gfx.data);
+            osSyncPrintf(rr);
+            gSPSegment(gDisplayListHead++, 0x04, node->header.gfx.data);
+            set_segment_base_addr(4, node->header.gfx.data);
+        }
         s32 isInvisible = (node->header.gfx.node.flags & GRAPH_RENDER_INVISIBLE);
         s32 noThrowMatrix = (node->header.gfx.throwMatrix == NULL);
         // Maintain throw matrix pointer if the game is paused as it won't be updated.
@@ -1078,11 +1085,6 @@ void geo_process_object(struct Object *node) {
 #endif
                 gCurGraphNodeObject = (struct GraphNodeObject *) node;
                 node->header.gfx.sharedChild->parent = &node->header.gfx.node;
-                char rr[200];
-                sprintf(rr, "BASE ADDR %08X\n", node->header.gfx.data);
-                osSyncPrintf(rr);
-                gSPSegment(gDisplayListHead++, 0x04, node->header.gfx.data);
-                set_segment_base_addr(4, node->header.gfx.data);
                 geo_process_node_and_siblings(node->header.gfx.sharedChild);
                 node->header.gfx.sharedChild->parent = NULL;
                 gCurGraphNodeObject = NULL;

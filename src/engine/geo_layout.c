@@ -752,12 +752,6 @@ void geo_layout_cmd_node_culling_radius(void) {
 }
 
 struct GraphNode *process_geo_layout(struct AllocOnlyPool *pool, void *segptr) {
-    char gg[400];
-    sprintf(gg, "PROC LAYOUT %08X\n", segptr);
-    osSyncPrintf(gg);
-    void *ptr  = __builtin_extract_return_addr(__builtin_return_address(0));
-    sprintf(gg, "CALLED BY %08X\n", ptr);
-    osSyncPrintf(gg);
     // set by register_scene_graph_node when gCurGraphNodeIndex is 0
     // and gCurRootGraphNode is NULL
     gCurRootGraphNode = NULL;

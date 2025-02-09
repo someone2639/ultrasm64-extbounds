@@ -348,13 +348,8 @@ void *dynamic_pool_dma(struct AllocOnlyPool *pool, u8 *srcStart, u8 *srcEnd) {
 }
 
 void *load_segment_to_pool(struct AllocOnlyPool *pool, s32 segment, u8 *srcStart, u8 *srcEnd) {
-    void *addr = NULL;
-    char ee[300];
+    void *addr = dynamic_pool_dma(pool, srcStart, srcEnd);
 
-    sprintf(ee, "SEG %d LOAD (%08X bytes)\n", segment, srcEnd - srcStart);
-    osSyncPrintf(ee);
-
-    addr = dynamic_pool_dma(pool, srcStart, srcEnd);
     if (addr != NULL) {
         set_segment_base_addr(segment, addr);
     }

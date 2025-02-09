@@ -723,6 +723,11 @@ void geo_obj_init_spawninfo(struct GraphNodeObject *graphNode, struct SpawnInfo 
     graphNode->spawnInfo = spawn;
     graphNode->throwMatrix = NULL;
     graphNode->animInfo.curAnim = 0;
+    if (spawn->data) {
+        graphNode->data = spawn->data;
+    } else {
+        graphNode->data = 0;
+    }
 
     graphNode->node.flags |= GRAPH_RENDER_ACTIVE;
     graphNode->node.flags &= ~GRAPH_RENDER_INVISIBLE;
