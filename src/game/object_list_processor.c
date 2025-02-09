@@ -473,6 +473,7 @@ void spawn_objects_from_info(UNUSED s32 unused, struct SpawnInfo *spawnInfo) {
             }
 
             geo_obj_init_spawninfo(&object->header.gfx, spawnInfo);
+            object->header.gfx.data = spawnInfo->data;
 
             vec3s_to_vec3f(&object->oPosVec, spawnInfo->startPos);
 

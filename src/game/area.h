@@ -35,6 +35,7 @@ struct SpawnInfo {
     /*0x14*/ void *behaviorScript;
     /*0x18*/ struct GraphNode *model;
     /*0x1C*/ struct SpawnInfo *next;
+             void *data;
 };
 
 struct UnusedArea28 {

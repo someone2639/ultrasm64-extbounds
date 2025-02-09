@@ -255,6 +255,9 @@ u32 main_pool_pop_state(void) {
  * function blocks until completion.
  */
 void dma_read(u8 *dest, u8 *srcStart, u8 *srcEnd) {
+    // char dd[400];
+    // sprintf(dd, "DMA %08X <- [%08X-%08X]\n", dest, srcStart, srcEnd);
+    // osSyncPrintf(dd);
     u32 size = ALIGN16(srcEnd - srcStart);
 
     osInvalDCache(dest, size);
@@ -316,6 +319,53 @@ void mapTLBPages(uintptr_t virtualAddress, uintptr_t physicalAddress, s32 length
 }
 
 #ifndef NO_SEGMENTED_MEMORY
+void *alloc_only_pool_alloc16(struct AllocOnlyPool *pool, s32 size) {
+    void *addr = NULL;
+
+    if (((uintptr_t)pool->freePtr & 0xF) != 0) {
+        pool->freePtr = (u8*)ALIGN16((uintptr_t)pool->freePtr);
+        pool->usedSpace = ALIGN16(pool->usedSpace);
+    }
+
+    size = ALIGN16(size);
+    if (size > 0 && pool->usedSpace + size <= pool->totalSpace) {
+        addr = pool->freePtr;
+        pool->freePtr += size;
+        pool->usedSpace += size;
+    }
+    return addr;
+}
+
+void *dynamic_pool_dma(struct AllocOnlyPool *pool, u8 *srcStart, u8 *srcEnd) {
+    u32 size = ALIGN16(srcEnd - srcStart);
+    u32 offset = 0;
+    void *dest = alloc_only_pool_alloc16(pool, size);
+
+    if (dest != NULL) {
+        dma_read(dest, srcStart, srcEnd);
+    }
+    return dest;
+}
+
+void *load_segment_to_pool(struct AllocOnlyPool *pool, s32 segment, u8 *srcStart, u8 *srcEnd) {
+    void *addr = NULL;
+    char ee[300];
+
+    sprintf(ee, "SEG %d LOAD (%08X bytes)\n", segment, srcEnd - srcStart);
+    osSyncPrintf(ee);
+
+    addr = dynamic_pool_dma(pool, srcStart, srcEnd);
+    if (addr != NULL) {
+        set_segment_base_addr(segment, addr);
+    }
+#ifdef PUPPYPRINT_DEBUG
+    u32 ppSize = ALIGN16(srcEnd - srcStart) + 16;
+    set_segment_memory_printout(segment, ppSize);
+#endif
+    return addr;
+}
+
+
 /**
  * Load data from ROM into a newly allocated block, and set the segment base
  * address to this block.
@@ -329,15 +379,11 @@ void *load_segment(s32 segment, u8 *srcStart, u8 *srcEnd, u32 side, u8 *bssStart
             u8 *realAddr = (u8 *)ALIGN((uintptr_t)addr, TLB_PAGE_SIZE);
             set_segment_base_addr(segment, realAddr);
             mapTLBPages((segment << 24), VIRTUAL_TO_PHYSICAL(realAddr), ((srcEnd - srcStart) + ((uintptr_t)bssEnd - (uintptr_t)bssStart)), segment);
-        } else {
-            osSyncPrintf("ALLOCFAIL!! TOP COND");
         }
     } else {
         addr = dynamic_dma_read(srcStart, srcEnd, side, 0, 0);
         if (addr != NULL) {
             set_segment_base_addr(segment, addr);
-        } else {
-            osSyncPrintf("ALLOCFAIL!! BTTOM COND");
         }
     }
 #ifdef PUPPYPRINT_DEBUG

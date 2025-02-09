@@ -1078,6 +1078,11 @@ void geo_process_object(struct Object *node) {
 #endif
                 gCurGraphNodeObject = (struct GraphNodeObject *) node;
                 node->header.gfx.sharedChild->parent = &node->header.gfx.node;
+                char rr[200];
+                sprintf(rr, "BASE ADDR %08X\n", node->header.gfx.data);
+                osSyncPrintf(rr);
+                gSPSegment(gDisplayListHead++, 0x04, node->header.gfx.data);
+                set_segment_base_addr(4, node->header.gfx.data);
                 geo_process_node_and_siblings(node->header.gfx.sharedChild);
                 node->header.gfx.sharedChild->parent = NULL;
                 gCurGraphNodeObject = NULL;

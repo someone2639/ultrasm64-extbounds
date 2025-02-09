@@ -752,6 +752,12 @@ void geo_layout_cmd_node_culling_radius(void) {
 }
 
 struct GraphNode *process_geo_layout(struct AllocOnlyPool *pool, void *segptr) {
+    char gg[400];
+    sprintf(gg, "PROC LAYOUT %08X\n", segptr);
+    osSyncPrintf(gg);
+    void *ptr  = __builtin_extract_return_addr(__builtin_return_address(0));
+    sprintf(gg, "CALLED BY %08X\n", ptr);
+    osSyncPrintf(gg);
     // set by register_scene_graph_node when gCurGraphNodeIndex is 0
     // and gCurRootGraphNode is NULL
     gCurRootGraphNode = NULL;
@@ -772,11 +778,7 @@ struct GraphNode *process_geo_layout(struct AllocOnlyPool *pool, void *segptr) {
     gGeoLayoutStack[1] = 0;
 
     while (gGeoLayoutCommand != NULL) {
-        if (gGeoLayoutCommand[0x00] >= GEO_CMD_COUNT) {
-            char t[232];
-            sprintf(t, "Invalid or unloaded geo layout detected: %08X %d\n", gGeoLayoutCommand, gGeoLayoutCommand[0x00]);
-            osSyncPrintf(t);
-        }
+        assert(gGeoLayoutCommand[0x00] < GEO_CMD_COUNT, "Invalid or unloaded geo layout detected");
         GeoLayoutJumpTable[gGeoLayoutCommand[0x00]]();
     }
 
