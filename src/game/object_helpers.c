@@ -369,6 +369,11 @@ struct Object *spawn_water_droplet(struct Object *parent, struct WaterDropletPar
     return newObj;
 }
 
+extern void *seg4table[];
+void *load_actor_segment(u32 model);
+void *load_actor(u32 model);
+extern struct AllocOnlyPool *sLevelPool;
+
 struct Object *spawn_object_at_origin(struct Object *parent, UNUSED s32 unusedArg, ModelID32 model,
                                       const BehaviorScript *behavior) {
     const BehaviorScript *behaviorAddr = segmented_to_virtual(behavior);
@@ -377,6 +382,11 @@ struct Object *spawn_object_at_origin(struct Object *parent, UNUSED s32 unusedAr
     obj->parentObj = parent;
     obj->header.gfx.areaIndex = parent->header.gfx.areaIndex;
     obj->header.gfx.activeAreaIndex = parent->header.gfx.areaIndex;
+
+    if (gLoadedGraphNodes[model] == NULL && model != MODEL_NONE) {
+        seg4table[model] = load_actor(model);
+        obj->header.gfx.data = seg4table[model];
+    }
 
     geo_obj_init((struct GraphNodeObject *) &obj->header.gfx, gLoadedGraphNodes[model], gVec3fZero, gVec3sZero);
 

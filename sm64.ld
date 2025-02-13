@@ -337,11 +337,7 @@ SECTIONS
 #endif
 #endif
 
-   /*BEGIN_SEG(actor_table, __romPos) {
-      KEEP(actors/model_table.o(.rodata*));
-   } END_SEG(actor_table)*/
-   
-
+   __romPos = (((__romPos) + ((16) - 1)) & ~((16) - 1));
    #include "actor_table.ld"
 
    VANILLA_OBJECTS(bob)

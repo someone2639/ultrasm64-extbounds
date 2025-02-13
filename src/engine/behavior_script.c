@@ -649,6 +649,15 @@ UNUSED static s32 bhv_cmd_set_int_random_from_table(void) {
 static s32 bhv_cmd_load_collision_data(void) {
     u32 *collisionData = segmented_to_virtual(BHV_CMD_GET_VPTR(1));
 
+    char ttt[100];
+    sprintf(
+        ttt,
+        "    O %08X COLLISION %08X\n",
+        virtual_to_segmented(0x13, gCurrentObject->behavior),
+        BHV_CMD_GET_VPTR(1)
+    );
+    osSyncPrintf(ttt);
+
     gCurrentObject->collisionData = collisionData;
 
     gCurBhvCommand += 2;
@@ -819,8 +828,14 @@ void cur_obj_update(void) {
     BhvCommandProc bhvCmdProc;
     s32 bhvProcResult;
 
+    char ttt[200];
     if (o->header.gfx.data) {
+        sprintf(ttt, "o %08X data %08X\n", virtual_to_segmented(0x13, o->behavior), o->header.gfx.data);
+        osSyncPrintf(ttt);
         set_segment_base_addr(0x4, o->header.gfx.data);
+    } else {
+        sprintf(ttt, "o %08X NO DATA\n", virtual_to_segmented(0x13, o->behavior));
+        osSyncPrintf(ttt);
     }
 
     s32 inRoom = cur_obj_is_mario_in_room();
@@ -947,4 +962,6 @@ void cur_obj_update(void) {
             o->activeFlags &= ~ACTIVE_FLAG_FAR_AWAY;
         }
     }
+
+    set_segment_base_addr(4, 0);
 }

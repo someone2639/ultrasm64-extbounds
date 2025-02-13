@@ -1097,6 +1097,9 @@ void geo_process_object(struct Object *node) {
         gMatStackIndex--;
         gCurrAnimType = ANIM_TYPE_NONE;
         node->header.gfx.throwMatrix = oldThrowMatrix;
+        if (node->header.gfx.data) {
+            set_segment_base_addr(4, 0);
+        }
     }
 }
 

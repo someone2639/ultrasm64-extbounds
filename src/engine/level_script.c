@@ -55,7 +55,7 @@ enum ScriptStatus {
 
 static uintptr_t sStack[NUM_TLB_SEGMENTS];
 
-static struct AllocOnlyPool *sLevelPool = NULL;
+struct AllocOnlyPool *sLevelPool = NULL;
 
 static u16 sDelayFrames = 0;
 static u16 sDelayFrames2 = 0;
@@ -495,12 +495,23 @@ static void level_cmd_init_mario(void) {
 
 #include "actors/model_table.h"
 #include "model_strs.h"
+void *seg4table[MODEL_ID_COUNT];
 void *load_segment_to_pool(struct AllocOnlyPool *pool, s32 segment, u8 *srcStart, u8 *srcEnd);
-void *load_actor_model(u32 model) {
+void *load_actor_segment(u32 model) {
     return load_segment_to_pool(sLevelPool, 0x04, model_table[model].romStart, model_table[model].romEnd);
 }
 
-void *seg4table[MODEL_ID_COUNT];
+void *load_actor(u32 model) {    
+    if (sLevelPool == NULL) {
+        // no pool; use normal load_seg
+        seg4table[model] = load_segment_to_pool(sLevelPool, 0x04, model_table[model].romStart, model_table[model].romEnd);
+    }
+    if (model_table[model].geo) {
+        seg4table[model] = load_actor_segment(model);
+        gLoadedGraphNodes[model] = process_geo_layout(sLevelPool, model_table[model].geo);
+    }
+}
+
 
 static void level_cmd_place_object(void) {
     if (
@@ -523,18 +534,19 @@ static void level_cmd_place_object(void) {
         spawnInfo->respawnInfo = RESPAWN_INFO_NONE;
 
         spawnInfo->behaviorArg = CMD_GET(u32, 16);
+        char ttt[500];
         if (gLoadedGraphNodes[model] == NULL && model != MODEL_NONE) {
-            char ttt[500];
             if (model_table[model].geo) {
-                seg4table[model] = load_actor_model(model);
+                seg4table[model] = load_actor_segment(model);
                 gLoadedGraphNodes[model] = process_geo_layout(sLevelPool, model_table[model].geo);
             } else {
                 sprintf(ttt, "MODEL %s has NO GEO??\n", mtable[model]);
                 osSyncPrintf(ttt);
             }
-        } else {
-            spawnInfo->data = seg4table[model];
         }
+        sprintf(ttt, "MODEL %s has GEO %08X\n", mtable[model], seg4table[model]);
+        osSyncPrintf(ttt);
+        spawnInfo->data = seg4table[model];
         spawnInfo->behaviorScript = CMD_GET(void *, 20);
         spawnInfo->model = gLoadedGraphNodes[model];
         spawnInfo->next = gAreas[sCurrAreaIndex].objectSpawnInfos;
@@ -1028,9 +1040,6 @@ struct LevelCommand *level_script_execute(struct LevelCommand *cmd) {
     sCurrentCmd = cmd;
 
     while (sScriptStatus == SCRIPT_RUNNING) {
-        char ttt[50];
-        sprintf(ttt, "L %s\n", ltable[sCurrentCmd->type]);
-        osSyncPrintf(ttt);
         LevelScriptJumpTable[sCurrentCmd->type]();
     }
 

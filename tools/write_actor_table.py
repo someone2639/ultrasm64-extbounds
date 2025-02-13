@@ -1,12 +1,13 @@
 import sys, os, glob
 
 build_dir = sys.argv[1]
-actorfiles = glob.glob("actors/**/data.c")
+actorfiles = [i for i in glob.glob("actors/**/data.c") if "vanilla_actors" not in i]
 
 
 # TODO: compress rodata
-actorentry = """BEGIN_SEG(%s, 0x04000000) {
+actorentry = """BEGIN_SEG(%s, 0x04000000) SUBALIGN(16) {
     KEEP(BUILD_DIR/%s(.rodata*));
+    . += ALIGN(16);
 }
 END_SEG(%s)
 """

@@ -84,6 +84,13 @@ void *segmented_to_virtual(const void *addr) {
     size_t segment = ((uintptr_t) addr >> 24);
     size_t offset  = ((uintptr_t) addr & 0x00FFFFFF);
 
+    char tt[300];
+
+    if (sSegmentTable[segment] == 0) {
+        sprintf(tt, "NO SEGMENT %d!!!!! %08X", segment, __builtin_extract_return_addr(__builtin_return_address(0)));
+        osSyncPrintf(tt);
+    }
+
     return (void *) ((sSegmentTable[segment] + offset) | 0x80000000);
 }
 
@@ -332,11 +339,16 @@ void *alloc_only_pool_alloc16(struct AllocOnlyPool *pool, s32 size) {
         addr = pool->freePtr;
         pool->freePtr += size;
         pool->usedSpace += size;
+    } else {
+        osSyncPrintf("ALLOCONLY FAIL!!!!");
     }
     return addr;
 }
 
 void *dynamic_pool_dma(struct AllocOnlyPool *pool, u8 *srcStart, u8 *srcEnd) {
+    char tt[200];
+    sprintf(tt, "DMA [%08X - %08X]\n", srcStart, srcEnd);
+    osSyncPrintf(tt);
     u32 size = ALIGN16(srcEnd - srcStart);
     u32 offset = 0;
     void *dest = alloc_only_pool_alloc16(pool, size);
