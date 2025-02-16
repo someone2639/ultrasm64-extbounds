@@ -1088,7 +1088,7 @@ s32 mario_execute_stationary_action(struct MarioState *m) {
     }
 
     if (mario_update_quicksand(m, 0.5f)) {
-        return ACTION_FINISH;
+        return ACTION_CONTINUE;
     }
 
     /* clang-format off */
