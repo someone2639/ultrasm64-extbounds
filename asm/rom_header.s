@@ -22,7 +22,6 @@
 .word  0x00000000               /* Unknown */
 #endif
 .word  0x0000004E               /* Cartridge */
-
 .ascii "ED"                     /* Cartridge ID */
 
 /* Region */
