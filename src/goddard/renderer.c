@@ -1234,7 +1234,7 @@ void gdm_getpos(s32 id, struct GdVec3f *dst) {
     switch (id) {
         case 5:
             set_gd_mtx_parameters(G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_PUSH);
-            dobj = d_use_obj("testnet2");
+            dobj = dUseObject("testnet2");
             dst->x = ((struct ObjNet *) dobj)->worldPos.x;
             dst->y = ((struct ObjNet *) dobj)->worldPos.y;
             dst->z = ((struct ObjNet *) dobj)->worldPos.z;
@@ -3175,15 +3175,15 @@ UNUSED void Unknown801A5C80(struct ObjGroup *parentGroup) {
     struct ObjLabel *label;      // 3c
     struct ObjGroup *debugGroup; // 38
 
-    d_start_group("debugg");
-    label = (struct ObjLabel *) d_makeobj(D_LABEL, 0);
-    d_set_rel_pos(10.0f, 230.0f, 0.0f);
-    d_set_parm_ptr(PARM_PTR_CHAR, gd_strdup("FT %2.2f"));
-    d_add_valptr(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTracked1FrameTime);
+    dStartGroup("debugg");
+    label = (struct ObjLabel *) dMakeObject(D_LABEL, 0);
+    dSetRelativePosition(10.0f, 230.0f, 0.0f);
+    dSetParmPointer(PARM_PTR_CHAR, gd_strdup("FT %2.2f"));
+    dAddValuePointer(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTracked1FrameTime);
     label->unk30 = 3;
-    d_end_group("debugg");
+    dEndGroup("debugg");
 
-    debugGroup = (struct ObjGroup *) d_use_obj("debugg");
+    debugGroup = (struct ObjGroup *) dUseObject("debugg");
     make_view("debugview", (VIEW_2_COL_BUF | VIEW_ALLOC_ZBUF | VIEW_1_CYCLE | VIEW_DRAW), 2, 0, 0, 320,
               240, debugGroup);
 
@@ -3210,7 +3210,7 @@ UNUSED void Unknown801A5D90(struct ObjGroup *arg0) {
 
     while (!sp240) {
         sprintf(groupId, "memg%d\n", trackerNum);
-        d_start_group(AsDynName(groupId));
+        dStartGroup(AsDynName(groupId));
         sp244 = 20;
         sp23C = FALSE;
 
@@ -3220,12 +3220,12 @@ UNUSED void Unknown801A5D90(struct ObjGroup *arg0) {
 
             if (mt->name != NULL) {
                 sprintf(mtStatsFmt, "%s  %%6.2fk", mt->name);
-                mtLabel = (struct ObjLabel *) d_makeobj(D_LABEL, AsDynName(0));
-                d_set_rel_pos(10.0f, sp244, 0.0f);
-                d_set_parm_ptr(PARM_PTR_CHAR, gd_strdup(mtStatsFmt));
-                d_add_valptr(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &mt->total);
+                mtLabel = (struct ObjLabel *) dMakeObject(D_LABEL, AsDynName(0));
+                dSetRelativePosition(10.0f, sp244, 0.0f);
+                dSetParmPointer(PARM_PTR_CHAR, gd_strdup(mtStatsFmt));
+                dAddValuePointer(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &mt->total);
                 mtLabel->unk30 = 3;
-                d_add_valproc(cvrt_val_to_kb);
+                dAddValproc(cvrt_val_to_kb);
                 sp23C = TRUE;
                 sp244 += 14;
                 if (sp244 > 200) {
@@ -3239,8 +3239,8 @@ UNUSED void Unknown801A5D90(struct ObjGroup *arg0) {
             }
         }
 
-        d_end_group(AsDynName(groupId));
-        labelgrp = (struct ObjGroup *) d_use_obj(AsDynName(groupId));
+        dEndGroup(AsDynName(groupId));
+        labelgrp = (struct ObjGroup *) dUseObject(AsDynName(groupId));
 
         if (sp23C) {
             memview = make_view("memview",
@@ -3263,43 +3263,43 @@ UNUSED void Unknown801A5FF8(struct ObjGroup *arg0) {
     UNUSED struct ObjLabel *label; // 38
     struct ObjGroup *menugrp;      // 34
 
-    d_start_group("menug");
-    sMenuGadgets[0] = d_makeobj(D_GADGET, "menu0");
-    d_set_obj_draw_flag(OBJ_IS_GRABBABLE);
-    d_set_world_pos(5.0f, 0.0f, 0.0f);
-    d_set_scale(100.0f, 20.0f, 0.0f);
-    d_set_type(6);
-    d_set_colour_num(2);
-    label = (struct ObjLabel *) d_makeobj(D_LABEL, AsDynName(0));
-    d_set_rel_pos(5.0f, 18.0f, 0.0f);
-    d_set_parm_ptr(PARM_PTR_CHAR, "ITEM 1");
-    d_add_valptr("menu0", 0x40000, 0, (uintptr_t) NULL);
+    dStartGroup("menug");
+    sMenuGadgets[0] = dMakeObject(D_GADGET, "menu0");
+    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
+    dSetWorldPos(5.0f, 0.0f, 0.0f);
+    dSetScale(100.0f, 20.0f, 0.0f);
+    dSetType(6);
+    dSetColourNum(2);
+    label = (struct ObjLabel *) dMakeObject(D_LABEL, AsDynName(0));
+    dSetRelativePosition(5.0f, 18.0f, 0.0f);
+    dSetParmPointer(PARM_PTR_CHAR, "ITEM 1");
+    dAddValuePointer("menu0", 0x40000, 0, (uintptr_t) NULL);
 
-    sMenuGadgets[1] = d_makeobj(D_GADGET, "menu1");
-    d_set_obj_draw_flag(OBJ_IS_GRABBABLE);
-    d_set_world_pos(5.0f, 25.0f, 0.0f);
-    d_set_scale(100.0f, 20.0f, 0.0f);
-    d_set_type(6);
-    d_set_colour_num(4);
-    label = (struct ObjLabel *) d_makeobj(D_LABEL, AsDynName(0));
-    d_set_rel_pos(5.0f, 18.0f, 0.0f);
-    d_set_parm_ptr(PARM_PTR_CHAR, "ITEM 2");
-    d_add_valptr("menu1", 0x40000, 0, (uintptr_t) NULL);
+    sMenuGadgets[1] = dMakeObject(D_GADGET, "menu1");
+    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
+    dSetWorldPos(5.0f, 25.0f, 0.0f);
+    dSetScale(100.0f, 20.0f, 0.0f);
+    dSetType(6);
+    dSetColourNum(4);
+    label = (struct ObjLabel *) dMakeObject(D_LABEL, AsDynName(0));
+    dSetRelativePosition(5.0f, 18.0f, 0.0f);
+    dSetParmPointer(PARM_PTR_CHAR, "ITEM 2");
+    dAddValuePointer("menu1", 0x40000, 0, (uintptr_t) NULL);
 
-    sMenuGadgets[2] = d_makeobj(D_GADGET, "menu2");
-    d_set_obj_draw_flag(OBJ_IS_GRABBABLE);
-    d_set_world_pos(5.0f, 50.0f, 0.0f);
-    d_set_scale(100.0f, 20.0f, 0.0f);
-    d_set_type(6);
-    d_set_colour_num(3);
-    label = (struct ObjLabel *) d_makeobj(D_LABEL, AsDynName(0));
-    d_set_rel_pos(5.0f, 18.0f, 0.0f);
-    d_set_parm_ptr(PARM_PTR_CHAR, "ITEM 3");
-    d_add_valptr("menu2", 0x40000, 0, (uintptr_t) NULL);
+    sMenuGadgets[2] = dMakeObject(D_GADGET, "menu2");
+    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
+    dSetWorldPos(5.0f, 50.0f, 0.0f);
+    dSetScale(100.0f, 20.0f, 0.0f);
+    dSetType(6);
+    dSetColourNum(3);
+    label = (struct ObjLabel *) dMakeObject(D_LABEL, AsDynName(0));
+    dSetRelativePosition(5.0f, 18.0f, 0.0f);
+    dSetParmPointer(PARM_PTR_CHAR, "ITEM 3");
+    dAddValuePointer("menu2", 0x40000, 0, (uintptr_t) NULL);
     sItemsInMenu = 3;
-    d_end_group("menug");
+    dEndGroup("menug");
 
-    menugrp = (struct ObjGroup *) d_use_obj("menug");
+    menugrp = (struct ObjGroup *) dUseObject("menug");
     menuview = make_view(
         "menuview", (VIEW_2_COL_BUF | VIEW_ALLOC_ZBUF | VIEW_BORDERED | VIEW_UNK_2000 | VIEW_UNK_4000),
         2, 100, 20, 110, 150, menugrp);
@@ -3345,14 +3345,14 @@ void gd_setup_cursor(struct ObjGroup *parentgrp) {
     gd_put_sprite((u16 *) gd_texture_hand_open, 100, 100, 32, 32);
     gd_enddlsplist_parent();
 
-    d_start_group("mouseg");
-    net = (struct ObjNet *) d_makeobj(D_NET, AsDynName(0));
-    d_set_init_pos(0.0f, 0.0f, 0.0f);
-    d_set_type(3);
-    d_set_shapeptrptr(&sHandShape);
-    d_end_group("mouseg");
+    dStartGroup("mouseg");
+    net = (struct ObjNet *) dMakeObject(D_NET, AsDynName(0));
+    dSetInitPos(0.0f, 0.0f, 0.0f);
+    dSetType(3);
+    dSetShapePtrPtr(&sHandShape);
+    dEndGroup("mouseg");
 
-    mousegrp = (struct ObjGroup *) d_use_obj("mouseg");
+    mousegrp = (struct ObjGroup *) dUseObject("mouseg");
     mouseview = make_view("mouseview",
                           (VIEW_2_COL_BUF | VIEW_ALLOC_ZBUF | VIEW_1_CYCLE | VIEW_MOVEMENT | VIEW_DRAW),
                           2, 0, 0, 32, 32, mousegrp);
@@ -3390,71 +3390,71 @@ void make_timer_gadgets(void) {
     s32 i;
     char timerNameBuf[0x20];
 
-    d_start_group("timerg");
-    d_makeobj(D_GADGET, "bar1");
-    d_set_obj_draw_flag(OBJ_IS_GRABBABLE);
-    d_set_world_pos(20.0f, 5.0f, 0.0f);
-    d_set_scale(50.0f, 5.0f, 0.0f);
-    d_set_type(4);
-    d_set_parm_f(PARM_F_RANGE_MIN, 0);
-    d_set_parm_f(PARM_F_RANGE_MAX, sTimeScaleFactor);
-    d_add_valptr(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
-    bar1 = (struct ObjGadget *) d_use_obj("bar1");
+    dStartGroup("timerg");
+    dMakeObject(D_GADGET, "bar1");
+    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
+    dSetWorldPos(20.0f, 5.0f, 0.0f);
+    dSetScale(50.0f, 5.0f, 0.0f);
+    dSetType(4);
+    dSetParmF(PARM_F_RANGE_MIN, 0);
+    dSetParmF(PARM_F_RANGE_MAX, sTimeScaleFactor);
+    dAddValuePointer(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
+    bar1 = (struct ObjGadget *) dUseObject("bar1");
     bar1->colourNum = COLOUR_WHITE;
 
-    d_makeobj(D_GADGET, "bar2");
-    d_set_obj_draw_flag(OBJ_IS_GRABBABLE);
-    d_set_world_pos(70.0f, 5.0f, 0.0f);
-    d_set_scale(50.0f, 5.0f, 0.0f);
-    d_set_type(4);
-    d_set_parm_f(PARM_F_RANGE_MIN, 0);
-    d_set_parm_f(PARM_F_RANGE_MAX, sTimeScaleFactor);
-    d_add_valptr(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
-    bar2 = (struct ObjGadget *) d_use_obj("bar2");
+    dMakeObject(D_GADGET, "bar2");
+    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
+    dSetWorldPos(70.0f, 5.0f, 0.0f);
+    dSetScale(50.0f, 5.0f, 0.0f);
+    dSetType(4);
+    dSetParmF(PARM_F_RANGE_MIN, 0);
+    dSetParmF(PARM_F_RANGE_MAX, sTimeScaleFactor);
+    dAddValuePointer(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
+    bar2 = (struct ObjGadget *) dUseObject("bar2");
     bar2->colourNum = COLOUR_PINK;
 
-    d_makeobj(D_GADGET, "bar3");
-    d_set_obj_draw_flag(OBJ_IS_GRABBABLE);
-    d_set_world_pos(120.0f, 5.0f, 0.0f);
-    d_set_scale(50.0f, 5.0f, 0.0f);
-    d_set_type(4);
-    d_set_parm_f(PARM_F_RANGE_MIN, 0);
-    d_set_parm_f(PARM_F_RANGE_MAX, sTimeScaleFactor);
-    d_add_valptr(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
-    bar3 = (struct ObjGadget *) d_use_obj("bar3");
+    dMakeObject(D_GADGET, "bar3");
+    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
+    dSetWorldPos(120.0f, 5.0f, 0.0f);
+    dSetScale(50.0f, 5.0f, 0.0f);
+    dSetType(4);
+    dSetParmF(PARM_F_RANGE_MIN, 0);
+    dSetParmF(PARM_F_RANGE_MAX, sTimeScaleFactor);
+    dAddValuePointer(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
+    bar3 = (struct ObjGadget *) dUseObject("bar3");
     bar3->colourNum = COLOUR_WHITE;
 
-    d_makeobj(D_GADGET, "bar4");
-    d_set_obj_draw_flag(OBJ_IS_GRABBABLE);
-    d_set_world_pos(170.0f, 5.0f, 0.0f);
-    d_set_scale(50.0f, 5.0f, 0.0f);
-    d_set_type(4);
-    d_set_parm_f(PARM_F_RANGE_MIN, 0);
-    d_set_parm_f(PARM_F_RANGE_MAX, sTimeScaleFactor);
-    d_add_valptr(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
-    bar4 = (struct ObjGadget *) d_use_obj("bar4");
+    dMakeObject(D_GADGET, "bar4");
+    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
+    dSetWorldPos(170.0f, 5.0f, 0.0f);
+    dSetScale(50.0f, 5.0f, 0.0f);
+    dSetType(4);
+    dSetParmF(PARM_F_RANGE_MIN, 0);
+    dSetParmF(PARM_F_RANGE_MAX, sTimeScaleFactor);
+    dAddValuePointer(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
+    bar4 = (struct ObjGadget *) dUseObject("bar4");
     bar4->colourNum = COLOUR_PINK;
 
-    d_makeobj(D_GADGET, "bar5");
-    d_set_obj_draw_flag(OBJ_IS_GRABBABLE);
-    d_set_world_pos(220.0f, 5.0f, 0.0f);
-    d_set_scale(50.0f, 5.0f, 0.0f);
-    d_set_type(4);
-    d_set_parm_f(PARM_F_RANGE_MIN, 0);
-    d_set_parm_f(PARM_F_RANGE_MAX, sTimeScaleFactor);
-    d_add_valptr(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
-    bar5 = (struct ObjGadget *) d_use_obj("bar5");
+    dMakeObject(D_GADGET, "bar5");
+    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
+    dSetWorldPos(220.0f, 5.0f, 0.0f);
+    dSetScale(50.0f, 5.0f, 0.0f);
+    dSetType(4);
+    dSetParmF(PARM_F_RANGE_MIN, 0);
+    dSetParmF(PARM_F_RANGE_MAX, sTimeScaleFactor);
+    dAddValuePointer(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
+    bar5 = (struct ObjGadget *) dUseObject("bar5");
     bar5->colourNum = COLOUR_WHITE;
 
-    d_makeobj(D_GADGET, "bar6");
-    d_set_obj_draw_flag(OBJ_IS_GRABBABLE);
-    d_set_world_pos(270.0f, 5.0f, 0.0f);
-    d_set_scale(50.0f, 5.0f, 0.0f);
-    d_set_type(4);
-    d_set_parm_f(PARM_F_RANGE_MIN, 0);
-    d_set_parm_f(PARM_F_RANGE_MAX, sTimeScaleFactor);
-    d_add_valptr(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
-    bar6 = (struct ObjGadget *) d_use_obj("bar6");
+    dMakeObject(D_GADGET, "bar6");
+    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
+    dSetWorldPos(270.0f, 5.0f, 0.0f);
+    dSetScale(50.0f, 5.0f, 0.0f);
+    dSetType(4);
+    dSetParmF(PARM_F_RANGE_MIN, 0);
+    dSetParmF(PARM_F_RANGE_MAX, sTimeScaleFactor);
+    dAddValuePointer(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &sTimeScaleFactor);
+    bar6 = (struct ObjGadget *) dUseObject("bar6");
     bar6->colourNum = COLOUR_PINK;
 
     for (i = 0; i < GD_NUM_TIMERS; i++) {
@@ -3462,26 +3462,26 @@ void make_timer_gadgets(void) {
 
         timer = get_timernum(i);
 
-        d_makeobj(D_GADGET, timerNameBuf);
-        d_set_obj_draw_flag(OBJ_IS_GRABBABLE);
-        d_set_world_pos(20.0f, (f32)((i * 15) + 15), 0.0f);
-        d_set_scale(50.0f, 14.0f, 0);
-        d_set_type(4);
-        d_set_parm_f(PARM_F_RANGE_MIN, 0.0f);
-        d_set_parm_f(PARM_F_RANGE_MAX, 1.0f);
-        d_add_valptr(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &timer->prevScaledTotal);
-        sTimerGadgets[i] = (struct ObjGadget *) d_use_obj(timerNameBuf);
+        dMakeObject(D_GADGET, timerNameBuf);
+        dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
+        dSetWorldPos(20.0f, (f32)((i * 15) + 15), 0.0f);
+        dSetScale(50.0f, 14.0f, 0);
+        dSetType(4);
+        dSetParmF(PARM_F_RANGE_MIN, 0.0f);
+        dSetParmF(PARM_F_RANGE_MAX, 1.0f);
+        dAddValuePointer(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &timer->prevScaledTotal);
+        sTimerGadgets[i] = (struct ObjGadget *) dUseObject(timerNameBuf);
         sTimerGadgets[i]->colourNum = timer->gadgetColourNum;
 
-        timerLabel = (struct ObjLabel *) d_makeobj(D_LABEL, AsDynName(0));
-        d_set_rel_pos(5.0f, 14.0f, 0);
-        d_set_parm_ptr(PARM_PTR_CHAR, (void *) timer->name);
-        d_add_valptr(timerNameBuf, 0x40000, 0, (uintptr_t) NULL);
+        timerLabel = (struct ObjLabel *) dMakeObject(D_LABEL, AsDynName(0));
+        dSetRelativePosition(5.0f, 14.0f, 0);
+        dSetParmPointer(PARM_PTR_CHAR, (void *) timer->name);
+        dAddValuePointer(timerNameBuf, 0x40000, 0, (uintptr_t) NULL);
         timerLabel->unk30 = 3;
     }
 
-    d_end_group("timerg");
-    timerg = (struct ObjGroup *) d_use_obj("timerg");
+    dEndGroup("timerg");
+    timerg = (struct ObjGroup *) dUseObject("timerg");
     timersview = make_view(
         "timersview", (VIEW_2_COL_BUF | VIEW_ALLOC_ZBUF | VIEW_1_CYCLE | VIEW_MOVEMENT | VIEW_DRAW), 2,
         0, 10, 320, 270, timerg);
@@ -3590,7 +3590,7 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
 #undef PAGE_SIZE
 
     // process the dynlist
-    loadedList = proc_dynlist(dynlist);
+    loadedList = gdProcessDynList(dynlist);
 
     gd_free(allocPtr);
     osUnmapTLBAll();
@@ -3599,7 +3599,7 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
 }
 #else
 struct GdObj *load_dynlist(struct DynList *dynlist) {
-    return proc_dynlist(dynlist);
+    return gdProcessDynList(dynlist);
 }
 #endif
 

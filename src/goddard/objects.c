@@ -80,7 +80,7 @@ void add_obj_pos_to_bounding_box(struct GdObj *obj) {
     struct GdVec3f pos;
 
     set_cur_dynobj(obj);
-    d_get_world_pos(&pos);
+    dGetWorldPosition(&pos);
 
     if (pos.x < gSomeBoundingBox.minX) {
         gSomeBoundingBox.minX = pos.x;
@@ -1165,27 +1165,27 @@ s32 transform_child_objects_recursive(struct GdObj *obj, struct GdObj *parentObj
 
     if (parentObj != NULL) {
         set_cur_dynobj(parentObj);
-        parentUnkMtx = d_get_matrix_ptr();
-        rotMtx = (Mat4f *) d_get_rot_mtx_ptr();
+        parentUnkMtx = dGetMatrixPointer();
+        rotMtx = (Mat4f *) dGetRotationMatrixPointer();
 
         set_cur_dynobj(obj);
-        iMtx = d_get_i_mtx_ptr();
-        rotMtx2 = (Mat4f *) d_get_rot_mtx_ptr();
+        iMtx = dGetIMatrixPointer();
+        rotMtx2 = (Mat4f *) dGetRotationMatrixPointer();
 
-        d_get_scale(&scale);
+        dGetScale(&scale);
 
-        unkMtx = d_get_matrix_ptr();
+        unkMtx = dGetMatrixPointer();
         gd_mult_mat4f(iMtx, parentUnkMtx, unkMtx);
 
         gd_mult_mat4f(iMtx, rotMtx, rotMtx2);
         gd_scale_mat4f_by_vec3f(rotMtx2, &scale);
     } else {
         set_cur_dynobj(obj);
-        unkMtx = d_get_matrix_ptr();
-        iMtx = d_get_i_mtx_ptr();
-        rotMtx = (Mat4f *) d_get_rot_mtx_ptr();
+        unkMtx = dGetMatrixPointer();
+        iMtx = dGetIMatrixPointer();
+        rotMtx = (Mat4f *) dGetRotationMatrixPointer();
 
-        d_get_scale(&scale);
+        dGetScale(&scale);
         gd_set_identity_mat4(unkMtx);
         gd_copy_mat4f(iMtx, rotMtx);
         gd_scale_mat4f_by_vec3f(rotMtx, &scale);
@@ -1193,7 +1193,7 @@ s32 transform_child_objects_recursive(struct GdObj *obj, struct GdObj *parentObj
 
     // Recursively call this function on attached children
     set_cur_dynobj(obj);
-    curGroup = d_get_att_objgroup();
+    curGroup = dGetAttachedObjGroup();
     if (curGroup != NULL) {
         curLink = curGroup->firstMember;
         while (curLink != NULL) {
@@ -1222,29 +1222,29 @@ s32 func_8017F210(struct GdObj *a0, struct GdObj *a1) {
 
     if (a1 != NULL) {
         set_cur_dynobj(a1);
-        sp60 = d_get_matrix_ptr();
-        sp54 = (Mat4f *) d_get_rot_mtx_ptr();
+        sp60 = dGetMatrixPointer();
+        sp54 = (Mat4f *) dGetRotationMatrixPointer();
 
         set_cur_dynobj(a0);
-        sp5C = d_get_i_mtx_ptr();
-        sp50 = (Mat4f *) d_get_rot_mtx_ptr();
+        sp5C = dGetIMatrixPointer();
+        sp50 = (Mat4f *) dGetRotationMatrixPointer();
 
-        d_get_scale(&sp2C);
+        dGetScale(&sp2C);
         gd_mult_mat4f(sp5C, sp54, sp50);
         gd_scale_mat4f_by_vec3f(sp50, &sp2C);
     } else {
         set_cur_dynobj(a0);
-        sp58 = d_get_matrix_ptr();
-        sp5C = d_get_i_mtx_ptr();
-        sp54 = (Mat4f *) d_get_rot_mtx_ptr();
+        sp58 = dGetMatrixPointer();
+        sp5C = dGetIMatrixPointer();
+        sp54 = (Mat4f *) dGetRotationMatrixPointer();
 
-        d_get_scale(&sp2C);
+        dGetScale(&sp2C);
         gd_copy_mat4f(sp5C, sp54);
         gd_scale_mat4f_by_vec3f(sp54, &sp2C);
     }
 
     set_cur_dynobj(a0);
-    sp68 = d_get_att_objgroup();
+    sp68 = dGetAttachedObjGroup();
 
     if (sp68 != NULL) {
         sp6C = sp68->firstMember;
@@ -1295,11 +1295,11 @@ void interpolate_animation_transform(struct GdAnimTransform *t1, struct GdAnimTr
         gd_rot_mat_about_vec(&mtx, &transform.rotate);
         gd_add_vec3f_to_mat4f_offset(&mtx, &transform.pos);
     } else {
-        d_set_scale(t1->scale.x, t1->scale.y, t1->scale.z);
+        dSetScale(t1->scale.x, t1->scale.y, t1->scale.z);
         gd_rot_mat_about_vec(&mtx, &t1->rotate);
         gd_add_vec3f_to_mat4f_offset(&mtx, &t1->pos);
     }
-    d_set_i_matrix(&mtx);
+    dSetIMatrix(&mtx);
 }
 
 /* @ 22DD94 for 0x1060; orig name: func_8017F5C4 */
@@ -1376,19 +1376,19 @@ void move_animator(struct ObjAnimator *animObj) {
             case GD_ANIM_MTX4x4: // data = Mat4f* (f32[4][4])
                 mtxArr = (Mat4f *) animData->data;
                 /* This needs be be un-dereferenced pointer addition to make the registers match */
-                d_set_i_matrix(mtxArr + (s32) animObj->frame);
+                dSetIMatrix(mtxArr + (s32) animObj->frame);
                 break;
             case GD_ANIM_ROT3S: // data = s16(*)[3] - rotation only
                 animData3s16 = (s16(*)[3]) animData->data;
 
                 // keep current object scale
-                d_get_scale(&currTransform.scale);
+                dGetScale(&currTransform.scale);
                 nextTransform.scale.x = currTransform.scale.x;
                 nextTransform.scale.y = currTransform.scale.y;
                 nextTransform.scale.z = currTransform.scale.z;
 
                 // keep current object position
-                d_get_init_pos(&currTransform.pos);
+                dGetInitPos(&currTransform.pos);
                 nextTransform.pos.x = currTransform.pos.x;
                 nextTransform.pos.y = currTransform.pos.y;
                 nextTransform.pos.z = currTransform.pos.z;
@@ -1408,13 +1408,13 @@ void move_animator(struct ObjAnimator *animObj) {
                 animData3s16 = (s16(*)[3]) animData->data;
 
                 // keep current object scale
-                d_get_scale(&currTransform.scale);
+                dGetScale(&currTransform.scale);
                 nextTransform.scale.x = currTransform.scale.x;
                 nextTransform.scale.y = currTransform.scale.y;
                 nextTransform.scale.z = currTransform.scale.z;
 
                 // keep current object rotation
-                d_get_init_rot(&currTransform.rotate);
+                dGetInitRot(&currTransform.rotate);
                 nextTransform.rotate.x = currTransform.rotate.x;
                 nextTransform.rotate.y = currTransform.rotate.y;
                 nextTransform.rotate.z = currTransform.rotate.z;
@@ -1434,7 +1434,7 @@ void move_animator(struct ObjAnimator *animObj) {
                 animData6s16 = (s16(*)[6]) animData->data;
 
                 // keep current object scale
-                d_get_scale(&currTransform.scale);
+                dGetScale(&currTransform.scale);
                 nextTransform.scale.x  = currTransform.scale.x;
                 nextTransform.scale.y  = currTransform.scale.y;
                 nextTransform.scale.z  = currTransform.scale.z;
@@ -1517,16 +1517,16 @@ void move_animator(struct ObjAnimator *animObj) {
                 break;
             case GD_ANIM_MTX4x4F_SCALE3F: // AnimMtxVec[]
                 sp28 = &((struct AnimMtxVec *) animData->data)[currKeyFrame];
-                d_set_i_matrix(&sp28->matrix);
-                d_set_scale(sp28->vec.x, sp28->vec.y, sp28->vec.z);
+                dSetIMatrix(&sp28->matrix);
+                dSetScale(sp28->vec.x, sp28->vec.y, sp28->vec.z);
                 break;
-            case GD_ANIM_SCALE3F_ROT3F_POS3F_2:  // similar to GD_ANIM_SCALE3F_ROT3F_POS3F, but no interpolation? what matrix does d_set_i_matrix set?
+            case GD_ANIM_SCALE3F_ROT3F_POS3F_2:  // similar to GD_ANIM_SCALE3F_ROT3F_POS3F, but no interpolation? what matrix does dSetIMatrix set?
                 triPtr = (struct GdAnimTransform *) animData->data;
                 gd_set_identity_mat4(&localMtx);
                 gd_scale_mat4f_by_vec3f(&localMtx, &triPtr->scale);
                 gd_rot_mat_about_vec(&localMtx, &triPtr->rotate);
                 gd_add_vec3f_to_mat4f_offset(&localMtx, &triPtr->pos);
-                d_set_i_matrix(&localMtx);
+                dSetIMatrix(&localMtx);
                 break;
             case GD_ANIM_STUB:
                 if (stubObj1 == NULL) {
@@ -1645,8 +1645,8 @@ void move_camera(struct ObjCamera *cam) {
 
     if ((spEC = cam->unk30) != NULL) {
         set_cur_dynobj(spEC);
-        d_get_world_pos(&spE0);
-        d_get_matrix(&sp70);
+        dGetWorldPosition(&spE0);
+        dGetMatrix(&sp70);
 
         spC8.x = sp70[2][0] - cam->unk58;
         spC8.z = sp70[2][2] - cam->unk60;

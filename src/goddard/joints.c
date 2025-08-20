@@ -122,7 +122,7 @@ void grabbable_joint_update_func(struct ObjJoint *self) {
     for (att = self->attachedObjsGrp->firstMember; att != NULL; att = att->next) {
         attobj = att->obj;
         set_cur_dynobj(attobj);
-        attObjMtx = d_get_matrix_ptr();
+        attObjMtx = dGetMatrixPointer();
         gd_add_vec3f_to_mat4f_offset(attObjMtx, &offset);
     }
 }
@@ -149,7 +149,7 @@ void eye_joint_update_func(struct ObjJoint *self) {
     }
 
     set_cur_dynobj((struct GdObj *)self);
-    sp5C = d_get_rot_mtx_ptr();
+    sp5C = dGetRotationMatrixPointer();
     sp44.x = (*sp5C)[3][0];
     sp44.y = (*sp5C)[3][1];
     sp44.z = (*sp5C)[3][2];
@@ -172,7 +172,7 @@ void eye_joint_update_func(struct ObjJoint *self) {
     for (att = self->attachedObjsGrp->firstMember; att != NULL; att = att->next) {
         attobj = att->obj;
         set_cur_dynobj(attobj);
-        sp5C = d_get_rot_mtx_ptr();
+        sp5C = dGetRotationMatrixPointer();
         gd_add_vec3f_to_mat4f_offset(sp5C, &sp50);
     }
 }
@@ -1083,9 +1083,9 @@ void func_80191A1C(struct ObjBone *a0) {
         tempjoint = gGdTempBone->unk10C->firstMember->obj;
         argjoint = a0->unk10C->firstMember->next->obj;
         set_cur_dynobj(argjoint);
-        d_get_rel_pos(&sp24);
+        dGetRelPos(&sp24);
         set_cur_dynobj(tempjoint);
-        d_get_rel_pos(&sp18);
+        dGetRelPos(&sp18);
 
         sp24.x -= sp18.x;
         sp24.y -= sp18.y;

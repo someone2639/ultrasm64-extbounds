@@ -50,12 +50,12 @@ void Unknown8018B7A8(void *a0) {
     struct GdVec3f sp1C;
 
     set_cur_dynobj(a0);
-    d_get_init_pos(&sp1C);
+    dGetInitPos(&sp1C);
 
     sp1C.x += sStaticVec.x;
     sp1C.y += sStaticVec.y;
     sp1C.z += sStaticVec.z;
-    d_set_world_pos(sp1C.x, sp1C.y, sp1C.z);
+    dSetWorldPos(sp1C.x, sp1C.y, sp1C.z);
 }
 
 /* 23A190 -> 23A250 */

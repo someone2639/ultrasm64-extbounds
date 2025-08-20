@@ -304,7 +304,7 @@ struct ObjShape {
 
 struct ObjNet {
     /* 0x000 */ struct GdObj header;
-    /* 0x014 */ struct GdVec3f worldPos;   // position? d_set_initpos + d_set_world_pos; print_net says world
+    /* 0x014 */ struct GdVec3f worldPos;   // position? d_set_initpos + dSetWorldPos; print_net says world
     /* 0x020 */ struct GdVec3f initPos;   // position? d_set_initpos? attached offset? dynamic? scratch?
     /* 0x02C */ u8  filler1[8];
     /* 0x034 */ s32 flags;       // "dflags"?

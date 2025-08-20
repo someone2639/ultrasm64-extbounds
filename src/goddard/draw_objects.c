@@ -524,7 +524,7 @@ void Unknown801792F0(struct GdObj *obj) {
 
     format_object_id(objId, obj);
     set_cur_dynobj(obj);
-    d_get_world_pos(&objPos);
+    dGetWorldPosition(&objPos);
     func_801A4438(objPos.x, objPos.y, objPos.z);
     stub_draw_label_text(objId);
 }
@@ -544,7 +544,7 @@ void draw_label(struct ObjLabel *label) {
         if (valptr->flag == 0x40000) {
             // position is offset from object
             set_cur_dynobj(valptr->obj);
-            d_get_world_pos(&position);
+            dGetWorldPosition(&position);
         } else {
             // position is absolute
             position.x = position.y = position.z = 0.0f;
@@ -650,7 +650,7 @@ void draw_camera(struct ObjCamera *cam) {
     sp44.z = 0.0f;
     if (cam->unk30 != NULL) {
         set_cur_dynobj(cam->unk30);
-        d_get_world_pos(&sp44);
+        dGetWorldPosition(&sp44);
         sp44.x += cam->lookAt.x;
         sp44.y += cam->lookAt.y;
         sp44.z += cam->lookAt.z;
@@ -741,7 +741,7 @@ void check_grabbable_click(struct GdObj *input) {
     }
 
     set_cur_dynobj(obj);
-    mtx = d_get_rot_mtx_ptr();
+    mtx = dGetRotationMatrixPointer();
     objPos.x = (*mtx)[3][0];
     objPos.y = (*mtx)[3][1];
     objPos.z = (*mtx)[3][2];
@@ -1352,7 +1352,7 @@ void find_closest_pickable_obj(struct GdObj *input) {
     if (obj->drawFlags & OBJ_IS_GRABBABLE) {
         if (obj->index == sPickDataTemp) {
             if (gViewUpdateCamera != NULL) {
-                distance = d_calc_world_dist_btwn(&gViewUpdateCamera->header, obj);
+                distance = dCalcWorldDistBtwn(&gViewUpdateCamera->header, obj);
             } else {
                 distance = 0.0f;
             }

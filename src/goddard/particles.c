@@ -234,11 +234,11 @@ struct Connection *make_connection(struct ObjVertex *vtx1, struct ObjVertex *vtx
     }
     conn->node1.vtx = vtx1;
     conn->node2.vtx = vtx2;
-    d_stash_dynobj();
+    dStashDynobj();
     set_cur_dynobj((struct GdObj *)vtx1);
-    d_get_world_pos(&sp28);
+    dGetWorldPosition(&sp28);
     set_cur_dynobj((struct GdObj *)vtx2);
-    d_get_world_pos(&sp1C);
+    dGetWorldPosition(&sp1C);
     sp28.x -= sp1C.x;
     sp28.y -= sp1C.y;
     sp28.z -= sp1C.z;
@@ -250,7 +250,7 @@ struct Connection *make_connection(struct ObjVertex *vtx1, struct ObjVertex *vtx
             conn->unk28 |= 1;
         }
     }
-    d_unstash_dynobj();
+    dUnstashDynobj();
     return conn;
 }
 
@@ -357,7 +357,7 @@ void move_particle(struct ObjParticle *ptc) {
                 }
             }
         }
-        d_get_world_pos(&sp64);
+        dGetWorldPosition(&sp64);
         ptc->pos.x = sp64.x;
         ptc->pos.y = sp64.y;
         ptc->pos.z = sp64.z;
