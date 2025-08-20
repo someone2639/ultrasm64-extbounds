@@ -24,17 +24,17 @@ static s32 sTimerGadgetColours[7] = {
     COLOUR_YELLOW,
     COLOUR_PINK
 };
-static s32 sNumActiveMemTrackers = 0;   // @ 801A82A0
-static u32 sPrimarySeed = 0x12345678;   // @ 801A82A4
-static u32 sSecondarySeed = 0x58374895; // @ 801A82A8
+static s32 sNumActiveMemTrackers = 0;
+static u32 sPrimaryRNGSeed = 0x12345678;
+static u32 sSecondaryRNGSeed = 0x58374895;
 
 // bss
-u8 *gGdStreamBuffer;                                        // @ 801BA190
-static const char *sRoutineNames[64];                       // @ 801BA198
-static s32 sTimingActive;                                   // @ 801BA298
-static struct GdTimer sTimers[GD_NUM_TIMERS];               // @ 801BA2A0
-static struct MemTracker sMemTrackers[GD_NUM_MEM_TRACKERS]; // @ 801BA720
-static struct MemTracker *sActiveMemTrackers[16];           // @ 801BA920
+u8 *gGdStreamBuffer;
+static const char *sRoutineNames[64];
+static s32 sTimingActive;
+static struct GdTimer sTimers[GD_NUM_TIMERS];
+static struct MemTracker sMemTrackers[GD_NUM_MEM_TRACKERS];
+static struct MemTracker *sActiveMemTrackers[16];
 
 /*
  * Memtrackers
@@ -469,22 +469,22 @@ f32 gd_rand_float(void) {
     f32 val;
 
     for (i = 0; i < 4; i++) {
-        if (sPrimarySeed & 0x80000000) {
-            sPrimarySeed = sPrimarySeed << 1 | 1;
+        if (sPrimaryRNGSeed & 0x80000000) {
+            sPrimaryRNGSeed = sPrimaryRNGSeed << 1 | 1;
         } else {
-            sPrimarySeed <<= 1;
+            sPrimaryRNGSeed <<= 1;
         }
     }
-    sPrimarySeed += 4;
+    sPrimaryRNGSeed += 4;
 
     /* Seed Switch */
-    if ((sPrimarySeed ^= gd_get_ostime()) & 1) {
-        temp = sPrimarySeed;
-        sPrimarySeed = sSecondarySeed;
-        sSecondarySeed = temp;
+    if ((sPrimaryRNGSeed ^= gd_get_ostime()) & 1) {
+        temp = sPrimaryRNGSeed;
+        sPrimaryRNGSeed = sSecondaryRNGSeed;
+        sSecondaryRNGSeed = temp;
     }
 
-    val = (sPrimarySeed & 0xFFFF) / 65535.0; // 65535.0f
+    val = (sPrimaryRNGSeed & 0xFFFF) / 65535.0; // 65535.0f
 
     return val;
 }

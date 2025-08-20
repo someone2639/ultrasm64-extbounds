@@ -1024,7 +1024,7 @@ void setup_timers(void) {
 
     start_timer("drawshape");
     start_timer("drawobj");
-    start_timer("drawscene");
+    start_timer("gdDrawScene");
     start_timer("camsearch");
     start_timer("move_animators");
     start_timer("move_nets");
@@ -1032,7 +1032,7 @@ void setup_timers(void) {
     stop_timer("move_nets");
     stop_timer("drawshape");
     stop_timer("drawobj");
-    stop_timer("drawscene");
+    stop_timer("gdDrawScene");
     stop_timer("camsearch");
 
     start_timer("move_bones");
@@ -3349,7 +3349,7 @@ void gd_setup_cursor(struct ObjGroup *parentgrp) {
     net = (struct ObjNet *) dMakeObject(D_NET, AsDynName(0));
     dSetInitPos(0.0f, 0.0f, 0.0f);
     dSetType(3);
-    dSetShapePtrPtr(&sHandShape);
+    dSetShapePointerFromPointer(&sHandShape);
     dEndGroup("mouseg");
 
     mousegrp = (struct ObjGroup *) dUseObject("mouseg");

@@ -270,7 +270,7 @@ void dAttachJointToNet(UNUSED s32 arg0, DynObjName name) {
 
     dMakeObject(D_JOINT, name);
     dSetType(3);
-    dSetShapePtrPtr(NULL);
+    dSetShapePointerFromPointer(NULL);
     dAttachTo(0xD, sParentObjInfo->obj);
     sParentObjInfo = sDynListCurInfo;
 }
@@ -1052,7 +1052,7 @@ void dSetPlaneGroup(DynObjName name) {
  * Set the shape pointer of the current active dynamic object to the
  * pointer pointed to by `shpPtrptr`.
  */
-void dSetShapePtrPtr(struct ObjShape **shpPtrptr) {
+void dSetShapePointerFromPointer(struct ObjShape **shpPtrptr) {
     struct ObjShape *defaultptr = NULL;
 
     if (sDynListCurObj == NULL) {
@@ -1084,7 +1084,7 @@ void dSetShapePtrPtr(struct ObjShape **shpPtrptr) {
             ((struct ObjLight *) sDynListCurObj)->unk9C = *shpPtrptr;
             break;
         default:
-            fatal_printf("%s: Object '%s'(%x) does not support this function.", "dSetShapePtrPtr()",
+            fatal_printf("%s: Object '%s'(%x) does not support this function.", "dSetShapePointerFromPointer()",
                          sDynListCurInfo->name, sDynListCurObj->type);
     }
 }
@@ -1093,7 +1093,7 @@ void dSetShapePtrPtr(struct ObjShape **shpPtrptr) {
  * Set the shape pointer of the current active dynamic object to dynamic
  * `ObjShape` `name`.
  */
-void dSetShapePointer(DynObjName name) {
+void dSetShapePointerFromName(DynObjName name) {
     struct DynObjInfo *info;
     if (name == NULL) {
         return;
@@ -1101,7 +1101,7 @@ void dSetShapePointer(DynObjName name) {
 
     info = get_dynobj_info(name);
     if (info == NULL) {
-        fatal_printf("dSetShapePtr(\"%s\"): Undefined object", DynNameAsStr(name));
+        fatal_printf("dSetShapePointerFromName(\"%s\"): Undefined object", DynNameAsStr(name));
     }
 
     switch (sDynListCurObj->type) {
@@ -1122,7 +1122,7 @@ void dSetShapePointer(DynObjName name) {
             ((struct ObjParticle *) sDynListCurObj)->shapePtr = (struct ObjShape *) info->obj;
             break;
         default:
-            fatal_printf("%s: Object '%s'(%x) does not support this function.", "dSetShapePtr()",
+            fatal_printf("%s: Object '%s'(%x) does not support this function.", "dSetShapePointerFromName()",
                          sDynListCurInfo->name, sDynListCurObj->type);
     }
 }
@@ -1133,7 +1133,7 @@ void dSetShapePointer(DynObjName name) {
 struct GdObj *dUseObject(DynObjName name) {
     struct DynObjInfo *info = get_dynobj_info(name);
     if (info == NULL) {
-        fatal_printf("dUseObj(\"%s\"): Undefined object", DynNameAsStr(name));
+        fatal_printf("dUseObject(\"%s\"): Undefined object", DynNameAsStr(name));
     }
 
     sDynListCurObj = info->obj;
@@ -1145,7 +1145,7 @@ struct GdObj *dUseObject(DynObjName name) {
 /**
  * Set the current active dynamic object to `obj`. This object can
  * any type of `GdObj`, not just an object created through the
- * dynmaic object system.
+ * dynamic object system.
  */
 void set_cur_dynobj(struct GdObj *obj) {
     sDynListCurObj = obj;
@@ -2864,178 +2864,178 @@ void dSetSkinWeight(s32 vtxId, f32 percentWeight) {
  * @returns Pointer to current dynamically created dynamic `GdObj`.
  *          Normally the dynlist specifically sets an object for return.
  */
-struct GdObj *gdProcessDynList(struct DynList *dylist) {
+struct GdObj *gdProcessDynList(struct DynList *dynlist_buf) {
 
-    if (dylist++->cmd != 0xD1D4) {
+    if (dynlist_buf++->cmd != GDCMD_BEGIN_LIST) {
         fatal_printf("gdProcessDynList() not a valid dyn list");
     }
 
-    while (dylist->cmd != 58) {
-        switch (dylist->cmd) {
-            case 43:
-                dSetNameSuffix(Dyn1AsStr(dylist));
+    while (dynlist_buf->cmd != GDCMD_END_LIST) {
+        switch (dynlist_buf->cmd) {
+            case GDCMD_SET_NAME_SUFFIX:
+                dSetNameSuffix(Dyn1AsStr(dynlist_buf));
                 break;
-            case 15:
-                dMakeObject(Dyn2AsInt(dylist), Dyn1AsName(dylist));
+            case GDCMD_MAKE_DYN_OBJ:
+                dMakeObject(Dyn2AsInt(dynlist_buf), Dyn1AsName(dynlist_buf));
                 break;
-            case 46:
-                dAddNetWithSubGroup(Dyn2AsInt(dylist), Dyn1AsName(dylist));
+            case GDCMD_MAKE_NET_WITH_SUB_GROUP:
+                dAddNetWithSubGroup(Dyn2AsInt(dynlist_buf), Dyn1AsName(dynlist_buf));
                 break;
-            case 48:
-                dEndNetWithSubGroup(Dyn1AsName(dylist));
+            case GDCMD_END_NET_WITH_SUB_GROUP:
+                dEndNetWithSubGroup(Dyn1AsName(dynlist_buf));
                 break;
-            case 47:
-                dAttachJointToNet(Dyn2AsInt(dylist), Dyn1AsName(dylist));
+            case GDCMD_MAKE_ATTACHED_JOINT:
+                dAttachJointToNet(Dyn2AsInt(dynlist_buf), Dyn1AsName(dynlist_buf));
                 break;
-            case 16:
-                dStartGroup(Dyn1AsName(dylist));
+            case GDCMD_START_GROUP:
+                dStartGroup(Dyn1AsName(dynlist_buf));
                 break;
-            case 17:
-                dEndGroup(Dyn1AsName(dylist));
+            case GDCMD_END_GROUP:
+                dEndGroup(Dyn1AsName(dynlist_buf));
                 break;
-            case 18:
-                dAddto_group(Dyn1AsName(dylist));
+            case GDCMD_ADD_TO_GROUP:
+                dAddto_group(Dyn1AsName(dynlist_buf));
                 break;
-            case 30:
-                dUseObject(Dyn1AsName(dylist));
+            case GDCMD_USE_OBJECT:
+                dUseObject(Dyn1AsName(dynlist_buf));
                 break;
-            case 28:
-                dLinkWith(Dyn1AsName(dylist));
+            case GDCMD_LINK_WITH:
+                dLinkWith(Dyn1AsName(dynlist_buf));
                 break;
-            case 50:
-                dAddValuePointer(Dyn1AsName(dylist), (u32) DynVecY(dylist), Dyn2AsInt(dylist),
-                             (size_t) DynVecX(dylist));
+            case GDCMD_MAKE_VAL_PTR:
+                dAddValuePointer(Dyn1AsName(dynlist_buf), (u32) DynVecY(dynlist_buf), Dyn2AsInt(dynlist_buf),
+                             (size_t) DynVecX(dynlist_buf));
                 break;
-            case 29:
-                dLinkWithPointer(Dyn1AsPtr(dylist));
+            case GDCMD_LINK_WITH_PTR:
+                dLinkWithPointer(Dyn1AsPtr(dynlist_buf));
                 break;
-            case 12:
-                gdProcessDynList(Dyn1AsPtr(dylist));
+            case GDCMD_CALL_LIST:
+                gdProcessDynList(Dyn1AsPtr(dynlist_buf));
                 break;
-            case 0:
-                dUseIntegerNames(Dyn2AsInt(dylist));
+            case GDCMD_USE_INTEGER_NAMES:
+                dUseIntegerNames(Dyn2AsInt(dynlist_buf));
                 break;
-            case 1:
-                dSetInitPos(DynVecX(dylist), DynVecY(dylist), DynVecZ(dylist));
+            case GDCMD_SET_INITIAL_POSITION:
+                dSetInitPos(DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf));
                 break;
-            case 2:
-                dSetRelativePosition(DynVecX(dylist), DynVecY(dylist), DynVecZ(dylist));
+            case GDCMD_SET_RELATIVE_POSITION:
+                dSetRelativePosition(DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf));
                 break;
-            case 3:
-                dSetWorldPos(DynVecX(dylist), DynVecY(dylist), DynVecZ(dylist));
+            case GDCMD_SET_WORLD_POSITION:
+                dSetWorldPos(DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf));
                 break;
-            case 4:
-                dSetNormal(DynVecX(dylist), DynVecY(dylist), DynVecZ(dylist));
+            case GDCMD_SET_NORMAL:
+                dSetNormal(DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf));
                 break;
-            case 5:
-                dSetScale(DynVecX(dylist), DynVecY(dylist), DynVecZ(dylist));
+            case GDCMD_SET_SCALE:
+                dSetScale(DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf));
                 break;
-            case 49:
-                dMakeVertex(DynVec(dylist));
+            case GDCMD_MAKE_VERTEX:
+                dMakeVertex(DynVec(dynlist_buf));
                 break;
-            case 6:
-                dSetRotation(DynVecX(dylist), DynVecY(dylist), DynVecZ(dylist));
+            case GDCMD_SET_ROTATION:
+                dSetRotation(DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf));
                 break;
-            case 27:
-                dCenterOfGravity(DynVecX(dylist), DynVecY(dylist), DynVecZ(dylist));
+            case GDCMD_SET_CENTER_OF_GRAVITY:
+                dCenterOfGravity(DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf));
                 break;
-            case 26:
-                dSetShapeOffset(DynVecX(dylist), DynVecY(dylist), DynVecZ(dylist));
+            case GDCMD_SET_SHAPE_OFFSET:
+                dSetShapeOffset(DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf));
                 break;
-            case 44:
-                dSetParmF(Dyn2AsInt(dylist), DynVecX(dylist));
+            case GDCMD_SET_PARAM_F:
+                dSetParmF(Dyn2AsInt(dynlist_buf), DynVecX(dynlist_buf));
                 break;
-            case 45:
-                dSetParmPointer(Dyn2AsInt(dylist), Dyn1AsPtr(dylist));
+            case GDCMD_SET_PARAM_PTR:
+                dSetParmPointer(Dyn2AsInt(dynlist_buf), Dyn1AsPtr(dynlist_buf));
                 break;
-            case 8:
-                dSetFlags(Dyn2AsInt(dylist));
+            case GDCMD_SET_FLAG:
+                dSetFlags(Dyn2AsInt(dynlist_buf));
                 break;
-            case 9:
-                dClearFlags(Dyn2AsInt(dylist));
+            case GDCMD_CLEAR_FLAG:
+                dClearFlags(Dyn2AsInt(dynlist_buf));
                 break;
-            case 7:
-                dSetObjectDrawFlag(Dyn2AsInt(dylist));
+            case GDCMD_SET_DRAW_FLAG:
+                dSetObjectDrawFlag(Dyn2AsInt(dynlist_buf));
                 break;
-            case 39:
-                dAttach(Dyn1AsName(dylist));
+            case GDCMD_ATTACH:
+                dAttach(Dyn1AsName(dynlist_buf));
                 break;
-            case 40:
-                dAttachToDynObjID(Dyn2AsInt(dylist), Dyn1AsName(dylist));
+            case GDCMD_ATTACH_TO:
+                dAttachToDynObjID(Dyn2AsInt(dynlist_buf), Dyn1AsName(dynlist_buf));
                 break;
-            case 41:
-                dSetAttachOffset(DynVec(dylist));
+            case GDCMD_SET_ATTACH_OFFSET:
+                dSetAttachOffset(DynVec(dynlist_buf));
                 break;
-            case 21:
-                dSetNodeGroup(Dyn1AsName(dylist));
+            case GDCMD_SET_NODE_GROUP:
+                dSetNodeGroup(Dyn1AsName(dynlist_buf));
                 break;
-            case 20:
-                dSetMaterialGroup(Dyn1AsName(dylist));
+            case GDCMD_SET_MATERIAL_GROUP:
+                dSetMaterialGroup(Dyn1AsName(dynlist_buf));
                 break;
-            case 22:
-                dSetSkinShape(Dyn1AsName(dylist));
+            case GDCMD_SET_SKIN_SHAPE:
+                dSetSkinShape(Dyn1AsName(dynlist_buf));
                 break;
-            case 23:
-                dSetPlaneGroup(Dyn1AsName(dylist));
+            case GDCMD_SET_PLANE_GROUP:
+                dSetPlaneGroup(Dyn1AsName(dynlist_buf));
                 break;
-            case 24:
-                dSetShapePtrPtr(Dyn1AsPtr(dylist));
+            case GDCMD_SET_SHAPE_PTR_PTR:
+                dSetShapePointerFromPointer(Dyn1AsPtr(dynlist_buf));
                 break;
-            case 25:
-                dSetShapePointer(Dyn1AsName(dylist));
+            case GDCMD_SET_SHAPE_PTR:
+                dSetShapePointerFromName(Dyn1AsName(dynlist_buf));
                 break;
-            case 19:
-                dSetType(Dyn2AsInt(dylist));
+            case GDCMD_SET_TYPE:
+                dSetType(Dyn2AsInt(dynlist_buf));
                 break;
-            case 13:
-                dSetColourNum(Dyn2AsInt(dylist));
+            case GDCMD_SET_COLOUR_NUM:
+                dSetColourNum(Dyn2AsInt(dynlist_buf));
                 break;
-            case 10:
-                dFriction(DynVecX(dylist), DynVecY(dylist), DynVecZ(dylist));
+            case GDCMD_SET_FRICTION:
+                dFriction(DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf));
                 break;
-            case 11:
-                dSetSpring(DynVecX(dylist));
+            case GDCMD_SET_SPRING:
+                dSetSpring(DynVecX(dynlist_buf));
                 break;
-            case 33:
-                dSetAmbient(DynVecX(dylist), DynVecY(dylist), DynVecZ(dylist));
+            case GDCMD_SET_AMBIENT:
+                dSetAmbient(DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf));
                 break;
-            case 34:
-                dSetDiffuse(DynVecX(dylist), DynVecY(dylist), DynVecZ(dylist));
+            case GDCMD_SET_DIFFUSE:
+                dSetDiffuse(DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf));
                 break;
-            case 31:
-                dSetControlType(Dyn2AsInt(dylist));
+            case GDCMD_SET_CONTROL_TYPE:
+                dSetControlType(Dyn2AsInt(dynlist_buf));
                 break;
-            case 32:
-                dSetSkinWeight(Dyn2AsInt(dylist), DynVecX(dylist));
+            case GDCMD_SET_SKIN_WEIGHT:
+                dSetSkinWeight(Dyn2AsInt(dynlist_buf), DynVecX(dynlist_buf));
                 break;
-            case 35:
-                dSetID(Dyn2AsInt(dylist));
+            case GDCMD_SET_ID:
+                dSetID(Dyn2AsInt(dynlist_buf));
                 break;
-            case 36:
-                dSetMaterial(Dyn1AsPtr(dylist), Dyn2AsInt(dylist));
+            case GDCMD_SET_MATERIAL:
+                dSetMaterial(Dyn1AsPtr(dynlist_buf), Dyn2AsInt(dynlist_buf));
                 break;
-            case 37:
-                dMapMaterials(Dyn1AsName(dylist));
+            case GDCMD_MAP_MATERIALS:
+                dMapMaterials(Dyn1AsName(dynlist_buf));
                 break;
-            case 38:
-                dMapVertices(Dyn1AsName(dylist));
+            case GDCMD_MAP_VERTICES:
+                dMapVertices(Dyn1AsName(dynlist_buf));
                 break;
-            case 53:
-                dSetTextureST(DynVecX(dylist), DynVecY(dylist));
+            case GDCMD_SET_TEXTURE_S_T:
+                dSetTextureST(DynVecX(dynlist_buf), DynVecY(dynlist_buf));
                 break;
-            case 52:
-                dUseTexture(Dyn2AsPtr(dylist));
+            case GDCMD_USE_TEXTURE:
+                dUseTexture(Dyn2AsPtr(dynlist_buf));
                 break;
-            case 54:
-                dMakeNetFromShapeID(Dyn1AsName(dylist));
+            case GDCMD_MAKE_NET_FROM_SHAPE:
+                dMakeNetFromShapeID(Dyn1AsName(dynlist_buf));
                 break;
-            case 55:
-                dMakeNetFromShapePointer(Dyn1AsPtr(dylist));
+            case GDCMD_MAKE_NET_FROM_SHAPE_PTR_PTR:
+                dMakeNetFromShapePointer(Dyn1AsPtr(dynlist_buf));
                 break;
             default:
-                fatal_printf("gdProcessDynList(): unkown command");
+                fatal_printf("gdProcessDynList(%d): unkown command", dynlist_buf->cmd);
         }
-        dylist++;
+        dynlist_buf++;
     }
 
     return sDynListCurObj;

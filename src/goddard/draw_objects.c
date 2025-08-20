@@ -28,7 +28,7 @@ void register_light(struct ObjLight *);
 
 // types
 /**
- * Modes for drawscene()
+ * Modes for gdDrawScene()
  */
 enum SceneType {
     RENDER_SCENE = 26, ///< render the primitives to screen
@@ -40,7 +40,6 @@ enum SceneType {
  * texture S,T coordinates.
  */
 struct BetaVtx {
-    /* 0x00 */ u8 filler[68];
     /* 0x44 */ f32 s;
     /* 0x48 */ f32 t;
 };
@@ -91,7 +90,6 @@ static f32 sPickObjDistance;             ///< distance between object position a
 static struct GdObj *sPickedObject;      ///< object selected with cursor
 /// Various counters and pointers set in update_view() and used in various `draw_XXX` functions
 static struct {
-    u8 filler1[4];        // @ 801B9CE0
     struct ObjView *view; // @ 801B9CE4
     s32 unreadCounter;    // @ 801B9CE8
     s32 mtlDlNum;         // @ 801B9CEC; name is a big guess
@@ -168,7 +166,6 @@ void draw_shape(struct ObjShape *shape, s32 flag, f32 c, f32 d, f32 e, // "sweep
                 f32 i, f32 j, f32 k, // translate shape
                 f32 l, f32 m, f32 n, // rotate x, y, z
                 s32 colorIdx, Mat4f *rotMtx) {
-    UNUSED u8 filler[8];
     struct GdVec3f sp1C;
 
     restart_timer("drawshape");
@@ -245,7 +242,6 @@ void draw_shape(struct ObjShape *shape, s32 flag, f32 c, f32 d, f32 e, // "sweep
 void draw_shape_2d(struct ObjShape *shape, s32 flag, UNUSED f32 c, UNUSED f32 d, UNUSED f32 e, f32 f,
                    f32 g, f32 h, UNUSED f32 i, UNUSED f32 j, UNUSED f32 k, UNUSED f32 l, UNUSED f32 m,
                    UNUSED f32 n, UNUSED s32 color, UNUSED s32 p) {
-    UNUSED u8 filler[8];
     struct GdVec3f sp1C;
 
     restart_timer("drawshape2d");
@@ -437,7 +433,6 @@ void draw_face(struct ObjFace *face) {
     f32 z;                 // 38
     f32 y;                 // 34
     f32 x;                 // 30
-    UNUSED u8 filler[12];
     s32 i;             // 20; also used to store mtl's gddl number
     s32 hasTextCoords; // 1c
     Vtx *gbiVtx;       // 18
@@ -453,9 +448,6 @@ void draw_face(struct ObjFace *face) {
                     sUpdateViewState.mtlDlNum = i;
                 }
             }
-        }
-
-        if (FALSE) {
         }
     }
 
@@ -535,7 +527,6 @@ void Unknown801792F0(struct GdObj *obj) {
 void draw_label(struct ObjLabel *label) {
     struct GdVec3f position;
     char strbuf[0x100];
-    UNUSED u8 filler[16];
     struct ObjValPtr *valptr;
     union ObjVarVal varval;
     valptrproc_t valfn = label->valfn;
@@ -592,7 +583,6 @@ void draw_label(struct ObjLabel *label) {
 void draw_net(struct ObjNet *self) {
     struct ObjNet *net = self;
     s32 netColor;
-    UNUSED u8 filler[80];
 
     if (sSceneProcessType == FIND_PICKS) {
         return;
@@ -728,7 +718,6 @@ void world_pos_to_screen_coords(struct GdVec3f *pos, struct ObjCamera *cam, stru
  */
 void check_grabbable_click(struct GdObj *input) {
     struct GdVec3f objPos;
-    UNUSED u8 filler[12];
     struct GdObj *obj;
     Mat4f *mtx;
 
@@ -770,11 +759,10 @@ void check_grabbable_click(struct GdObj *input) {
  * @param interactables components of `ObjView`
  * @param lightgrp lights of `ObjView
  */
-void drawscene(enum SceneType process, struct ObjGroup *interactables, struct ObjGroup *lightgrp) {
-    UNUSED u8 filler[16];
+void gdDrawScene(enum SceneType process, struct ObjGroup *interactables, struct ObjGroup *lightgrp) {
 
-    restart_timer("drawscene");
-    imin("draw_scene()");
+    restart_timer("gdDrawScene");
+    imin("gdDrawScene()");
     sUnreadShapeFlag = 0;
     sUpdateViewState.unreadCounter = 0;
     restart_timer("draw1");
@@ -831,7 +819,7 @@ void drawscene(enum SceneType process, struct ObjGroup *interactables, struct Ob
     gd_setproperty(GD_PROP_LIGHTING, 1.0f, 0.0f, 0.0f);
     gd_dl_pop_matrix();
     imout();
-    split_timer("drawscene");
+    split_timer("gdDrawScene");
     return;
 }
 
@@ -867,11 +855,9 @@ void draw_shape_faces(struct ObjShape *shape) {
  */
 void draw_particle(struct GdObj *obj) {
     struct ObjParticle *ptc = (struct ObjParticle *) obj;
-    UNUSED u8 filler1[16];
     struct GdColour *white;
     struct GdColour *black;
     f32 brightness;
-    UNUSED u8 filler2[16];
 
     if (ptc->timeout > 0) {
         white = sColourPalette[0];
@@ -907,9 +893,7 @@ void draw_particle(struct GdObj *obj) {
  */
 void draw_bone(struct GdObj *obj) {
     struct ObjBone *bone = (struct ObjBone *) obj;
-    UNUSED u8 filler1[4];
     s32 colour;
-    UNUSED u8 filler2[4];
     struct GdVec3f scale; // guess
 
     return;
@@ -938,14 +922,10 @@ void draw_bone(struct GdObj *obj) {
  */
 void draw_joint(struct GdObj *obj) {
     struct ObjJoint *joint = (struct ObjJoint *) obj;
-    UNUSED u8 filler1[4];
     UNUSED f32 sp7C = 70.0f;
-    UNUSED u8 filler2[4];
     UNUSED s32 sp74 = 1;
     s32 colour;
-    UNUSED u8 filler3[8];
     struct ObjShape *boneShape;
-    UNUSED u8 filler4[28];
 
     if ((boneShape = joint->shapePtr) == NULL) {
         return;
@@ -1346,7 +1326,6 @@ void unpick_obj(struct GdObj *obj) {
  */
 void find_closest_pickable_obj(struct GdObj *input) {
     struct GdObj *obj = input;
-    UNUSED u8 filler[12];
     f32 distance;
 
     if (obj->drawFlags & OBJ_IS_GRABBABLE) {
@@ -1456,7 +1435,7 @@ void update_view(struct ObjView *view) {
         if (gGdCtrl.dragging) {
             if (gd_getproperty(3, 0) != FALSE && gGdCtrl.startedDragging != FALSE) {
                 init_pick_buf(sPickBuffer, ARRAY_COUNT(sPickBuffer));
-                drawscene(FIND_PICKS, sUpdateViewState.view->components, NULL);
+                gdDrawScene(FIND_PICKS, sUpdateViewState.view->components, NULL);
                 pickOffset = get_cur_pickbuf_offset(sPickBuffer);
                 sPickDataTemp = 0;
                 sPickedObject = NULL;
@@ -1514,7 +1493,7 @@ void update_view(struct ObjView *view) {
             }
         }
 
-        drawscene(RENDER_SCENE, sUpdateViewState.view->components, sUpdateViewState.view->lights);
+        gdDrawScene(RENDER_SCENE, sUpdateViewState.view->components, sUpdateViewState.view->lights);
     }
 
     border_active_view();
