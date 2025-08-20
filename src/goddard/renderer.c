@@ -1318,25 +1318,6 @@ Gfx *gdm_gettestdl(s32 id) {
     gddl = NULL;
 
     switch (id) {
-        case 0:
-            if (sYoshiSceneView == NULL) {
-                fatal_printf("gdm_gettestdl(): DL number %d undefined", id);
-            }
-            //! @bug Code treats `sYoshiSceneView` as group; not called in game though
-            apply_to_obj_types_in_group(OBJ_TYPE_VIEWS, (applyproc_t) update_view,
-                                        (struct ObjGroup *) sYoshiSceneView);
-            dobj = d_use_obj("yoshi_scene");
-            gddl = sGdDLArray[((struct ObjView *) dobj)->gdDlNum];
-            sUpdateYoshiScene = TRUE;
-            break;
-        case 1:
-            if (sYoshiSceneGrp == NULL) {
-                fatal_printf("gdm_gettestdl(): DL number %d undefined", id);
-            }
-            dobj = d_use_obj("yoshi_sh_l1");
-            gddl = sGdDLArray[((struct ObjShape *) dobj)->dlNums[gGdFrameBufNum]];
-            sUpdateYoshiScene = TRUE;
-            break;
         case GD_SCENE_REGULAR_MARIO:
         case GD_SCENE_DIZZY_MARIO:
             setup_timers();
@@ -1348,31 +1329,6 @@ Gfx *gdm_gettestdl(s32 id) {
             gSPEndDisplayList(next_gfx());
             gddl = sCurrentGdDl;
             sUpdateMarioScene = TRUE;
-            break;
-        case 4:
-            if (sCarSceneView == NULL) {
-                fatal_printf("gdm_gettestdl(): DL number %d undefined", id);
-            }
-            //! @bug Code treats `sCarSceneView` as group; not called in game though
-            apply_to_obj_types_in_group(OBJ_TYPE_VIEWS, (applyproc_t) update_view,
-                                        (struct ObjGroup *) sCarSceneView);
-            dobj = d_use_obj("car_scene");
-            gddl = sGdDLArray[((struct ObjView *) dobj)->gdDlNum];
-            sUpdateCarScene = TRUE;
-            break;
-        case 5:
-            sActiveView = sScreenView;
-            set_gd_mtx_parameters(G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_PUSH);
-            dobj = d_use_obj("testnet2");
-            sCarGdDlNum = gd_startdisplist(8);
-
-            if (sCarGdDlNum == 0) {
-                fatal_printf("no memory for car DL\n");
-            }
-            apply_obj_draw_fn(dobj);
-            gd_enddlsplist_parent();
-            gddl = sGdDLArray[sCarGdDlNum];
-            sUpdateCarScene = TRUE;
             break;
         default:
             fatal_printf("gdm_gettestdl(): %d out of range", id);

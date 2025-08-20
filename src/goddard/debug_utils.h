@@ -52,6 +52,17 @@ struct GdFile {
 // bss
 extern u8 *gGdStreamBuffer;
 
+void print_stack_trace();
+
+#define fatal_print(str) {osSyncPrintf(str); while (1);}
+#define fatal_printf(fmt, ...) {\
+char buffer[0x200]; \
+sprintf(buffer, fmt , ## __VA_ARGS__); \
+osSyncPrintf(fmt); \
+print_stack_trace(); \
+while (1); \
+}
+
 // functions
 extern struct MemTracker *start_memtracker(const char *);
 extern u32 stop_memtracker(const char *);
@@ -69,8 +80,6 @@ extern void restart_timer(const char *);
 extern void split_timer(const char *);
 extern void stop_timer(const char *);
 extern f32 get_scaled_timer_total(const char *);
-extern void fatal_print(const char *) NORETURN;
-extern void fatal_printf(const char *, ...) NORETURN;
 extern void imin(const char *);
 extern void imout(void);
 extern f32 gd_rand_float(void);

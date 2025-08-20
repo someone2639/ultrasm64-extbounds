@@ -225,7 +225,7 @@ endif
 # allowing for usage of CEN64 (and possibly Project64) to print messages to terminal.
 #   1 - includes code in ROM
 #   0 - does not
-ISVPRINT ?= 0
+ISVPRINT ?= 1
 $(eval $(call validate-option,ISVPRINT,0 1))
 ifeq ($(ISVPRINT),1)
   DEFINES += ISVPRINT=1
@@ -563,7 +563,7 @@ endif
 ifneq (,$(call find-command,wslview))
     EMULATOR = "/mnt/c/Program Files (x86)/parallel-launcher/parallel-launcher.exe"
 else
-    EMULATOR = parallel-launcher
+    EMULATOR = ares
 endif
 
 EMU_FLAGS =

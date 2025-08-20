@@ -415,14 +415,6 @@ f32 get_scaled_timer_total(const char *name) {
  * Miscellaneous debug functions
  */
 
-
-/**
- * Prints the given string, prints the stack trace, and exits the program
- */
-void fatal_print(const char *str) {
-    fatal_printf(str);
-}
-
 /**
  * Prints the stack trace registered by callng imin()/imout()
  */
@@ -432,56 +424,6 @@ void print_stack_trace(void) {
     for (i = 0; i < sNumRoutinesInStack; i++) {
         gd_printf("\tIn: '%s'\n", sRoutineNames[i]);
     }
-}
-
-/**
- * Prints the formatted string, prints the stack trace, and exits the program
- */
-void fatal_printf(const char *fmt, ...) {
-    char cur;
-    UNUSED u8 filler[4];
-    va_list vl;
-
-    va_start(vl, fmt);
-    while ((cur = *fmt++)) {
-        switch (cur) {
-            case '%':
-                switch (cur = *fmt++) {
-                    case 'd':
-                        gd_printf("%d", va_arg(vl, s32));
-                        break;
-                    case 'f':
-                        gd_printf("%f", va_arg(vl, double));
-                        break;
-                    case 's':
-                        gd_printf("%s", va_arg(vl, char *));
-                        break;
-                    case 'c':
-                        gd_printf("%c", (char)va_arg(vl, int));
-                        break;
-                    case 'x':
-                        gd_printf("%x", va_arg(vl, s32));
-                        break;
-                    default:
-                        gd_printf("%c", cur);
-                }
-                break;
-            case '\\':
-                gd_printf("\\");
-                break;
-            case '\n':
-                gd_printf("\n");
-                break;
-            default:
-                gd_printf("%c", cur);
-        }
-    }
-    va_end(vl);
-
-    gd_printf("\n");
-    print_stack_trace();
-    gd_printf("\n");
-    gd_exit(-1);
 }
 
 /**
