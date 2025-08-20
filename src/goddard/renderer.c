@@ -62,7 +62,6 @@ struct GdDisplayList {
     /* GD DL Info */
     /*0x40*/ u32 id;     // user specified
     /*0x44*/ u32 number; // count
-    /*0x48*/ u8 filler[4];
     /*0x4C*/ struct GdDisplayList *parent; // not quite sure?
 };                                         /* sizeof = 0x50 */
 // accessor macros for gd dl
@@ -108,20 +107,13 @@ static s32 D_801BB01C;
 static void *sLoadedTextures[0x10];          // texture pointers
 static s32 sTextureDisplayLists[0x10];            // gd_dl indices
 static s16 sVtxCvrtTCBuf[2];            // @ 801BB0A0
-static s32 sCarGdDlNum;                 // @ 801BB0A4
-static struct ObjGroup *sYoshiSceneGrp; // @ 801BB0A8
 static struct ObjGroup *sMarioSceneGrp; // @ 801BB0B0
 static s32 D_801BB0B4;                  // second offset into sTriangleBuf
-static struct ObjGroup *sCarSceneGrp;   // @ 801BB0B8
 static s32 sVertexBufCount; // vtx's to load into RPD? Vtx len in GD Dl and in the lower bank (AF30)
-static struct ObjView *sYoshiSceneView; // @ 801BB0C0
 static s32 sTriangleBufCount;                  // number of triangles in sTriangleBuf
 static struct ObjView *sMSceneView;     // @ 801BB0C8; Mario scene view
 static s32 sVertexBufStartIndex;                  // Vtx start in GD Dl
-static struct ObjView *sCarSceneView;   // @ 801BB0D0
-static s32 sUpdateYoshiScene;           // @ 801BB0D4; update dl Vtx from ObjVertex?
 static s32 sUpdateMarioScene;           // @ 801BB0D8; update dl Vtx from ObjVertex?
-static s32 sUpdateCarScene; // @ 801BB0E0; guess, not really used
 static struct GdVec3f sTextDrawPos;  // position to draw text? only set in one function, never used
 static Mtx sIdnMtx;           // @ 801BB100
 static Mat4f sInitIdnMat4;    // @ 801BB140
@@ -135,7 +127,6 @@ static s32 sLightId;
 static Hilite sHilites[600];
 static struct GdVec3f D_801BD758;
 static struct GdVec3f D_801BD768; // had to migrate earlier
-static u32 D_801BD774;
 static struct GdObj *sMenuGadgets[9]; // @ 801BD778; d_obj ptr storage? menu?
 static struct ObjView *sDebugViews[2];  // Seems to be a list of ObjViews for displaying debug info
 static struct GdDisplayList *sStaticDl;     // @ 801BD7A8
@@ -190,23 +181,13 @@ static s32 sCurrDebugViewIndex = 0;             // @ 801A86F4; timing activate c
 static struct GdDisplayList *sCurrentGdDl = NULL; // @ 801A86FC
 static u32 sGdDlCount = 0;                        // @ 801A8700
 static struct DynListBankInfo sDynLists[] = {     // @ 801A8704
-    { STD_LIST_BANK, dynlist_test_cube },
-    { STD_LIST_BANK, dynlist_spot_shape },
     { STD_LIST_BANK, dynlist_mario_master },
     { TABLE_END, NULL }
 };
 
 // textures and display list data
-UNUSED static Gfx gd_texture1_dummy_aligner1[] = { // @ 801A8728
-    gsSPEndDisplayList(),
-};
-
 ALIGNED8 static Texture gd_texture_hand_open[] = {
 #include "textures/intro_raw/hand_open.rgba16.inc.c"
-};
-
-UNUSED static Gfx gd_texture2_dummy_aligner1[] = {
-    gsSPEndDisplayList()
 };
 
 ALIGNED8 static Texture gd_texture_hand_closed[] = {
@@ -282,14 +263,6 @@ static Vtx_t gd_vertex_star[] = {
     {{ 64,   0, 0}, 0, {992, 992}, {0x00, 0x00, 0x7F}},
     {{ 64, 128, 0}, 0, {992,   0}, {0x00, 0x00, 0x7F}},
     {{-64, 128, 0}, 0, {  0,   0}, {0x00, 0x00, 0x7F}},
-};
-
-//! no references to these vertices
-UNUSED static Vtx_t gd_unused_vertex[] = {
-    {{16384, 0,     0}, 0, {0, 16384}, {0x00, 0x00, 0x00}},
-    {{    0, 0, 16384}, 0, {0,     0}, {0x00, 0x00, 0x40}},
-    {{    0, 0,     0}, 0, {0,     0}, {0x00, 0x00, 0x00}},
-    {{    0, 0,     0}, 0, {0,     0}, {0x00, 0x00, 0x00}},
 };
 
 static Gfx gd_dl_star_common[] = {
@@ -668,41 +641,7 @@ static Gfx gd_dl_rdp_init[] = {
     gsSPEndDisplayList(),
 };
 
-UNUSED static u32 gd_unused_pad1 = 0;
-
 float sGdPerspTimer = 1.0;
-
-UNUSED static u32 gd_unused_pad2 = 0;
-
-UNUSED static Gfx gd_texture4_dummy_aligner1[] = {
-    gsDPPipeSync(),
-    gsSPEndDisplayList(),
-};
-
-static Vtx_t gd_unused_mesh_vertex_group1[] = {
-    {{-8,  8,  0}, 0, {  0,  0}, {  0x00, 0x00, 0x00, 0xFF}},
-    {{ 8, -2,  0}, 0, {  0,  0}, {  0x00, 0x00, 0x00, 0xFF}},
-    {{ 2, -8,  0}, 0, {  0,  0}, {  0x00, 0x00, 0x00, 0xFF}},
-};
-
-static Vtx_t gd_unused_mesh_vertex_group2[] = {
-    {{-6,  6,  0}, 0, {  0,  0}, {  0xFF, 0xFF, 0xFF, 0xFF}},
-    {{ 7, -3,  0}, 0, {  0,  0}, {  0xFF, 0x00, 0x00, 0xFF}},
-    {{ 3, -7,  0}, 0, {  0,  0}, {  0xFF, 0x00, 0x00, 0xFF}},
-};
-
-UNUSED static Gfx gd_dl_unused_mesh[] = {
-    gsDPPipeSync(),
-    gsDPSetRenderMode(G_RM_OPA_SURF, G_RM_OPA_SURF2),
-    gsSPClearGeometryMode(0xFFFFFFFF),
-    gsSPSetGeometryMode(G_SHADING_SMOOTH | G_SHADE),
-    gsDPPipeSync(),
-    gsSPVertex(gd_unused_mesh_vertex_group1, 3, 0),
-    gsSP1Triangle(0,  1,  2, 0x0),
-    gsSPVertex(gd_unused_mesh_vertex_group2, 3, 0),
-    gsSP1Triangle(0,  1,  2, 0x0),
-    gsSPEndDisplayList(),
-};
 
 static Gfx gd_dl_sprite_start_tex_block[] = {
     gsDPPipeSync(),
@@ -718,8 +657,8 @@ static Gfx gd_dl_sprite_start_tex_block[] = {
 };
 
 // linker (ROM addresses)
-extern u8 _gd_dynlistsSegmentRomStart[];
-extern u8 _gd_dynlistsSegmentRomEnd[];
+extern u8 _faceDataSegmentRomStart[];
+extern u8 _faceDataSegmentRomEnd[];
 
 // forward declarations
 u32 new_gddl_from(Gfx *, s32);
@@ -850,14 +789,11 @@ f64 stub_renderer_1(UNUSED f64 x) {
 /* 249BCC -> 24A19C */
 void gd_printf(const char *format, ...) {
     s32 i;
-    UNUSED u8 filler1[4];
     char c;
     char f;
-    UNUSED u8 filler2[4];
     char buf[0x100];
     char *csr = buf;
     char spec[8];    // specifier string
-    UNUSED u8 filler3[4];
     union PrintVal val;
     va_list args;
 
@@ -1032,7 +968,6 @@ void draw_indexed_dl(s32 dlNum, s32 gfxIdx) {
 /* 24A598 -> 24A610; orig name: func_8019BDC8 */
 void branch_cur_dl_to_num(s32 dlNum) {
     Gfx *dl;
-    UNUSED u8 filler[8];
 
     dl = sGdDLArray[dlNum]->gfx;
     gSPDisplayList(next_gfx(), GD_VIRTUAL_TO_PHYSICAL(dl));
@@ -1131,7 +1066,6 @@ void gd_add_to_heap(void *addr, u32 size) {
 
 /* 24AAE0 -> 24AB7C */
 void gdm_init(void *blockpool, u32 size) {
-    UNUSED u8 filler[4];
 
     imin("gdm_init");
     // Align downwards?
@@ -1151,14 +1085,10 @@ void gdm_init(void *blockpool, u32 size) {
  * Initializes the Mario head demo
  */
 void gdm_setup(void) {
-    UNUSED u8 filler[4];
 
     imin("gdm_setup");
-    sYoshiSceneGrp = NULL;
     sMarioSceneGrp = NULL;
-    sUpdateYoshiScene = FALSE;
     sUpdateMarioScene = FALSE;
-    sCarGdDlNum = 0;
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF);
     osCreateMesgQueue(&sGdDMAQueue, sGdMesgBuf, ARRAY_COUNT(sGdMesgBuf));
     gd_init();
@@ -1192,17 +1122,10 @@ struct ObjView *make_view_withgrp(char *name, struct ObjGroup *grp) {
 
 /* 24AD14 -> 24AEB8 */
 void gdm_maketestdl(s32 id) {
-    UNUSED u8 filler[12];
 
     imin("gdm_maketestdl");
     switch (id) {
-        case 0:
-            sYoshiSceneView = make_view_withgrp("yoshi_scene", sYoshiSceneGrp);
-            break;
-        case 1:
-            reset_nets_and_gadgets(sYoshiSceneGrp);
-            break;
-        case 2: // normal Mario head
+        case GD_SCENE_REGULAR_MARIO: // normal Mario head
             if (sMarioSceneGrp == NULL) {
                 load_mario_head(animate_mario_head_normal);
                 sMarioSceneGrp = gMarioFaceGrp; // gMarioFaceGrp set by load_mario_head
@@ -1210,7 +1133,7 @@ void gdm_maketestdl(s32 id) {
             }
             sMSceneView = make_view_withgrp("mscene", sMarioSceneGrp);
             break;
-        case 3: // game over Mario head
+        case GD_SCENE_DIZZY_MARIO: // game over Mario head
             if (sMarioSceneGrp == NULL) {
                 load_mario_head(animate_mario_head_gameover);
                 sMarioSceneGrp = gMarioFaceGrp;
@@ -1218,14 +1141,8 @@ void gdm_maketestdl(s32 id) {
             }
             sMSceneView = make_view_withgrp("mscene", sMarioSceneGrp);
             break;
-        case 4:
-            sCarSceneView = make_view_withgrp("car_scene", sCarSceneGrp);
-            break;
-        case 5:
-            reset_nets_and_gadgets(sCarSceneGrp);
-            break;
         default:
-            fatal_printf("gdm_maketestdl(): unknown dl");
+            fatal_printf("gdm_maketestdl(%d): unknown dl", id);
     }
     imout();
 }
@@ -1246,13 +1163,9 @@ void Unknown8019C840(void) {
  */
 void gd_vblank(void) {
     gd_sfx_update();
-    if (sUpdateYoshiScene) {
-        apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) convert_net_verts, sYoshiSceneGrp);
-    }
     if (sUpdateMarioScene) {
         apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) convert_net_verts, sMarioSceneGrp);
     }
-    sUpdateYoshiScene = FALSE;
     sUpdateMarioScene = FALSE;
     gGdFrameBufNum ^= 1;
     reset_cur_dl_indices();
@@ -1284,9 +1197,7 @@ s32 gd_sfx_to_play(void) {
 
 /* 24B088 -> 24B418 */
 Gfx *gdm_gettestdl(s32 id) {
-    struct GdObj *dobj;
     struct GdDisplayList *gddl;
-    UNUSED u8 filler[8];
     struct GdVec3f vec;
 
     start_timer("dlgen");
@@ -1916,7 +1827,6 @@ void func_801A0038(void) {
 
 /* 24E840 -> 24E9BC */
 void gd_dl_flush_vertices(void) {
-    UNUSED u8 filler[4];
     s32 i;
     UNUSED s32 startvtx = sVertexBufStartIndex;
 
@@ -1998,13 +1908,11 @@ void gd_dl_hilite(s32 idx, // material GdDl number; offsets into hilite array
                    struct GdVec3f *arg4,   // vector to light source?
                    struct GdColour *colour // light color
 ) {
-    UNUSED u8 filler1[96];
     Hilite *hilite; // 4c
     struct GdVec3f sp40;
     f32 sp3C; // magnitude of sp40
     f32 sp38;
     f32 sp34;
-    UNUSED u8 filler2[24];
 
     sp38 = 32.0f; // x scale factor?
     sp34 = 32.0f; // y scale factor?
@@ -2043,7 +1951,6 @@ void gd_dl_hilite(s32 idx, // material GdDl number; offsets into hilite array
  * Adds some display list commands that perform lighting for a material
  */
 s32 gd_dl_material_lighting(s32 id, struct GdColour *colour, s32 material) {
-    UNUSED u8 filler[8];
     s32 i;
     s32 numLights = sNumLights;
     s32 scaledColours[3];
@@ -2254,7 +2161,6 @@ void gd_set_one_cycle(void) {
 
 /* 250B30 -> 250B44 */
 void stub_renderer_3(void) {
-    UNUSED u8 filler[16];
 }
 
 /* 250B44 -> 250B58 */
@@ -2607,10 +2513,8 @@ void gd_create_ortho_matrix(f32 l, f32 r, f32 b, f32 t, f32 n, f32 f) {
 /* 25245C -> 25262C */
 void gd_create_perspective_matrix(f32 fovy, f32 aspect, f32 near, f32 far) {
     u16 perspNorm;
-    UNUSED u8 filler1[4];
     uintptr_t perspecMtx;
     uintptr_t rotMtx;
-    UNUSED u8 filler2[4];
     UNUSED f32 unused = 0.0625f;
 
     sGdPerspTimer += 0.1;
@@ -2868,9 +2772,7 @@ void stub_renderer_10(UNUSED u32 arg0) {
 
 /* 2530A8 -> 2530C0 */
 void stub_draw_label_text(UNUSED char *s) {
-    UNUSED u8 filler1[4];
     UNUSED char *save = s;
-    UNUSED u8 filler2[24];
 }
 
 /* 2530C0 -> 2530D8; orig name: func_801A48F0 */
@@ -3014,7 +2916,6 @@ void Proc801A5110(struct ObjView *view) {
 
 /* 253938 -> 2539DC; orig name: func_801A5168 */
 void update_view_and_dl(struct ObjView *view) {
-    UNUSED u8 filler[4];
     s32 prevFlags; // 18
 
     prevFlags = view->flags;
@@ -3031,7 +2932,6 @@ void update_view_and_dl(struct ObjView *view) {
  * Unused - called by __main__
  */
 void func_801A520C(void) {
-    UNUSED u8 filler[8];
 
     start_timer("1frame");
     start_timer("cpu");
@@ -3081,7 +2981,6 @@ UNUSED void Unknown801A5344(void) {
 /* 253BC8 -> 2540E0 */
 void gd_init(void) {
     s32 i; // 34
-    UNUSED u8 filler[4];
     s8 *data; // 2c
 
     imin("gd_init");
@@ -3480,7 +3379,6 @@ void view_proc_print_timers(struct ObjView *self) {
 void make_timer_gadgets(void) {
     struct ObjLabel *timerLabel;
     struct ObjGroup *timerg;
-    UNUSED u8 filler[4];
     struct ObjView *timersview;
     struct ObjGadget *bar1;
     struct ObjGadget *bar2;
@@ -3652,8 +3550,8 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
 
     switch (sDynLists[i].flag) {
         case STD_LIST_BANK:
-            dynlistSegStart = (uintptr_t) _gd_dynlistsSegmentRomStart;
-            dynlistSegEnd = (uintptr_t) _gd_dynlistsSegmentRomEnd;
+            dynlistSegStart = (uintptr_t) _faceDataSegmentRomStart;
+            dynlistSegEnd = (uintptr_t) _faceDataSegmentRomEnd;
             break;
         default:
             fatal_printf("load_dynlist() unkown bank");
@@ -3720,7 +3618,6 @@ void func_801A71CC(struct ObjNet *net) {
     f32 spAC;
     f32 spA8;
     struct GdBoundingBox bbox;
-    UNUSED u8 filler1[4];
     struct ObjZone *sp88;
     register struct ListNode *link;  // s0 (84)
     s32 sp80;                     // linked planes contained in zone?
@@ -3729,13 +3626,9 @@ void func_801A71CC(struct ObjNet *net) {
     register struct ListNode *link2; // s2 (74)
     register struct ListNode *link3; // s3 (70)
     struct GdVec3f sp64;
-    UNUSED u8 filler2[4];
     struct ObjPlane *plane; // 5c
-    UNUSED u8 filler3[4];
     struct ObjZone *linkedZone; // 54
-    UNUSED u8 filler4[4];
     struct ObjPlane *planeL2; // 4c
-    UNUSED u8 filler5[4];
     struct ObjPlane *planeL3; // 44
 
     if (net->unk21C == NULL) {

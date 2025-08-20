@@ -429,7 +429,7 @@ SECTIONS
    YAY0_SEG(title_screen_bg,    0x0A000000)
 
 #ifdef KEEP_MARIO_HEAD
-   BEGIN_SEG(gd_dynlists, 0x04000000)
+   BEGIN_SEG(faceData, 0x04000000)
    {
       BUILD_DIR/libgoddard.a:dynlist_test_cube.o(.data*);
       BUILD_DIR/libgoddard.a:dynlist_unused.o(.data*);
@@ -449,7 +449,7 @@ SECTIONS
       BUILD_DIR/libgoddard.a:*.o(.data*);
       BUILD_DIR/libgoddard.a:*.o(.rodata*);
    }
-   END_SEG(gd_dynlists)
+   END_SEG(faceData)
 #endif
 
    gMainLevels = __romPos;
