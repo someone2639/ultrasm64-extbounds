@@ -88,19 +88,11 @@ struct DynListBankInfo {
 static OSMesgQueue D_801BE830; // controller msg queue
 static OSMesg D_801BE848[10];
 u8 EUpad1[0x40];
-UNUSED static OSMesgQueue D_801BE8B0;
 static OSMesgQueue sGdDMAQueue; // @ 801BE8C8
-// static u32 unref_801be870[16];
-// static u32 unref_801be8e0[25];
-// static u32 unref_801be948[13];
-u8 EUpad2[0x64];
 static OSMesg sGdMesgBuf[1]; // @ 801BE944
-u8 EUpad3[0x34];
 static OSMesg sGdDMACompleteMsg; // msg buf for D_801BE8B0 queue
 static OSIoMesg sGdDMAReqMesg;
 static struct ObjView *D_801BE994; // store if View flag 0x40 set
-
-u8 EUpad4[0x88];
 #endif
 static OSContStatus D_801BAE60[4];
 static OSContPadEx sGdContPads[4];    // @ 801BAE70
@@ -109,10 +101,8 @@ static u8 D_801BAEA0;
 static struct ObjGadget *sTimerGadgets[GD_NUM_TIMERS]; // @ 801BAEA8
 static u32 D_801BAF28;                                 // RAM addr offset?
 static s16 sTriangleBuf[13][8];                          // [[s16; 8]; 13]? vert indices?
-UNUSED static u32 unref_801bb000[3];
 static u8 *sMemBlockPoolBase; // @ 801BB00C
 static u32 sAllocMemory;      // @ 801BB010; malloc-ed bytes
-UNUSED static u32 unref_801bb014;
 static s32 D_801BB018;
 static s32 D_801BB01C;
 static void *sLoadedTextures[0x10];          // texture pointers
@@ -120,7 +110,6 @@ static s32 sTextureDisplayLists[0x10];            // gd_dl indices
 static s16 sVtxCvrtTCBuf[2];            // @ 801BB0A0
 static s32 sCarGdDlNum;                 // @ 801BB0A4
 static struct ObjGroup *sYoshiSceneGrp; // @ 801BB0A8
-static s32 unusedDl801BB0AC;                  // unused DL number
 static struct ObjGroup *sMarioSceneGrp; // @ 801BB0B0
 static s32 D_801BB0B4;                  // second offset into sTriangleBuf
 static struct ObjGroup *sCarSceneGrp;   // @ 801BB0B8
@@ -132,11 +121,8 @@ static s32 sVertexBufStartIndex;                  // Vtx start in GD Dl
 static struct ObjView *sCarSceneView;   // @ 801BB0D0
 static s32 sUpdateYoshiScene;           // @ 801BB0D4; update dl Vtx from ObjVertex?
 static s32 sUpdateMarioScene;           // @ 801BB0D8; update dl Vtx from ObjVertex?
-UNUSED static u32 unref_801bb0dc;
 static s32 sUpdateCarScene; // @ 801BB0E0; guess, not really used
-UNUSED static u32 unref_801bb0e4;
 static struct GdVec3f sTextDrawPos;  // position to draw text? only set in one function, never used
-UNUSED static u32 unref_801bb0f8[2];
 static Mtx sIdnMtx;           // @ 801BB100
 static Mat4f sInitIdnMat4;    // @ 801BB140
 static s8 sVtxCvrtNormBuf[3]; // @ 801BB180
@@ -166,21 +152,15 @@ static LookAt D_801BE7D0[3];
 #if defined(VERSION_JP) || defined(VERSION_US)
 static OSMesgQueue D_801BE830; // controller msg queue
 static OSMesg D_801BE848[10];
-UNUSED static u32 unref_801be870[16];
-UNUSED static OSMesgQueue D_801BE8B0;
 static OSMesgQueue sGdDMAQueue; // @ 801BE8C8
-UNUSED static u32 unref_801be8e0[25];
 static OSMesg sGdMesgBuf[1]; // @ 801BE944
-UNUSED static u32 unref_801be948[13];
 static OSMesg sGdDMACompleteMsg; // msg buf for D_801BE8B0 queue
 static OSIoMesg sGdDMAReqMesg;
 static struct ObjView *D_801BE994; // store if View flag 0x40 set
 #endif
 
 // data
-UNUSED static u32 unref_801a8670 = 0;
 static s32 D_801A8674 = 0;
-UNUSED static u32 unref_801a8678 = 0;
 static s32 D_801A867C = 0;
 static s32 D_801A8680 = 0;
 static f32 sTracked1FrameTime = 0.0f; // @ 801A8684
@@ -195,13 +175,10 @@ static struct GdTimer *D_801A86A4 = NULL; // timer for dlgen, dynamics, or rcp
 static struct GdTimer *D_801A86A8 = NULL; // timer for dlgen, dynamics, or rcp
 static struct GdTimer *D_801A86AC = NULL; // timer for dlgen, dynamics, or rcp
 s32 gGdFrameBufNum = 0;                      // @ 801A86B0
-UNUSED static u32 unref_801a86B4 = 0;
 static struct ObjShape *sHandShape = NULL; // @ 801A86B8
 static s32 D_801A86BC = 1;
 static s32 D_801A86C0 = 0; // gd_dl id for something?
-UNUSED static u32 unref_801a86C4 = 10;
 static s32 sMtxParamType = G_MTX_PROJECTION;
-UNUSED static struct GdVec3f D_801A86CC = { 1.0f, 1.0f, 1.0f };
 static struct ObjView *sActiveView = NULL;  // @ 801A86D8 current view? used when drawing dl
 static struct ObjView *sScreenView = NULL; // @ 801A86DC
 static struct ObjView *D_801A86E0 = NULL;
@@ -210,7 +187,6 @@ static struct ObjView *sMenuView = NULL; // @ 801A86E8
 static u32 sItemsInMenu = 0;             // @ 801A86EC
 static s32 sDebugViewsCount = 0;               // number of elements in the sDebugViews array
 static s32 sCurrDebugViewIndex = 0;             // @ 801A86F4; timing activate cool down counter?
-UNUSED static u32 unref_801a86F8 = 0;
 static struct GdDisplayList *sCurrentGdDl = NULL; // @ 801A86FC
 static u32 sGdDlCount = 0;                        // @ 801A8700
 static struct DynListBankInfo sDynLists[] = {     // @ 801A8704
@@ -1186,7 +1162,7 @@ void gdm_setup(void) {
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF);
     osCreateMesgQueue(&sGdDMAQueue, sGdMesgBuf, ARRAY_COUNT(sGdMesgBuf));
     gd_init();
-    load_shapes2();
+    gdResetDynListAndShapeProcessors();
     reset_cur_dl_indices();
     setup_stars();
     imout();
@@ -1963,10 +1939,7 @@ void gd_dl_flush_vertices(void) {
  * Unused - called by func_801A520C
  */
 UNUSED static void func_801A01EC(void) {
-    if (D_801BE8B0.validCount >= D_801BE8B0.msgCount) {
-        osRecvMesg(&D_801BE8B0, &sGdDMACompleteMsg, OS_MESG_BLOCK);
-    }
-    osRecvMesg(&D_801BE8B0, &sGdDMACompleteMsg, OS_MESG_BLOCK);
+
 }
 
 /**
@@ -2470,23 +2443,6 @@ void parse_p1_controller(void) {
     }
 }
 
-UNUSED void stub_renderer_4(f32 arg0) {
-    return;
-
-    // dead code
-    if (D_801BD768.x * D_801A86CC.x + arg0 * 2.0f > 160.0) {
-        func_801A3370(D_801BD758.x - D_801BD768.x, -20.0f, 0.0f);
-        D_801BD768.x = D_801BD758.x;
-    }
-}
-
-/**
- * Unused
- */
-UNUSED void Unknown801A32F4(s32 arg0) {
-    D_801BD774 = GD_LOWER_24(arg0) + D_801BAF28;
-}
-
 /* 251AF4 -> 251B40 */
 void func_801A3324(f32 x, f32 y, f32 z) {
     D_801BD768.x = x;
@@ -2503,27 +2459,6 @@ void func_801A3370(f32 x, f32 y, f32 z) {
     D_801BD768.x += x;
     D_801BD768.y += y;
     D_801BD768.z += z;
-}
-
-/**
- * Unused
- */
-void Unknown801A33F8(f32 x, f32 y, f32 z) {
-    gd_dl_mul_trans_matrix(x - D_801BD768.x, y - D_801BD768.y, z - D_801BD768.z);
-
-    D_801BD768.x = x;
-    D_801BD768.y = y;
-    D_801BD768.z = z;
-}
-
-/**
- * Unused
- */
-void Unknown801A347C(f32 x, f32 y, f32 z) {
-    D_801A86CC.x = x;
-    D_801A86CC.y = y;
-    D_801A86CC.z = z;
-    gd_dl_scale(x, y, z);
 }
 
 /* 251CB0 -> 251D44; orig name: func_801A34E0 */
@@ -3229,7 +3164,7 @@ void gd_init(void) {
     gGdCtrl.csrX = 160;
     gGdCtrl.csrY = 120;
     gGdCtrl.dragStartFrame = -1000;
-    unusedDl801BB0AC = create_mtl_gddl(4);
+    // unusedDl801BB0AC = create_mtl_gddl(4);
     imout();
 }
 

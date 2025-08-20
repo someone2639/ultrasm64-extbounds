@@ -59,7 +59,7 @@ enum DObjTypes {
 // functions
 void d_stash_dynobj(void);
 void d_unstash_dynobj(void);
-void reset_dynlist(void);
+void gdResetDynListProcessor(void);
 struct GdObj *proc_dynlist(struct DynList *dylist);
 void d_set_name_suffix(char *str);
 struct GdObj *d_makeobj(enum DObjTypes type, DynObjName name);

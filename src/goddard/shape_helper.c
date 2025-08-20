@@ -121,7 +121,7 @@ struct ObjMaterial *find_or_add_new_mtl(struct ObjGroup *, s32, f32, f32, f32);
 
 /* @ 245A50 for 0x40 */
 /* Something to do with shape list/group initialization? */
-void func_80197280(void) {
+void gdResetShapeHelper(void) {
     sGdShapeCount = 0;
     sGdShapeListHead = NULL;
     gGdLightGroup = make_group(0);
@@ -1419,22 +1419,10 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
 }
 
 /* @ 249288 for 0xe0 */
-void load_shapes2(void) {
-    imin("load_shapes2()");
-    reset_dynlist();
-    func_80197280();
-
-    sCubeShape = make_shape(0, "cube");
-
-    gSpotShape = (struct ObjShape *) load_dynlist(dynlist_spot_shape);
-    scale_verts_in_shape(gSpotShape, 200.0f, 200.0f, 200.0f);
-
-    sGrabJointTestShape = (struct ObjShape *) load_dynlist(dynlist_test_cube);
-    scale_verts_in_shape(sGrabJointTestShape, 30.0f, 30.0f, 30.0f);
-
-    sCubeShapeGroup = make_group_of_type(OBJ_TYPE_SHAPES, &sCubeShape->header, NULL);
-    create_gddl_for_shapes(sCubeShapeGroup);
-
+void gdResetDynListAndShapeProcessors(void) {
+    imin("gdResetDynListAndShapeProcessors()");
+    gdResetDynListProcessor();
+    gdResetShapeHelper();
     imout();
 }
 

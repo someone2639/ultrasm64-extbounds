@@ -140,7 +140,7 @@ void d_unstash_dynobj(void) {
 /**
  * Reset dynlist related variables to a starting state
  */
-void reset_dynlist(void) {
+void gdResetDynListProcessor(void) {
     sUnnamedObjCount = 0;
     sLoadedDynObjs = 0;
     sDynNameSuffix[0] = '\0';
