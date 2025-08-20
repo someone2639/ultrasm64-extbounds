@@ -116,7 +116,7 @@ void func_801A4438(f32 x, f32 y, f32 z);
 void stub_draw_label_text(UNUSED char *s);
 void set_active_view(struct ObjView *v);
 void func_801A520C(void);
-void gd_init(void);
+void gdInitSystem(void);
 void init_pick_buf(s16 *buf, s32 len);
 void store_in_pickbuf(s16 data);
 s32 get_cur_pickbuf_offset(UNUSED s16 *arg0);

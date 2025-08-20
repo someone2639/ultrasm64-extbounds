@@ -181,7 +181,7 @@ static s32 sCurrDebugViewIndex = 0;             // @ 801A86F4; timing activate c
 static struct GdDisplayList *sCurrentGdDl = NULL; // @ 801A86FC
 static u32 sGdDlCount = 0;                        // @ 801A8700
 static struct DynListBankInfo sDynLists[] = {     // @ 801A8704
-    { STD_LIST_BANK, dynlist_mario_master },
+    { STD_LIST_BANK, GODDARD_MAIN_FACE_SCENE },
     { TABLE_END, NULL }
 };
 
@@ -1091,7 +1091,7 @@ void gdm_setup(void) {
     sUpdateMarioScene = FALSE;
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF);
     osCreateMesgQueue(&sGdDMAQueue, sGdMesgBuf, ARRAY_COUNT(sGdMesgBuf));
-    gd_init();
+    gdInitSystem();
     gdResetDynListAndShapeProcessors();
     reset_cur_dl_indices();
     setup_stars();
@@ -1114,7 +1114,16 @@ void print_gdm_stats(void) {
 /* 24AC80 -> 24AD14; orig name: func_8019C4B0 */
 struct ObjView *make_view_withgrp(char *name, struct ObjGroup *grp) {
     struct ObjView *view = make_view(name, (VIEW_DRAW | VIEW_ALLOC_ZBUF | VIEW_MOVEMENT), 1, 0, 0, 320, 240, grp);
+
+    if (view == NULL) {
+        fatal_printf("make_view_withgrp(): make_view failed!\n");
+    }
+
     UNUSED struct ObjGroup *viewgrp = make_group(2, grp, view);
+
+    if (viewgrp == NULL) {
+        fatal_printf("make_view_withgrp(): make_viewgrp failed!\n");
+    }
 
     view->lights = gGdLightGroup;
     return view;
@@ -1122,7 +1131,6 @@ struct ObjView *make_view_withgrp(char *name, struct ObjGroup *grp) {
 
 /* 24AD14 -> 24AEB8 */
 void gdm_maketestdl(s32 id) {
-
     imin("gdm_maketestdl");
     switch (id) {
         case GD_SCENE_REGULAR_MARIO: // normal Mario head
@@ -1208,6 +1216,15 @@ Gfx *gdm_gettestdl(s32 id) {
         case GD_SCENE_REGULAR_MARIO:
         case GD_SCENE_DIZZY_MARIO:
             setup_timers();
+            if (sMSceneView == NULL) {
+                gd_printf("MSceneView not initialized! Attempting to fix...\n");
+
+                gdm_maketestdl(id);
+
+                if (sMSceneView == NULL) {
+                    fatal_printf("MSceneView Failed to initialize! Aborting.\n");
+                }
+            }
             update_view_and_dl(sMSceneView);
             if (sHandView != NULL) {
                 update_view_and_dl(sHandView);
@@ -2979,11 +2996,11 @@ UNUSED void Unknown801A5344(void) {
 }
 
 /* 253BC8 -> 2540E0 */
-void gd_init(void) {
+void gdInitSystem(void) {
     s32 i; // 34
     s8 *data; // 2c
 
-    imin("gd_init");
+    imin("gdInitSystem");
     i = (u32)(sMemBlockPoolSize - DOUBLE_SIZE_ON_64_BIT(0x3E800));
     data = gd_allocblock(i);
     gd_add_mem_to_heap(i, data, 0x10);
@@ -3021,16 +3038,16 @@ void gd_init(void) {
     remove_all_timers();
 
     start_memtracker("Static DL");
-    sStaticDl = new_gd_dl(0, 1900, 4000, 1, 300, 8);
+    sStaticDl = new_gd_dl(0, GODDARD_STATIC_DL_CMD_COUNT, 8000, 1, 300, 8);
     stop_memtracker("Static DL");
 
     start_memtracker("Dynamic DLs");
-    sDynamicMainDls[0] = new_gd_dl(1, 600, 10, 200, 10, 3);
-    sDynamicMainDls[1] = new_gd_dl(1, 600, 10, 200, 10, 3);
+    sDynamicMainDls[0] = new_gd_dl(1, GODDARD_DYNAMIC_DL_CMD_COUNT, 10, 200, 10, 3);
+    sDynamicMainDls[1] = new_gd_dl(1, GODDARD_DYNAMIC_DL_CMD_COUNT, 10, 200, 10, 3);
     stop_memtracker("Dynamic DLs");
 
-    sMHeadMainDls[0] = new_gd_dl(1, 100, 0, 0, 0, 0);
-    sMHeadMainDls[1] = new_gd_dl(1, 100, 0, 0, 0, 0);
+    sMHeadMainDls[0] = new_gd_dl(1, GODDARD_FACE_DL_CMD_COUNT, 0, 0, 0, 0);
+    sMHeadMainDls[1] = new_gd_dl(1, GODDARD_FACE_DL_CMD_COUNT, 0, 0, 0, 0);
 
     for (i = 0; i < ARRAY_COUNT(sViewDls); i++) {
         sViewDls[i][0] = create_child_gdl(1, sDynamicMainDls[0]);
@@ -3081,18 +3098,6 @@ void reverse_string(char *str, s32 len) {
     for (i = 0; i < len; i++) {
         str[i] = buf[i];
     }
-}
-
-/* 254168 -> 25417C */
-void stub_renderer_12(UNUSED s8 *arg0) {
-}
-
-/* 25417C -> 254190 */
-void stub_renderer_13(UNUSED void *arg0) {
-}
-
-/* 254190 -> 2541A4 */
-void stub_renderer_14(UNUSED s8 *arg0) {
 }
 
 /**

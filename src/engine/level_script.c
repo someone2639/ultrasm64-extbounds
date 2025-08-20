@@ -298,8 +298,13 @@ static void level_cmd_load_yay0(void) {
     sCurrentCmd = CMD_NEXT;
 }
 
+#include "game/debug.h"
 static void level_cmd_load_mario_head(void) {
 #ifdef KEEP_MARIO_HEAD
+    char buff[400];
+    extern u32 sPoolFreeSpace;
+    sprintf(buff, "Pool Space: %08X\n", sPoolFreeSpace);
+    osSyncPrintf(buff);
     // TODO: Fix these hardcoded sizes
     void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(GODDARD_TOTAL_HEAP_SIZE), MEMORY_POOL_LEFT);
     if (addr != NULL) {

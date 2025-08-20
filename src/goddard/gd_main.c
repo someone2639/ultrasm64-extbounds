@@ -32,7 +32,7 @@ u32 __main__(void) {
 
     gd_printf("%x, %x\n", (u32) (uintptr_t) &D_801A8058, (u32) (uintptr_t) &gGdMoveScene);
     imin("main");
-    gd_init();
+    gdInitSystem();
 
     gGdCtrl.unk88 = 0.46799f;
     gGdCtrl.unkA0 = -34.0f;
