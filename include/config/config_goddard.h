@@ -7,7 +7,7 @@
 /**
  * Enables Goddard (the Mario head).
  */
-// #define KEEP_MARIO_HEAD
+#define KEEP_MARIO_HEAD
 
 /**
  * Enables the Goddard easter egg from Shindou (has no effect if KEEP_MARIO_HEAD is disabled).
@@ -18,3 +18,9 @@
  * Disables the demo that plays when idle on the start screen (has no effect if KEEP_MARIO_HEAD is disabled).
  */
 #define DISABLE_DEMO
+
+/**************************
+ * Configure Face Settings
+ **************************/
+
+#define GODDARD_TOTAL_HEAP_SIZE 0xE1000
