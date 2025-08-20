@@ -135,14 +135,12 @@ enum {
     DYNOBJ_MARIO_MAIN_ANIMATOR                   = 1001  // root animator
 };
 
-extern struct DynList dynlist_test_cube[];
-extern struct DynList dynlist_spot_shape[];
 extern struct DynList dynlist_mario_face_shape[];
 extern struct DynList dynlist_mario_eye_right_shape[];
 extern struct DynList dynlist_mario_eye_left_shape[];
 extern struct DynList dynlist_mario_eyebrow_right_shape[];
 extern struct DynList dynlist_mario_eyebrow_left_shape[];
 extern struct DynList dynlist_mario_mustache_shape[];
-extern struct DynList dynlist_mario_master[];
+extern struct DynList GODDARD_MAIN_FACE_SCENE[];
 
 #endif // GD_DYNLISTS_H

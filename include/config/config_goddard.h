@@ -24,3 +24,5 @@
  **************************/
 
 #define GODDARD_TOTAL_HEAP_SIZE 0xE1000
+
+#define GODDARD_MAIN_FACE_SCENE dynlist_mario_master
