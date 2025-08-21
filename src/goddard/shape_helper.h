@@ -20,8 +20,6 @@ void add_3_vtx_to_face(struct ObjFace *face, struct ObjVertex *vtx1, struct ObjV
 struct ObjShape *make_shape(s32 flag, const char *name);
 void scale_verts_in_shape(struct ObjShape *shape, f32 x, f32 y, f32 z);
 struct ObjNet *make_netfromshape(struct ObjShape *shape);
-void animate_mario_head_gameover(struct ObjAnimator *self);
-void animate_mario_head_normal(struct ObjAnimator *self);
 s32 load_mario_head(void (*aniFn)(struct ObjAnimator *));
 void gdResetDynListAndShapeProcessors(void);
 

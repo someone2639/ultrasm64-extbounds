@@ -9,7 +9,6 @@
 extern s32 sResetWeightVtxNum;
 
 // functions
-void eye_joint_update_func(struct ObjJoint *self);
 struct ObjJoint *make_joint(s32 flags, f32 x, f32 y, f32 z);
 struct ObjJoint *make_grabber_joint(struct ObjShape *shape, s32 flags, f32 x, f32 y, f32 z);
 void func_8018F328(struct ObjBone *b);

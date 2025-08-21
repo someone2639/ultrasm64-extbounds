@@ -37,7 +37,7 @@ f32 D_801A81C4 = 0.0f;
 
 // bss
 struct GdBoundingBox gSomeBoundingBox;
-struct ObjCamera *sCurrentMoveCamera; // @ 801B9DB8
+struct ObjCamera *gdCurrentMoveCamera; // @ 801B9DB8
 struct ObjView *sCurrentMoveView;     // @ 801B9DBC
 struct DebugCounters gGdCounter;      // @ 801B9DC0
 Mat4f D_801B9DC8;
@@ -1834,7 +1834,7 @@ void move_group_members(void) {
 /* @ 22FC2C for 0x98; orig name: func_8018145C */
 void proc_view_movement(struct ObjView *view) {
     imin("movement");
-    sCurrentMoveCamera = view->activeCam;
+    gdCurrentMoveCamera = view->activeCam;
     sCurrentMoveView = view;
     if ((sCurrentMoveGrp = view->components) != NULL) {
         move_group_members();

@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#include "behaviors.h"
 #include "debug_utils.h"
 #include "draw_objects.h"
 #include "dynlist_proc.h"

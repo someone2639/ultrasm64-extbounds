@@ -19,7 +19,7 @@ struct DebugCounters {
 
 // bss
 extern struct GdBoundingBox gSomeBoundingBox;
-extern struct ObjCamera *sCurrentMoveCamera;
+extern struct ObjCamera *gdCurrentMoveCamera;
 extern struct ObjView *sCurrentMoveView;
 extern struct DebugCounters gGdCounter;
 extern Mat4f D_801B9DC8;

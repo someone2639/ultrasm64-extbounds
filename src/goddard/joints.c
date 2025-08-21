@@ -4,6 +4,7 @@
 #include "prevent_bss_reordering.h"
 #endif
 
+#include "behaviors.h"
 #include "debug_utils.h"
 #include "draw_objects.h"
 #include "dynlist_proc.h"
@@ -42,140 +43,6 @@ static struct GdVec3f D_801BAAE0;
 
 // forward declarations
 void set_joint_vecs(struct ObjJoint *, f32, f32, f32);
-
-/**
- * Controls movement of grabbable joints
- */
-void grabbable_joint_update_func(struct ObjJoint *self) {
-    UNUSED u8 filler1[80];
-    Mat4f *attObjMtx;
-    UNUSED u8 filler2[4];
-    struct GdVec3f offset;  // difference between current position and initial position
-    UNUSED u8 filler3[16];
-    register struct ListNode *att;
-    UNUSED u8 filler4[8];
-    struct GdObj *attobj;
-
-    // The joint acts somewhat like a spring in that the further it is moved
-    // from its original position, the more resistance it has to moving further
-
-    offset.x = self->mat128[3][0] - self->initPos.x;
-    offset.y = self->mat128[3][1] - self->initPos.y;
-    offset.z = self->mat128[3][2] - self->initPos.z;
-
-    if (self->header.drawFlags & OBJ_PICKED) {
-        self->velocity.x = offset.x * -0.25;
-        self->velocity.y = offset.y * -0.25;
-        self->velocity.z = offset.z * -0.25;
-
-        self->flags |= 0x2000;
-        ;  // needed to match
-    } else {
-        if (gdControllerInfo.trgR == FALSE) { // R trigger is released
-            // Set velocity so that the joint approaches its initial position
-            self->velocity.x -= offset.x * 0.5; //? 0.5f
-            self->velocity.y -= offset.y * 0.5; //? 0.5f
-            self->velocity.z -= offset.z * 0.5; //? 0.5f
-
-            // Decay the velocity
-            self->velocity.x *= 0.8; //? 0.8f
-            self->velocity.y *= 0.8; //? 0.8f
-            self->velocity.z *= 0.8; //? 0.8f
-
-            // If the joint's velocity has decayed enough and it is very close
-            // to its original position, stop its movement altogether
-            if (ABS(self->velocity.x) + ABS(self->velocity.y) + ABS(self->velocity.z) < 1.0) {
-                if (ABS(offset.x) + ABS(offset.y) + ABS(offset.z) < 1.0) {
-                    self->velocity.x = self->velocity.y = self->velocity.z = 0.0f;
-                    self->mat128[3][0] -= offset.x;
-                    self->mat128[3][1] -= offset.y;
-                    self->mat128[3][2] -= offset.z;
-                }
-            }
-
-            if (self->flags & 0x2000) {
-                gd_play_sfx(GD_SFX_LET_GO_FACE);
-            }
-
-            self->flags &= ~0x2000;
-            ; // necessary?
-        } else {
-            // freeze position of joint
-            self->velocity.x = self->velocity.y = self->velocity.z = 0.0f;
-        }
-    }
-
-    // update position
-    self->mat128[3][0] += self->velocity.x;
-    self->mat128[3][1] += self->velocity.y;
-    self->mat128[3][2] += self->velocity.z;
-
-    if (self->header.drawFlags & OBJ_PICKED) {
-        gdControllerInfo.cursorX -= (gdControllerInfo.cursorX - gdControllerInfo.dragStartX) * 0.2;
-        gdControllerInfo.cursorY -= (gdControllerInfo.cursorY - gdControllerInfo.dragStartY) * 0.2;
-    }
-
-    // update position of attached objects
-    offset.x = self->mat128[3][0] - self->initPos.x;
-    offset.y = self->mat128[3][1] - self->initPos.y;
-    offset.z = self->mat128[3][2] - self->initPos.z;
-    for (att = self->attachedObjsGrp->firstMember; att != NULL; att = att->next) {
-        attobj = att->obj;
-        set_cur_dynobj(attobj);
-        attObjMtx = dGetMatrixPointer();
-        gd_add_vec3f_to_mat4f_offset(attObjMtx, &offset);
-    }
-}
-
-/**
- * Update function for Mario's eye joints, which makes them follow the cursor
- */
-void eye_joint_update_func(struct ObjJoint *self) {
-    Mat4f *sp5C;
-    struct GdVec3f sp50;
-    struct GdVec3f sp44;
-    UNUSED u8 filler[24];
-    register struct ListNode *att;
-    struct GdObj *attobj;
-
-    if (sCurrentMoveCamera == NULL) {
-        return;
-    }
-
-    if (self->rootAnimator != NULL) {
-        if (self->rootAnimator->state != 7) {
-            return;
-        }
-    }
-
-    set_cur_dynobj((struct GdObj *)self);
-    sp5C = dGetRotationMatrixPointer();
-    sp44.x = (*sp5C)[3][0];
-    sp44.y = (*sp5C)[3][1];
-    sp44.z = (*sp5C)[3][2];
-    world_pos_to_screen_coords(&sp44, sCurrentMoveCamera, sCurrentMoveView);
-
-    sp50.x = gdControllerInfo.cursorX - sp44.x;
-    sp50.y = -(gdControllerInfo.cursorY - sp44.y);
-    sp50.z = 0.0f;
-
-    sp50.x *= 2.0; //?2.0f
-    sp50.y *= 2.0; //?2.0f
-    sp50.z *= 2.0; //?2.0f
-    if (gd_vec3f_magnitude(&sp50) > 30.0f) {
-        gd_normalize_vec3f(&sp50);
-        sp50.x *= 30.0f;
-        sp50.y *= 30.0f;
-        sp50.z *= 30.0f;
-    }
-
-    for (att = self->attachedObjsGrp->firstMember; att != NULL; att = att->next) {
-        attobj = att->obj;
-        set_cur_dynobj(attobj);
-        sp5C = dGetRotationMatrixPointer();
-        gd_add_vec3f_to_mat4f_offset(sp5C, &sp50);
-    }
-}
 
 /* 23D62C -> 23D748; not called */
 void func_8018EE5C(struct ObjJoint *j1, struct ObjJoint *j2, struct ObjJoint *j3) {
@@ -227,7 +94,6 @@ void set_joint_vecs(struct ObjJoint *j, f32 x, f32 y, f32 z) {
 struct ObjJoint *make_joint(s32 flags, f32 x, f32 y, f32 z) {
     struct ObjJoint *j; // sp24
     struct ObjJoint *oldhead;
-    UNUSED u8 filler[4];
 
     j = (struct ObjJoint *) make_object(OBJ_TYPE_JOINTS);
     sJointCount++;
@@ -328,7 +194,6 @@ void func_8018F4CC(struct ObjJoint *j) {
 void func_8018F520(struct ObjBone *b) {
     struct ObjJoint *joint1;
     struct ObjJoint *joint2;
-    UNUSED u8 filler[12];
     struct GdVec3f sp90;
     struct GdVec3f sp84;
     struct GdVec3f sp78;
@@ -394,7 +259,6 @@ void func_8018F520(struct ObjBone *b) {
 void func_8018F89C(struct ObjBone *b) {
     struct ObjJoint *spAC;
     struct ObjJoint *spA8;
-    UNUSED u8 filler[68];
     struct ObjGroup *grp; // sp60
     struct ListNode *link;   // sp5c
     Mat4f mtx;            // sp1c
@@ -491,7 +355,6 @@ void add_joint2bone(struct ObjBone *b, struct ObjJoint *j) {
 struct ObjBone *make_bone(s32 a0, struct ObjJoint *j1, struct ObjJoint *j2, UNUSED s32 a3) {
     struct ObjBone *b; // sp34
     struct ObjBone *oldhead;
-    UNUSED u8 filler[20];
 
     b = (struct ObjBone *) make_object(OBJ_TYPE_BONES);
     sBoneCount++;
@@ -581,11 +444,9 @@ s32 func_8018FFE8(struct ObjBone **a0, struct ObjJoint **a1, struct ObjJoint *a2
 void func_80190168(struct ObjBone *b, UNUSED struct ObjJoint *a1, UNUSED struct ObjJoint *a2,
                    struct GdVec3f *a3) {
     struct GdVec3f sp7C;
-    UNUSED u8 filler1[24];
     f32 sp60;
     f32 sp5C;
     f32 sp58;
-    UNUSED u8 filler2[60];
 
     return;
 
@@ -661,16 +522,12 @@ void func_80190574(s32 a0, struct ObjJoint *a1, struct ObjJoint *a2, f32 x, f32 
     struct ObjJoint *sp274; // = a2?
     struct ObjJoint *sp270; // mid-point of stack array?
     struct ObjJoint *sp26C; // jointstackarr[i]? curjoint?
-    UNUSED u8 filler1[4];
     UNUSED u32 unused = 0;
-    UNUSED u8 filler2[12]; // unused vec?
     struct GdVec3f sp24C = { 0.0f, 0.0f, 0.0f };
     struct GdVec3f sp240;
-    UNUSED u8 filler3[8];
     s32 sp234; // i?
     s32 sp230;
     s32 sp22C = 1;
-    UNUSED u8 filler4[4];
     s32 sp224;
     s32 sp220;
     struct ObjJoint *sp120[0x40];
@@ -772,7 +629,6 @@ void func_801909B4(void) {
 /* 23F1F0 -> 23F324; not called */
 void func_80190A20(void) {
     struct ObjJoint *j; // sp3c
-    UNUSED u8 filler[4];
     struct GdVec3f vec; // sp2C
     struct ObjGroup *grp;
     struct ListNode *link;
@@ -798,13 +654,11 @@ void func_80190A20(void) {
 /* 23F324 -> 23F638 */
 void func_80190B54(struct ObjJoint *a0, struct ObjJoint *a1, struct GdVec3f *a2) { // b0
     struct GdVec3f spA4;
-    UNUSED u8 filler1[12];
     struct GdVec3f sp8C;
     struct GdVec3f sp80;
     f32 sp7C;
     f32 sp78;
     Mat4f sp38;
-    UNUSED u8 filler2[28];
 
     if (a1 != NULL) {
         spA4.x = a1->unk3C.x;
@@ -861,7 +715,6 @@ void func_80190E68(struct GdObj *obj, f32 x, f32 y, f32 z) {
     struct ObjJoint *sp44;
     struct GdObj *sp40;
     struct GdVec3f vec;
-    UNUSED u8 filler[24];
 
     vec.x = x;
     vec.y = y;
@@ -951,7 +804,6 @@ void func_80191220(struct ObjJoint *j) {
 
 /* 23FB90 -> 23FBC0 */
 void func_801913C0(struct ObjJoint *j) {
-    UNUSED u8 filler[16];
     func_80181894(j);
 }
 
@@ -1023,7 +875,6 @@ void reset_joint(struct ObjJoint *j) {
 /* 23FFF4 -> 2400C4 */
 void func_80191824(struct ObjJoint *j) {
     UNUSED struct ObjNet *sp14;
-    UNUSED u8 filler[16];
 
     sp14 = gGdSkinNet->unk1F0;
     if (j->flags & 0x1) {

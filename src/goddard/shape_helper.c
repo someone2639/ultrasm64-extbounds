@@ -4,6 +4,7 @@
 #include "prevent_bss_reordering.h"
 #endif
 
+#include "behaviors.h"
 #include "debug_utils.h"
 #include "draw_objects.h"
 #include "dynlist_proc.h"
@@ -786,109 +787,6 @@ struct ObjNet *make_netfromshape(struct ObjShape *shape) {
     newNet->netType = 1;
 
     return newNet;
-}
-
-/**
- * Controls the dizzy (game over) animation of Mario's head.
- */
-void animate_mario_head_gameover(struct ObjAnimator *self) {
-    switch (self->state) {
-        case 0:
-            self->frame = 1.0f;
-            self->animSeqNum = 1;  // game over anim sequence
-            self->state = 1;
-            break;
-        case 1:
-            self->frame += 1.0f;
-            // After the gameover animation ends, switch to the normal animation
-            if (self->frame == 166.0f) {
-                self->frame = 69.0f;
-                self->state = 4;
-                self->controlFunc = animate_mario_head_normal;
-                self->animSeqNum = 0;  // normal anim sequence
-            }
-            break;
-    }
-}
-
-/**
- * Controls the normal animation of Mario's head. This functions like a state machine.
- */
-void animate_mario_head_normal(struct ObjAnimator *self) {
-    s32 state = 0; // TODO: label these states
-    s32 aBtnPressed = gdControllerInfo.dragging;
-
-    switch (self->state) {
-        case 0:
-            // initialize?
-            self->frame = 1.0f;
-            self->animSeqNum = 0;  // normal anim sequence
-            state = 2;
-            self->nods = 5;
-            break;
-        case 2:
-            if (aBtnPressed) {
-                state = 5;
-            }
-
-            self->frame += 1.0f;
-
-            if (self->frame == 810.0f) {
-                self->frame = 750.0f;
-                self->nods--;
-                if (self->nods == 0) {
-                    state = 3;
-                }
-            }
-            break;
-        case 3:
-            self->frame += 1.0f;
-
-            if (self->frame == 820.0f) {
-                self->frame = 69.0f;
-                state = 4;
-            }
-            break;
-        case 4:
-            self->frame += 1.0f;
-
-            if (self->frame == 660.0f) {
-                self->frame = 661.0f;
-                state = 2;
-                self->nods = 5;
-            }
-            break;
-        case 5:
-            if (self->frame == 660.0f) {
-                state = 7;
-            } else if (self->frame > 660.0f) {
-                self->frame -= 1.0f;
-            } else if (self->frame < 660.0f) {
-                self->frame += 1.0f;
-            }
-
-            self->stillTimer = 150;
-            break;
-        case 7:  // Mario is staying still while his eyes follow the cursor
-            if (aBtnPressed) {
-                self->stillTimer = 300;
-            } else {
-                self->stillTimer--;
-                if (self->stillTimer == 0) {
-                    state = 6;
-                }
-            }
-            self->frame = 660.0f;
-            break;
-        case 6:
-            state = 2;
-            self->nods = 5;
-            break;
-    }
-
-    if (state != 0) {
-        self->state = state;
-    }
 }
 
 /**

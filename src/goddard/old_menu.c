@@ -131,9 +131,9 @@ void adjust_gadget(struct ObjGadget *gdgt, s32 a1, s32 a2) {
     struct ObjValPtr *vp;
 
     if (gdgt->type == 1) {
-        gdgt->sliderPos += a2 * (-sCurrentMoveCamera->unk40.z * 1.0E-5);
+        gdgt->sliderPos += a2 * (-gdCurrentMoveCamera->unk40.z * 1.0E-5);
     } else if (gdgt->type == 2) {
-        gdgt->sliderPos += a1 * (-sCurrentMoveCamera->unk40.z * 1.0E-5);
+        gdgt->sliderPos += a1 * (-gdCurrentMoveCamera->unk40.z * 1.0E-5);
     }
 
     // slider position must be between 0 and 1 (inclusive)
