@@ -890,7 +890,6 @@ void gd_exit(UNUSED s32 code) {
     }
 }
 
-/* 24A1D4 -> 24A220; orig name: func_8019BA04 */
 void gd_free(void *ptr) {
     sAllocMemory -= gd_free_mem(ptr);
 }
@@ -933,12 +932,10 @@ void *gd_malloc(u32 size, u8 perm) {
     return ptr;
 }
 
-/* 24A3E8 -> 24A420; orig name: func_8019BC18 */
 void *gd_malloc_perm(u32 size) {
     return gd_malloc(size, PERM_G_MEM_BLOCK);
 }
 
-/* 24A420 -> 24A458; orig name: func_8019BC50 */
 void *gd_malloc_temp(u32 size) {
     return gd_malloc(size, TEMP_G_MEM_BLOCK);
 }
@@ -965,7 +962,6 @@ void draw_indexed_dl(s32 dlNum, s32 gfxIdx) {
     gSPDisplayList(next_gfx(), GD_VIRTUAL_TO_PHYSICAL(dl));
 }
 
-/* 24A598 -> 24A610; orig name: func_8019BDC8 */
 void branch_cur_dl_to_num(s32 dlNum) {
     Gfx *dl;
 
@@ -1058,7 +1054,6 @@ void Unknown8019C288(s32 stickX, s32 stickY) {
     ctrl->stickYf = (f32)(stickY / 2);
 }
 
-/* 24AAA8 -> 24AAE0; orig name: func_8019C2D8 */
 void gd_add_to_heap(void *addr, u32 size) {
     // TODO: is this `1` for permanence special?
     gd_add_mem_to_heap(size, addr, 1);
@@ -1102,7 +1097,6 @@ void gdm_setup(void) {
 void stub_renderer_2(UNUSED u32 a0) {
 }
 
-/* 24AC2C -> 24AC80; not called; orig name: Unknown8019C45C */
 void print_gdm_stats(void) {
     stop_memtracker("total");
     gd_printf("\ngdm stats:\n");
@@ -1111,7 +1105,6 @@ void print_gdm_stats(void) {
     start_memtracker("total");
 }
 
-/* 24AC80 -> 24AD14; orig name: func_8019C4B0 */
 struct ObjView *make_view_withgrp(char *name, struct ObjGroup *grp) {
     struct ObjView *view = make_view(name, (VIEW_DRAW | VIEW_ALLOC_ZBUF | VIEW_MOVEMENT), 1, 0, 0, 320, 240, grp);
 
@@ -1198,7 +1191,6 @@ void gd_copy_p1_contpad(OSContPadEx *p1cont) {
     }
 }
 
-/* 24B058 -> 24B088; orig name: gd_sfx_to_play */
 s32 gd_sfx_to_play(void) {
     return gd_new_sfx_to_play();
 }
@@ -1281,7 +1273,6 @@ static void clamp_coords_to_active_view(f32 *x, f32 *y) {
     }
 }
 
-/* 24B5A8 -> 24B5D4; orig name: func_8019CDD8 */
 void fatal_no_dl_mem(void) {
     fatal_printf("Out of DL mem\n");
 }
@@ -1305,7 +1296,6 @@ struct GdDisplayList *alloc_displaylist(u32 id) {
     return gdDl;
 }
 
-/* 24B6AC -> 24B7A0; orig name: func_8019CEDC */
 void cpy_remaining_gddl(struct GdDisplayList *dst, struct GdDisplayList *src) {
     dst->vtx = &DL_CURRENT_VTX(src);
     dst->mtx = &DL_CURRENT_MTX(src);
@@ -1324,7 +1314,6 @@ void cpy_remaining_gddl(struct GdDisplayList *dst, struct GdDisplayList *src) {
     dst->curVpIdx = 0;
 }
 
-/* 24B7A0 -> 24B7F8; orig name: func_8019CFD0 */
 struct GdDisplayList *create_child_gdl(s32 id, struct GdDisplayList *srcDl) {
     struct GdDisplayList *newDl;
 
@@ -1335,7 +1324,6 @@ struct GdDisplayList *create_child_gdl(s32 id, struct GdDisplayList *srcDl) {
     return newDl;
 }
 
-/* 24B7F8 -> 24BA48; orig name: func_8019D028 */
 struct GdDisplayList *new_gd_dl(s32 id, s32 gfxs, s32 verts, s32 mtxs, s32 lights, s32 vps) {
     struct GdDisplayList *dl; // 24
 
@@ -1402,7 +1390,6 @@ void gd_rdp_init(void) {
     gDPPipeSync(next_gfx());
 }
 
-/* 24BB30 -> 24BED8; orig name: func_8019D360 */
 void gd_draw_rect(f32 ulx, f32 uly, f32 lrx, f32 lry) {
     clamp_coords_to_active_view(&ulx, &uly);
     clamp_coords_to_active_view(&lrx, &lry);
@@ -1418,7 +1405,6 @@ void gd_draw_rect(f32 ulx, f32 uly, f32 lrx, f32 lry) {
     gDPSetRenderMode(next_gfx(), G_RM_AA_ZB_OPA_INTER, G_RM_NOOP2);
 }
 
-/* 24BED8 -> 24CAC8; orig name: func_8019D708 */
 void gd_draw_border_rect(f32 ulx, f32 uly, f32 lrx, f32 lry) {
     clamp_coords_to_active_view(&ulx, &uly);
     clamp_coords_to_active_view(&lrx, &lry);
@@ -1443,7 +1429,6 @@ void gd_draw_border_rect(f32 ulx, f32 uly, f32 lrx, f32 lry) {
     gDPSetRenderMode(next_gfx(), G_RM_AA_ZB_OPA_INTER, G_RM_NOOP2);
 }
 
-/* 24CAC8 -> 24CDB4; orig name: func_8019E2F8 */
 void gd_dl_set_fill(struct GdColour *colour) {
     u8 r, g, b;
 
@@ -1457,18 +1442,15 @@ void gd_dl_set_fill(struct GdColour *colour) {
     gDPSetFillColor(next_gfx(), GPACK_RGBA5551(r, g, b, 1) << 16 | GPACK_RGBA5551(r, g, b, 1));
 }
 
-/* 24CDB4 -> 24CE10; orig name: func_8019E5E4 */
-void gd_dl_set_z_buffer_area(void) {
+void gdSetZBuffer(void) {
     gDPSetDepthImage(next_gfx(), GD_LOWER_24(sActiveView->parent->zbuf));
 }
 
-/* 24CE10 -> 24CF2C; orig name: func_8019E640 */
-void gd_set_color_fb(void) {
+void gdSetFrameBuffer(void) {
     gDPSetColorImage(next_gfx(), G_IM_FMT_RGBA, G_IM_SIZ_16b, sActiveView->parent->lowerRight.x,
                      GD_LOWER_24(sActiveView->parent->colourBufs[gGdFrameBufNum]));
 }
 
-/* 24CF2C -> 24CFCC; orig name: func_8019E75C */
 void reset_cur_dl_indices(void) {
     sMHeadMainDls[gGdFrameBufNum]->curGfxIdx = 0;
     sCurrentGdDl = sDynamicMainDls[gGdFrameBufNum];
@@ -1479,7 +1461,6 @@ void reset_cur_dl_indices(void) {
     sCurrentGdDl->curVpIdx = 0;
 }
 
-/* 24CFCC -> 24D044; orig name: func_8019E7FC */
 void begin_gddl(s32 num) {
     sCurrentGdDl = sGdDLArray[num];
     sCurrentGdDl->curVtxIdx = 0;
@@ -1489,12 +1470,10 @@ void begin_gddl(s32 num) {
     sCurrentGdDl->curVpIdx = 0;
 }
 
-/* 24D044 -> 24D064; orig name: func_8019E874 */
 void stash_current_gddl(void) {
     sGdDlStash = sCurrentGdDl;
 }
 
-/* 24D064 -> 24D084; orig name: func_8019E894 */
 void pop_gddl_stash(void) {
     sCurrentGdDl = sGdDlStash;
 }
@@ -1531,7 +1510,6 @@ void gd_enddlsplist(void) {
     gSPEndDisplayList(next_gfx());
 }
 
-/* 24D23C -> 24D39C; orig name: func_8019EA6C */
 s32 gd_enddlsplist_parent(void) {
     s32 curDlIdx = 0; // 24
 
@@ -1554,7 +1532,6 @@ void Unknown8019EBCC(s32 num, uintptr_t gfxptr) {
     sGdDLArray[num]->gfx = (Gfx *) (GD_LOWER_24(gfxptr) + D_801BAF28);
 }
 
-/* 24D3D8 -> 24D458; orig name: func_8019EC08 */
 u32 new_gddl_from(Gfx *dl, UNUSED s32 arg1) {
     struct GdDisplayList *gddl;
 
@@ -1572,7 +1549,6 @@ u32 Unknown8019EC88(Gfx *dl, UNUSED s32 arg1) {
     return gddl->number;
 }
 
-/* 24D4C4 -> 24D63C; orig name: func_8019ECF4 */
 void mat4_to_mtx(Mat4f *src, Mtx *dst) {
 #ifndef GBI_FLOATS
     s32 i; // 14
@@ -1758,7 +1734,6 @@ void gd_dl_lookat(struct ObjCamera *cam, f32 arg1, f32 arg2, f32 arg3, f32 arg4,
     next_mtx();
 }
 
-/* 24E1A8 -> 24E230; orig name: func_8019F9D8 */
 void check_tri_display(s32 vtxcount) {
     D_801A86C0 = sCurrentGdDl->curVtxIdx;
     D_801BB0B4 = 0;
@@ -1810,12 +1785,12 @@ Vtx *gd_dl_make_vertex(f32 x, f32 y, f32 z, f32 alpha) {
     return vtx;
 }
 
-/* 24E6C0 -> 24E724 */
-void func_8019FEF0(void) {
+void gdTriangleRegistered(void) {
     sTriangleBufCount++;
     if (sVertexBufCount >= 12) {
-        gd_dl_flush_vertices();
-        func_801A0038();
+        // We have ~4 triangles to draw
+        gdDrawVtxTriBuffers();
+        gdFlushVtxBuffer();
     }
     D_801BB018 = 0;
 }
@@ -1823,7 +1798,7 @@ void func_8019FEF0(void) {
 /**
  * Adds a triange to the current display list.
  */
-void gd_dl_make_triangle(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 z2, f32 x3, f32 y3, f32 z3) {
+void gdMakeTriangle(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 z2, f32 x3, f32 y3, f32 z3) {
     Vtx *vtx;
 
     vtx = &DL_CURRENT_VTX(sCurrentGdDl);
@@ -1836,30 +1811,45 @@ void gd_dl_make_triangle(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 z2, f32 x3,
 }
 
 /* 24E808 -> 24E840 */
-void func_801A0038(void) {
+void gdFlushVtxBuffer(void) {
     sVertexBufCount = 0;
     sTriangleBufCount = 0;
     sVertexBufStartIndex = sCurrentGdDl->curVtxIdx;
 }
 
-/* 24E840 -> 24E9BC */
-void gd_dl_flush_vertices(void) {
-    s32 i;
-    UNUSED s32 startvtx = sVertexBufStartIndex;
+
+void gdDrawVtxTriBuffers(void) {
+    s32 start_vtx = sVertexBufStartIndex;
+    u32 vtxbuf_count = sVertexBufCount;
 
     if (sVertexBufCount != 0) {
         // load vertex data
-        gSPVertex(next_gfx(), osVirtualToPhysical(&sCurrentGdDl->vtx[sVertexBufStartIndex]), sVertexBufCount, 0);
+        gSPVertex(next_gfx(), osVirtualToPhysical(&sCurrentGdDl->vtx[start_vtx]), vtxbuf_count, 0);
         // load triangle data
-        for (i = 0; i < sTriangleBufCount; i++) {
+
+        for (s32 i = 0; i < sTriangleBufCount - 1; i += 2) {
+            gSP2Triangles(next_gfx(),
+                sTriangleBuf[i][0] - start_vtx,
+                sTriangleBuf[i][1] - start_vtx,
+                sTriangleBuf[i][2] - start_vtx,
+                0,
+                sTriangleBuf[i + 1][0] - start_vtx,
+                sTriangleBuf[i + 1][1] - start_vtx,
+                sTriangleBuf[i + 1][2] - start_vtx,
+                0
+            );
+        }
+        if ((sTriangleBufCount % 2) != 0) {
+            // we're missing a triangle
             gSP1Triangle(next_gfx(),
-                sTriangleBuf[i][0] - sVertexBufStartIndex,
-                sTriangleBuf[i][1] - sVertexBufStartIndex,
-                sTriangleBuf[i][2] - sVertexBufStartIndex,
-                0);
+                sTriangleBuf[sTriangleBufCount - 1][0] - start_vtx,
+                sTriangleBuf[sTriangleBufCount - 1][1] - start_vtx,
+                sTriangleBuf[sTriangleBufCount - 1][2] - start_vtx,
+                0
+            );
         }
     }
-    func_801A0038();
+    gdFlushVtxBuffer();
 }
 
 /**
@@ -1889,7 +1879,6 @@ void set_light_id(s32 index) {
     sLightId = index;
 }
 
-/* 24EB0C -> 24EB24; orig name: func_801A033C */
 void set_light_num(s32 n) {
     sNumLights = n;
 }
@@ -1913,7 +1902,6 @@ s32 create_mtl_gddl(UNUSED s32 mtlType) {
     return dlnum;
 }
 
-/* 24EC18 -> 24EC48; orig name: func_801A0448 */
 void branch_to_gddl(s32 dlNum) {
     branch_cur_dl_to_num(dlNum);
 }
@@ -2074,25 +2062,18 @@ s32 gd_dl_material_lighting(s32 id, struct GdColour *colour, s32 material) {
     return 0;
 }
 
-/* 24FDB8 -> 24FE94; orig name: func_801A15E8; only from faces? */
 void set_Vtx_norm_buf_1(struct GdVec3f *norm) {
     sVtxCvrtNormBuf[0] = (s8)(norm->x * 127.0f);
     sVtxCvrtNormBuf[1] = (s8)(norm->y * 127.0f);
     sVtxCvrtNormBuf[2] = (s8)(norm->z * 127.0f);
 }
 
-/* 24FE94 -> 24FF80; orig name: func_801A16C4; only from verts? */
 void set_Vtx_norm_buf_2(struct GdVec3f *norm) {
     sVtxCvrtNormBuf[0] = (s8)(norm->x * 127.0f);
     sVtxCvrtNormBuf[1] = (s8)(norm->y * 127.0f);
     sVtxCvrtNormBuf[2] = (s8)(norm->z * 127.0f);
-
-    //? are these stub functions?
-    return; // @ 801A17A0
-    return; // @ 801A17A8
 }
 
-/* 24FF80 -> 24FFDC; orig name: func_801A17B0 */
 void set_gd_mtx_parameters(s32 params) {
     switch (params) {
         case G_MTX_PROJECTION | G_MTX_MUL | G_MTX_PUSH:
@@ -2146,7 +2127,7 @@ static void update_render_mode(void) {
 /* 250300 -> 250640 */
 void Unknown801A1B30(void) {
     gDPPipeSync(next_gfx());
-    gd_set_color_fb();
+    gdSetFrameBuffer();
     gd_dl_set_fill(&sActiveView->colour);
     gDPFillRectangle(next_gfx(), (u32)(sActiveView->upperLeft.x), (u32)(sActiveView->upperLeft.y),
                      (u32)(sActiveView->upperLeft.x + sActiveView->lowerRight.x - 1.0f),
@@ -2155,11 +2136,11 @@ void Unknown801A1B30(void) {
 }
 
 /* 250640 -> 250AE0 */
-void Unknown801A1E70(void) {
+void gdClearZBuffer(void) {
     gDPPipeSync(next_gfx());
     gDPSetCycleType(next_gfx(), G_CYC_FILL);
     gDPSetRenderMode(next_gfx(), G_RM_OPA_SURF, G_RM_OPA_SURF2);
-    gd_dl_set_z_buffer_area();
+    gdSetZBuffer();
     gDPSetColorImage(next_gfx(), G_IM_FMT_RGBA, G_IM_SIZ_16b, sActiveView->parent->lowerRight.x,
                      GD_LOWER_24(sActiveView->parent->zbuf));
     gDPSetFillColor(next_gfx(), GPACK_ZDZ(G_MAXFBZ, 0) << 16 | GPACK_ZDZ(G_MAXFBZ, 0));
@@ -2167,10 +2148,9 @@ void Unknown801A1E70(void) {
                      (u32)(sActiveView->upperLeft.x + sActiveView->lowerRight.x - 1.0f),
                      (u32)(sActiveView->upperLeft.y + sActiveView->lowerRight.y - 1.0f));
     gDPPipeSync(next_gfx());
-    gd_set_color_fb();
+    gdSetFrameBuffer();
 }
 
-/* 250AE0 -> 250B30; orig name: func_801A2310 */
 void gd_set_one_cycle(void) {
     gDPSetCycleType(next_gfx(), G_CYC_1CYCLE);
     update_render_mode();
@@ -2194,7 +2174,6 @@ void gddl_is_loading_shine_dl(s32 dlLoad) {
     }
 }
 
-/* 250C18 -> 251014; orig name: func_801A2448 */
 void start_view_dl(struct ObjView *view) {
     f32 ulx;
     f32 uly;
@@ -2245,7 +2224,6 @@ void start_view_dl(struct ObjView *view) {
     gDPPipeSync(next_gfx());
 }
 
-/* 251014 -> 251A1C; orig name: func_801A2844 */
 void parse_p1_controller(void) {
     u32 i;
     struct GdControl *gdctrl = &gGdCtrl;
@@ -2384,7 +2362,6 @@ void func_801A3370(f32 x, f32 y, f32 z) {
     D_801BD768.z += z;
 }
 
-/* 251CB0 -> 251D44; orig name: func_801A34E0 */
 void border_active_view(void) {
     if (sActiveView->flags & VIEW_BORDERED) {
         gd_dl_set_fill(gd_get_colour(1));
@@ -2610,7 +2587,6 @@ s32 setup_view_buffers(const char *name, struct ObjView *view, UNUSED s32 ulx, U
     return 0;
 }
 
-/* 252AF8 -> 252BAC; orig name: _InitControllers */
 void gd_init_controllers(void) {
     OSContPadEx *p1cont = &sPrevFrameCont[0]; // 1c
     u32 i;                                  // 18
@@ -2792,7 +2768,6 @@ void stub_draw_label_text(UNUSED char *s) {
     UNUSED char *save = s;
 }
 
-/* 2530C0 -> 2530D8; orig name: func_801A48F0 */
 void set_active_view(struct ObjView *v) {
     sActiveView = v;
 }
@@ -2842,7 +2817,6 @@ void Unknown801A4B04(void) {
     sDynamicsTime = get_scaled_timer_total("dynamics");
 }
 
-/* 2533DC -> 253728; orig name: func_801A4C0C */
 void update_cursor(void) {
     if (sHandView == NULL)
         return;
@@ -2931,7 +2905,6 @@ void Proc801A5110(struct ObjView *view) {
     }
 }
 
-/* 253938 -> 2539DC; orig name: func_801A5168 */
 void update_view_and_dl(struct ObjView *view) {
     s32 prevFlags; // 18
 
@@ -3122,7 +3095,6 @@ void store_in_pickbuf(s16 data) {
     sPickBuf[sPickBufPosition++] = data;
 }
 
-/* 25421C -> 254250; orig name: func_801A5A4C
 ** Divides by 3, since in the final game, only thing stored
 ** in the pick buf is a tupple of three halves: (datasize, objtype, objnumber)
 ** (datasize is always 2) */
@@ -3156,7 +3128,6 @@ void Unknown801A5AE0(s32 arg0) {
     }
 }
 
-/* 254328 -> 2543B8; orig name: func_801A5B58 */
 void set_vtx_tc_buf(f32 tcS, f32 tcT) {
     sVtxCvrtTCBuf[0] = (s16)(tcS * 512.0f);
     sVtxCvrtTCBuf[1] = (s16)(tcT * 512.0f);
@@ -3167,7 +3138,6 @@ void add_debug_view(struct ObjView *view) {
     sDebugViews[sDebugViewsCount++] = view;
 }
 
-/* 2543F4 -> 254450; orig name: Unknown801A5C24 */
 union ObjVarVal *cvrt_val_to_kb(union ObjVarVal *dst, union ObjVarVal src) {
     union ObjVarVal temp;
 
@@ -3315,7 +3285,6 @@ UNUSED void Unknown801A5FF8(struct ObjGroup *arg0) {
     sMenuView = menuview;
 }
 
-/* 254AC0 -> 254DFC; orig name: PutSprite */
 void gd_put_sprite(u16 *sprite, s32 x, s32 y, s32 wx, s32 wy) {
     s32 c; // 5c
     s32 r; // 58
@@ -3336,7 +3305,6 @@ void gd_put_sprite(u16 *sprite, s32 x, s32 y, s32 wx, s32 wy) {
     gSPTexture(next_gfx(), 0x8000, 0x8000, 0, G_TX_RENDERTILE, G_OFF);
 }
 
-/* 254DFC -> 254F94; orig name: proc_dyn_list */
 void gd_setup_cursor(struct ObjGroup *parentgrp) {
     struct ObjView *mouseview; // 34
     struct ObjGroup *mousegrp; // 30
@@ -3369,7 +3337,6 @@ void gd_setup_cursor(struct ObjGroup *parentgrp) {
 }
 
 /**
- * 254F94 -> 254FE4; orig name: Proc801A67C4
  * This prints all timers if the view was not updated for a frame
  **/
 void view_proc_print_timers(struct ObjView *self) {
@@ -3380,7 +3347,6 @@ void view_proc_print_timers(struct ObjView *self) {
     print_all_timers();
 }
 
-/* 254FE4 -> 255600; not called; orig name: Unknown801A6814 */
 void make_timer_gadgets(void) {
     struct ObjLabel *timerLabel;
     struct ObjGroup *timerg;

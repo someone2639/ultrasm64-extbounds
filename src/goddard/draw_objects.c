@@ -45,56 +45,46 @@ struct BetaVtx {
 };
 
 // data
-static struct GdColour sClrWhite = { 1.0, 1.0, 1.0 };            // @ 801A8070
-static struct GdColour sClrRed = { 1.0, 0.0, 0.0 };              // @ 801A807C
-static struct GdColour sClrGreen = { 0.0, 1.0, 0.0 };            // @ 801A8088
-static struct GdColour sClrBlue = { 0.0, 0.0, 1.0 };             // @ 801A8094
-static struct GdColour sClrErrDarkBlue = { 0.0, 0.0, 6.0 };      // @ 801A80A0
-static struct GdColour sClrPink = { 1.0, 0.0, 1.0 };             // @ 801A80AC
-static struct GdColour sClrBlack = { 0.0, 0.0, 0.0 };            // @ 801A80B8
-static struct GdColour sClrGrey = { 0.6, 0.6, 0.6 };             // @ 801A80C4
-static struct GdColour sClrDarkGrey = { 0.4, 0.4, 0.4 };         // @ 801A80D0
-static struct GdColour sClrYellow = { 1.0, 1.0, 0.0 };           // @ 801A80DC
-static struct GdColour sLightColours[1] = { { 1.0, 1.0, 0.0 } }; // @ 801A80E8
-static struct GdColour *sSelectedColour = &sClrRed;              // @ 801A80F4
-struct ObjCamera *gViewUpdateCamera = NULL;                      // @ 801A80F8
-UNUSED static void *sUnref801A80FC = NULL;
-static s32 sUnreadShapeFlag = 0;       // @ 801A8100
-struct GdColour *sColourPalette[5] = { // @ 801A8104
+static struct GdColour sClrWhite = { 1.0, 1.0, 1.0 };
+static struct GdColour sClrRed = { 1.0, 0.0, 0.0 };
+static struct GdColour sClrGreen = { 0.0, 1.0, 0.0 };
+static struct GdColour sClrBlue = { 0.0, 0.0, 1.0 };
+static struct GdColour sClrErrDarkBlue = { 0.0, 0.0, 6.0 };
+static struct GdColour sClrPink = { 1.0, 0.0, 1.0 };
+static struct GdColour sClrBlack = { 0.0, 0.0, 0.0 };
+static struct GdColour sClrGrey = { 0.6, 0.6, 0.6 };
+static struct GdColour sClrDarkGrey = { 0.4, 0.4, 0.4 };
+static struct GdColour sClrYellow = { 1.0, 1.0, 0.0 };
+static struct GdColour sLightColours[1] = { { 1.0, 1.0, 0.0 } };
+static struct GdColour *sSelectedColour = &sClrRed;
+struct ObjCamera *gViewUpdateCamera = NULL;
+static s32 sUnreadShapeFlag = 0;
+struct GdColour *sColourPalette[5] = {
     &sClrWhite, &sClrYellow, &sClrRed, &sClrBlack, &sClrBlack
 };
 struct GdColour *sWhiteBlack[2] = {
-    //@ 801A8118
     &sClrWhite,
     &sClrBlack,
 };
-UNUSED static Mat4f sUnref801A8120 = {
-    { 1.0, 0.0, 0.0, 0.0 }, { 0.0, 0.0, 0.0, 0.0 }, { 0.0, 0.0, 1.0, 0.0 }, { 0.0, 0.0, 0.0, 1.0 }
-};
-UNUSED static Mat4f sUnrefIden801A8160 = {
-    { 1.0, 0.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0, 0.0 }, { 0.0, 0.0, 1.0, 0.0 }, { 0.0, 0.0, 0.0, 1.0 }
-};
-static s32 sLightDlCounter = 1; // @ 801A81A0
-UNUSED static s32 sUnref801A81A4[4] = { 0 };
+static s32 sLightDlCounter = 1;
 
 // bss
-u8 gUnref_801B9B30[0x88];
-struct ObjGroup *gGdLightGroup; // @ 801B9BB8; is this the main light group? only light group?
+struct ObjGroup *gGdLightGroup; // is this the main light group? only light group?
 
 UNUSED static u8 sUnref_801B9BBC[0x40];
-static enum SceneType sSceneProcessType; // @ 801B9C00
-static s32 sUseSelectedColor;            // @ 801B9C04
+static enum SceneType sSceneProcessType;
+static s32 sUseSelectedColor;
 static s16 sPickBuffer[100];             ///< buffer of objects near click
 static s32 sPickDataTemp;                ///< now, only data is the object number of a selected joint
 static f32 sPickObjDistance;             ///< distance between object position and cursor click location
 static struct GdObj *sPickedObject;      ///< object selected with cursor
 /// Various counters and pointers set in update_view() and used in various `draw_XXX` functions
 static struct {
-    struct ObjView *view; // @ 801B9CE4
-    s32 unreadCounter;    // @ 801B9CE8
-    s32 mtlDlNum;         // @ 801B9CEC; name is a big guess
-    s32 shapesDrawn;      // @ 801B9CF0
-    s32 unused;           // @ 801B9CF4
+    struct ObjView *view; 
+    s32 unreadCounter;
+    s32 mtlDlNum;         // name is a big guess
+    s32 shapesDrawn;
+    s32 unused;
 } sUpdateViewState;
 static struct ObjLight *sPhongLight;          // material light? phong light?
 static struct GdVec3f sPhongLightPosition;    //@ 801B9D00; guess; light source unit position for light
@@ -111,13 +101,6 @@ void setup_lights(void) {
     set_light_num(NUMLIGHTS_2);
     gd_setproperty(GD_PROP_AMB_COLOUR, 0.5f, 0.5f, 0.5f);
     gd_setproperty(GD_PROP_CULLING, 1.0f, 0.0f, 0.0f); // set G_CULL_BACK
-    return;
-
-    // dead code
-    gd_setproperty(GD_PROP_STUB17, 2.0f, 0.0f, 0.0f);
-    gd_setproperty(GD_PROP_ZBUF_FN, 24.0f, 0.0f, 0.0f);
-    gd_setproperty(GD_PROP_CULLING, 1.0f, 0.0f, 0.0f);
-    return;
 }
 
 /**
@@ -161,7 +144,8 @@ void Unknown801781DC(struct ObjZone *zone) {
 }
 
 /* 226C6C -> 226FDC */
-void draw_shape(struct ObjShape *shape, s32 flag, f32 c, f32 d, f32 e, // "sweep" indices 0-2 x, y, z
+void draw_shape(struct ObjShape *shape, s32 flag,
+                f32 c, f32 d, f32 e, // "sweep" indices 0-2 x, y, z
                 f32 f, f32 g, f32 h, // translate shape + store offset (unused)
                 f32 i, f32 j, f32 k, // translate shape
                 f32 l, f32 m, f32 n, // rotate x, y, z
@@ -421,7 +405,7 @@ void Unknown80178ECC(f32 v0X, f32 v0Y, f32 v0Z, f32 v1X, f32 v1Y, f32 v1Z) {
     f32 difX = v1X - v0X;
     f32 difZ = v1Z - v0Z;
 
-    gd_dl_make_triangle(v0X, v0Y, v0Z, v1X, v1Y, v1Z, v0X + difY * 0.1, v0Y + difX * 0.1, v0Z + difZ * 0.1);
+    gdMakeTriangle(v0X, v0Y, v0Z, v1X, v1Y, v1Z, v0X + difY * 0.1, v0Y + difX * 0.1, v0Z + difZ * 0.1);
 }
 
 /**
@@ -443,7 +427,7 @@ void draw_face(struct ObjFace *face) {
         if (face->mtl != NULL) {
             if ((i = face->mtl->gddlNumber) != 0) {
                 if (i != sUpdateViewState.mtlDlNum) {
-                    gd_dl_flush_vertices();
+                    gdDrawVtxTriBuffers();
                     branch_to_gddl(i);
                     sUpdateViewState.mtlDlNum = i;
                 }
@@ -478,7 +462,7 @@ void draw_face(struct ObjFace *face) {
             vtx->gbiVerts = make_vtx_link(vtx->gbiVerts, gbiVtx);
         }
     }
-    func_8019FEF0();
+    gdTriangleRegistered();
     imout();
 }
 
@@ -633,7 +617,6 @@ void draw_gadget(struct ObjGadget *gdgt) {
 /* 22803C -> 22829C */
 void draw_camera(struct ObjCamera *cam) {
     struct GdVec3f sp44;
-    UNUSED f32 sp40 = 0.0f;
 
     sp44.x = 0.0f;
     sp44.y = 0.0f;
@@ -644,23 +627,17 @@ void draw_camera(struct ObjCamera *cam) {
         sp44.x += cam->lookAt.x;
         sp44.y += cam->lookAt.y;
         sp44.z += cam->lookAt.z;
-        ; // needed to match
     } else {
         sp44.x = cam->lookAt.x;
         sp44.y = cam->lookAt.y;
         sp44.z = cam->lookAt.z;
     }
 
-    if (0) {
-        // dead code
-        gd_printf("%f,%f,%f\n", cam->worldPos.x, cam->worldPos.y, cam->worldPos.z);
-    }
-
     if (ABS(cam->worldPos.x - sp44.x) + ABS(cam->worldPos.z - sp44.z) == 0.0f) {
         gd_printf("Draw_Camera(): Zero view distance\n");
-        return;
+    } else {
+        gd_dl_lookat(cam, cam->worldPos.x, cam->worldPos.y, cam->worldPos.z, sp44.x, sp44.y, sp44.z, cam->unkA4);
     }
-    gd_dl_lookat(cam, cam->worldPos.x, cam->worldPos.y, cam->worldPos.z, sp44.x, sp44.y, sp44.z, cam->unkA4);
 }
 
 /**
@@ -844,9 +821,9 @@ void draw_shape_faces(struct ObjShape *shape) {
     if (shape->dlNums[gGdFrameBufNum] != 0) {
         draw_indexed_dl(shape->dlNums[gGdFrameBufNum], shape->unk50);
     } else if (shape->faceGroup != NULL) {
-        func_801A0038();
+        gdFlushVtxBuffer();
         draw_group(shape->faceGroup);
-        gd_dl_flush_vertices();
+        gdDrawVtxTriBuffers();
     }
 }
 
@@ -866,7 +843,6 @@ void draw_particle(struct GdObj *obj) {
         sLightColours[0].r = (white->r - black->r) * brightness + black->r;
         sLightColours[0].g = (white->g - black->g) * brightness + black->g;
         sLightColours[0].b = (white->b - black->b) * brightness + black->b;
-        ; // needed to match
     } else {
         sLightColours[0].r = 0.0f;
         sLightColours[0].g = 0.0f;
@@ -896,9 +872,6 @@ void draw_bone(struct GdObj *obj) {
     s32 colour;
     struct GdVec3f scale; // guess
 
-    return;
-
-    // dead code
     scale.x = 1.0f;
     scale.y = 1.0f;
     scale.z = bone->unkF8 / 50.0f;
@@ -963,7 +936,6 @@ void draw_plane(struct GdObj *obj) {
 
     if (obj->drawFlags & OBJ_HIGHLIGHTED) {
         obj->drawFlags &= ~OBJ_HIGHLIGHTED;
-        ; // needed to match; presumably setting up the color to draw the plane with
     } else {
         sUseSelectedColor = FALSE;
     }
