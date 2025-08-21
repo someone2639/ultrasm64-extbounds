@@ -248,13 +248,13 @@ void func_80192CCC(struct ObjNet *net) {
     struct ObjGroup *group;        // 30
     struct GdVec3f sp24;
 
-    ctrl = &gGdCtrl;
-    if (gGdCtrl.unk2C != NULL) {
+    ctrl = &gdControllerInfo;
+    if (gdControllerInfo.unk2C != NULL) {
         menu_cb_reset_positions();
     }
     gd_set_identity_mat4(&D_801B9DC8);
 
-    if (gGdCtrl.unk30 != NULL) {
+    if (gdControllerInfo.unk30 != NULL) {
         sp24.x = net->mat128[0][0];
         sp24.y = net->mat128[0][1];
         sp24.z = net->mat128[0][2];
@@ -263,7 +263,7 @@ void func_80192CCC(struct ObjNet *net) {
         net->torque.x = net->torque.y = net->torque.z = 0.0f;
     }
 
-    if (gGdCtrl.unk28 != NULL) {
+    if (gdControllerInfo.unk28 != NULL) {
         sp24.x = net->mat128[0][0];
         sp24.y = net->mat128[0][1];
         sp24.z = net->mat128[0][2];
@@ -272,7 +272,7 @@ void func_80192CCC(struct ObjNet *net) {
         net->torque.x = net->torque.y = net->torque.z = 0.0f;
     }
 
-    if (gGdCtrl.newStartPress) {
+    if (gdControllerInfo.newStartPress) {
         return;
     } // start was pressed
 

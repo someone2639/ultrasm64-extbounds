@@ -18,7 +18,7 @@
     _Pragma ("GCC diagnostic pop")
 
 // structs
-struct GdControl { // gGdCtrl
+struct GdControl { // gdControllerInfo
     /* 0x00 */ s32 unk00;  // set but never used
     /* 0x04 */ u8  filler1[4];
     /* 0x08 */ s32 dleft; // Dpad-left (mask)
@@ -56,8 +56,8 @@ struct GdControl { // gGdCtrl
     /* 0xC4 */ s32 stickDeltaY;
     /* 0xC8 */ s32 stickX;
     /* 0xCC */ s32 stickY;
-    /* 0xD0 */ s32 csrX; // bounded by screen view
-    /* 0xD4 */ s32 csrY; // bounded by screen view
+    /* 0xD0 */ s32 cursorX; // bounded by screen view
+    /* 0xD4 */ s32 cursorY; // bounded by screen view
     /* 0xD8 */ /* hand/cursor state bitfield? */
         /* b80 */ u8 dragging : 1;  // bool (A) pressed
         /* b40 */ u8 unkD8b40 : 1; // set to FALSE and unused
@@ -79,7 +79,7 @@ extern f32 D_801A8058;
 extern s32 gGdUseVtxNormal;
 
 // bss
-extern struct GdControl gGdCtrl;
-extern struct GdControl gGdCtrlPrev;
+extern struct GdControl gdControllerInfo;
+extern struct GdControl gdControllerInfoPrevFrame;
 
 #endif // GD_MAIN_H

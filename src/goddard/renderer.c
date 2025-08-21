@@ -1048,7 +1048,7 @@ void Unknown8019C270(u8 *buf) {
 
 /* 24AA58 -> 24AAA8 */
 void Unknown8019C288(s32 stickX, s32 stickY) {
-    struct GdControl *ctrl = &gGdCtrl; // 4
+    struct GdControl *ctrl = &gdControllerInfo; // 4
 
     ctrl->stickXf = (f32) stickX;
     ctrl->stickYf = (f32)(stickY / 2);
@@ -1740,16 +1740,13 @@ void check_tri_display(s32 vtxcount) {
     if (vtxcount != 3) {
         fatal_printf("cant display no tris\n");
     }
-    if (D_801BB018 != 0 || D_801BB01C != 0) {
-        ;
-    }
 }
 
 /**
  * Adds a vertex to the current display list. Returns a pointer to the vertex if
  * it is new, or NULL if the vertex already exists.
  */
-Vtx *gd_dl_make_vertex(f32 x, f32 y, f32 z, f32 alpha) {
+Vtx *gdMakeVertex(f32 x, f32 y, f32 z, f32 alpha) {
     Vtx *vtx = NULL;
     s32 i;
 
@@ -1802,9 +1799,9 @@ void gdMakeTriangle(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 z2, f32 x3, f32 
     Vtx *vtx;
 
     vtx = &DL_CURRENT_VTX(sCurrentGdDl);
-    gd_dl_make_vertex(x1, y1, z1, 1.0f);
-    gd_dl_make_vertex(x2, y2, z2, 1.0f);
-    gd_dl_make_vertex(x3, y3, z3, 1.0f);
+    gdMakeVertex(x1, y1, z1, 1.0f);
+    gdMakeVertex(x2, y2, z2, 1.0f);
+    gdMakeVertex(x3, y3, z3, 1.0f);
 
     gSPVertex(next_gfx(), osVirtualToPhysical(vtx), 3, 0);
     gSP1Triangle(next_gfx(), 0, 1, 2, 0);
@@ -2226,7 +2223,7 @@ void start_view_dl(struct ObjView *view) {
 
 void parse_p1_controller(void) {
     u32 i;
-    struct GdControl *gdctrl = &gGdCtrl;
+    struct GdControl *gdctrl = &gdControllerInfo;
     OSContPadEx *currInputs;
     OSContPadEx *prevInputs;
 
@@ -2276,8 +2273,8 @@ void parse_p1_controller(void) {
     gdctrl->AbtnPressWait = FALSE;
 
     if (gdctrl->startedDragging) {
-        gdctrl->dragStartX = gdctrl->csrX;
-        gdctrl->dragStartY = gdctrl->csrY;
+        gdctrl->dragStartX = gdctrl->cursorX;
+        gdctrl->dragStartY = gdctrl->cursorY;
 
         if (gdctrl->currFrame - gdctrl->dragStartFrame < 10) {
             gdctrl->AbtnPressWait = TRUE;
@@ -2319,24 +2316,24 @@ void parse_p1_controller(void) {
 
     // deadzone checks
     if (ABS(gdctrl->stickX) >= 6) {
-        gdctrl->csrX += gdctrl->stickX * 0.1;
+        gdctrl->cursorX += gdctrl->stickX * 0.1;
     }
     if (ABS(gdctrl->stickY) >= 6) {
-        gdctrl->csrY -= gdctrl->stickY * 0.1;
+        gdctrl->cursorY -= gdctrl->stickY * 0.1;
     }
 
     // clamp cursor position within screen view bounds
-    if (gdctrl->csrX < sScreenView->parent->upperLeft.x + 16.0f) {
-        gdctrl->csrX = sScreenView->parent->upperLeft.x + 16.0f;
+    if (gdctrl->cursorX < sScreenView->parent->upperLeft.x + 16.0f) {
+        gdctrl->cursorX = sScreenView->parent->upperLeft.x + 16.0f;
     }
-    if (gdctrl->csrX > sScreenView->parent->upperLeft.x + sScreenView->parent->lowerRight.x - 48.0f) {
-        gdctrl->csrX = sScreenView->parent->upperLeft.x + sScreenView->parent->lowerRight.x - 48.0f;
+    if (gdctrl->cursorX > sScreenView->parent->upperLeft.x + sScreenView->parent->lowerRight.x - 48.0f) {
+        gdctrl->cursorX = sScreenView->parent->upperLeft.x + sScreenView->parent->lowerRight.x - 48.0f;
     }
-    if (gdctrl->csrY < sScreenView->parent->upperLeft.y + 16.0f) {
-        gdctrl->csrY = sScreenView->parent->upperLeft.y + 16.0f;
+    if (gdctrl->cursorY < sScreenView->parent->upperLeft.y + 16.0f) {
+        gdctrl->cursorY = sScreenView->parent->upperLeft.y + 16.0f;
     }
-    if (gdctrl->csrY > sScreenView->parent->upperLeft.y + sScreenView->parent->lowerRight.y - 32.0f) {
-        gdctrl->csrY = sScreenView->parent->upperLeft.y + sScreenView->parent->lowerRight.y - 32.0f;
+    if (gdctrl->cursorY > sScreenView->parent->upperLeft.y + sScreenView->parent->lowerRight.y - 32.0f) {
+        gdctrl->cursorY = sScreenView->parent->upperLeft.y + sScreenView->parent->lowerRight.y - 32.0f;
     }
 
     for (i = 0; i < sizeof(OSContPadEx); i++) {
@@ -2821,7 +2818,7 @@ void update_cursor(void) {
     if (sHandView == NULL)
         return;
 
-    if (gGdCtrl.currFrame - gGdCtrl.dragStartFrame < 300) {
+    if (gdControllerInfo.currFrame - gdControllerInfo.dragStartFrame < 300) {
         sHandView->flags |= VIEW_UPDATE;
         // by playing the sfx every frame, it will only play once as it
         // never leaves the "sfx played last frame" buffer
@@ -2831,12 +2828,12 @@ void update_cursor(void) {
         gd_play_sfx(GD_SFX_HAND_DISAPPEAR);
     }
 
-    sHandView->upperLeft.x = (f32) gGdCtrl.csrX;
-    sHandView->upperLeft.y = (f32) gGdCtrl.csrY;
+    sHandView->upperLeft.x = (f32) gdControllerInfo.cursorX;
+    sHandView->upperLeft.y = (f32) gdControllerInfo.cursorY;
 
     // Make hand display list
     begin_gddl(sHandShape->dlNums[gGdFrameBufNum]);
-    if (gGdCtrl.dragging) {
+    if (gdControllerInfo.dragging) {
         gd_put_sprite((u16 *) gd_texture_hand_closed, sHandView->upperLeft.x, sHandView->upperLeft.y, 0x20, 0x20);
     } else {
         gd_put_sprite((u16 *) gd_texture_hand_open, sHandView->upperLeft.x, sHandView->upperLeft.y, 0x20, 0x20);
@@ -2933,7 +2930,7 @@ void func_801A520C(void) {
     apply_to_obj_types_in_group(OBJ_TYPE_VIEWS, (applyproc_t) update_view_and_dl, gGdViewsGroup);
     stop_timer("dlgen");
     restart_timer("netupd");
-    if (!gGdCtrl.newStartPress) {
+    if (!gdControllerInfo.newStartPress) {
         apply_to_obj_types_in_group(OBJ_TYPE_VIEWS, (applyproc_t) Proc801A5110, gGdViewsGroup);
     }
     split_timer("netupd");
@@ -3038,21 +3035,21 @@ void gdInitSystem(void) {
     sActiveView = sScreenView;
 
     // Zero out controller inputs
-    data = (s8 *) &gGdCtrl;
+    data = (s8 *) &gdControllerInfo;
     for (i = 0; (u32) i < sizeof(struct GdControl); i++) {
         *data++ = 0;
     }
 
     // 801A5868
-    gGdCtrl.unk88 = 1.0f;
-    gGdCtrl.unkA0 = -45.0f;
-    gGdCtrl.unkAC = 45.0f;
-    gGdCtrl.unk00 = 2;
-    gGdCtrl.newStartPress = FALSE;
-    gGdCtrl.prevFrame = &gGdCtrlPrev;
-    gGdCtrl.csrX = 160;
-    gGdCtrl.csrY = 120;
-    gGdCtrl.dragStartFrame = -1000;
+    gdControllerInfo.unk88 = 1.0f;
+    gdControllerInfo.unkA0 = -45.0f;
+    gdControllerInfo.unkAC = 45.0f;
+    gdControllerInfo.unk00 = 2;
+    gdControllerInfo.newStartPress = FALSE;
+    gdControllerInfo.prevFrame = &gdControllerInfoPrevFrame;
+    gdControllerInfo.cursorX = 160;
+    gdControllerInfo.cursorY = 120;
+    gdControllerInfo.dragStartFrame = -1000;
     // unusedDl801BB0AC = create_mtl_gddl(4);
     imout();
 }
@@ -3095,23 +3092,11 @@ void store_in_pickbuf(s16 data) {
     sPickBuf[sPickBufPosition++] = data;
 }
 
-** Divides by 3, since in the final game, only thing stored
+/** Divides by 3, since in the final game, only thing stored
 ** in the pick buf is a tupple of three halves: (datasize, objtype, objnumber)
 ** (datasize is always 2) */
 s32 get_cur_pickbuf_offset(UNUSED s16 *arg0) {
     return sPickBufPosition / 3;
-}
-
-/* 254250 -> 254264 */
-void stub_renderer_15(UNUSED u32 arg0) {
-}
-
-/* 254264 -> 254278 */
-void stub_renderer_16(UNUSED u32 arg0) {
-}
-
-/* 254278 -> 254288 */
-void stub_renderer_17(void) {
 }
 
 /* 254288 -> 2542B0 */
@@ -3466,14 +3451,6 @@ void make_timer_gadgets(void) {
     return;
 }
 
-/* 255600 -> 255614 */
-void stub_renderer_18(UNUSED u32 a0) {
-}
-
-/* 255614 -> 255628 */
-void stub_renderer_19(UNUSED u32 a0) {
-}
-
 #ifndef NO_SEGMENTED_MEMORY
 /**
  * Copies `size` bytes of data from ROM address `romAddr` to RAM address `vAddr`.
@@ -3573,106 +3550,3 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
     return gdProcessDynList(dynlist);
 }
 #endif
-
-/**
- * Unused (not called)
- */
-UNUSED void stub_renderer_20(UNUSED u32 a0) {
-}
-
-/**
- * Unused (not called)
- */
-void func_801A71CC(struct ObjNet *net) {
-    s32 i; // spB4
-    s32 j; // spB0
-    f32 spAC;
-    f32 spA8;
-    struct GdBoundingBox bbox;
-    struct ObjZone *sp88;
-    register struct ListNode *link;  // s0 (84)
-    s32 sp80;                     // linked planes contained in zone?
-    s32 sp7C;                     // linked planes in net count?
-    register struct ListNode *link1; // s1 (78)
-    register struct ListNode *link2; // s2 (74)
-    register struct ListNode *link3; // s3 (70)
-    struct GdVec3f sp64;
-    struct ObjPlane *plane; // 5c
-    struct ObjZone *linkedZone; // 54
-    struct ObjPlane *planeL2; // 4c
-    struct ObjPlane *planeL3; // 44
-
-    if (net->unk21C == NULL) {
-        net->unk21C = make_group(0);
-    }
-
-    gd_print_bounding_box("making zones for net=", &net->boundingBox);
-
-    sp64.x = (ABS(net->boundingBox.minX) + ABS(net->boundingBox.maxX)) / 16.0f;
-    sp64.z = (ABS(net->boundingBox.minZ) + ABS(net->boundingBox.maxZ)) / 16.0f;
-
-    spA8 = net->boundingBox.minZ + sp64.z / 2.0f;
-
-    for (i = 0; i < 16; i++) {
-        spAC = net->boundingBox.minX + sp64.x / 2.0f;
-
-        for (j = 0; j < 16; j++) {
-            bbox.minX = spAC - (sp64.x / 2.0f);
-            bbox.minY = 0.0f;
-            bbox.minZ = spA8 - (sp64.z / 2.0f);
-
-            bbox.maxX = spAC + (sp64.x / 2.0f);
-            bbox.maxY = 0.0f;
-            bbox.maxZ = spA8 + (sp64.z / 2.0f);
-
-            sp88 = make_zone(NULL, &bbox, NULL);
-            addto_group(net->unk21C, &sp88->header);
-            sp88->unk2C = make_group(0);
-
-            spAC += sp64.x;
-        }
-        spA8 += sp64.z;
-    }
-
-    for (link = net->unk1CC->firstMember; link != NULL; link = link->next) {
-        plane = (struct ObjPlane *) link->obj;
-        plane->unk18 = FALSE;
-    }
-
-    i = 0; // acts as Zone N here... kinda
-    for (link1 = net->unk21C->firstMember; link1 != NULL; link1 = link1->next) {
-        linkedZone = (struct ObjZone *) link1->obj;
-        sp88 = linkedZone;
-        sp7C = 0;
-        sp80 = 0;
-
-        for (link2 = net->unk1CC->firstMember; link2 != NULL; link2 = link2->next) {
-            planeL2 = (struct ObjPlane *) link2->obj;
-            sp7C++;
-            if (gd_plane_point_within(&planeL2->boundingBox, &sp88->boundingBox)) {
-                planeL2->unk18 = TRUE;
-                addto_group(sp88->unk2C, &planeL2->header);
-                sp80++;
-            }
-        }
-
-        if (sp80 == 0) {
-            stub_objects_1(net->unk21C, &linkedZone->header); // stubbed fatal function?
-        } else {
-            gd_printf("%d/%d planes in zone %d\n", sp80, sp7C, i++);
-        }
-    }
-
-    for (link3 = net->unk1CC->firstMember; link3 != NULL; link3 = link3->next) {
-        planeL3 = (struct ObjPlane *) link3->obj;
-
-        if (!planeL3->unk18) {
-            gd_print_bounding_box("plane=", &planeL3->boundingBox);
-            fatal_printf("plane not in any zones\n");
-        }
-    }
-}
-
-/* 255EB0 -> 255EC0 */
-UNUSED void stub_renderer_21(void) {
-}

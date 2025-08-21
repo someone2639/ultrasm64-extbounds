@@ -1560,7 +1560,7 @@ void drag_picked_object(struct GdObj *inputObj) {
     UNUSED u8 filler3[4];
     f32 dispMag;
 
-    ctrl = &gGdCtrl;
+    ctrl = &gdControllerInfo;
 
     if (gViewUpdateCamera == NULL) {
         return;
@@ -1569,15 +1569,15 @@ void drag_picked_object(struct GdObj *inputObj) {
     dispMag = gd_vec3f_magnitude(&gViewUpdateCamera->unk40);
     dispMag /= 1000.0f;
 
-    displacement.x = ((f32)(ctrl->csrX - ctrl->dragStartX)) * dispMag;
-    displacement.y = ((f32) - (ctrl->csrY - ctrl->dragStartY)) * dispMag;
+    displacement.x = ((f32)(ctrl->cursorX - ctrl->dragStartX)) * dispMag;
+    displacement.y = ((f32) - (ctrl->cursorY - ctrl->dragStartY)) * dispMag;
     displacement.z = 0.0f;
 
     gd_inverse_mat4f(&gViewUpdateCamera->unkE8, &sp40);
     gd_mat4f_mult_vec3f(&displacement, &sp40);
 
     obj = inputObj;
-    if ((inputObj->drawFlags & OBJ_PICKED) && gGdCtrl.dragging) {
+    if ((inputObj->drawFlags & OBJ_PICKED) && gdControllerInfo.dragging) {
         gd_play_sfx(GD_SFX_PINCH_FACE);
         // Note: this second sfx won't play, as it is "overwritten" by the first
         if (ABS(ctrl->stickDeltaX) + ABS(ctrl->stickDeltaY) >= 11) {
@@ -1635,7 +1635,7 @@ void move_camera(struct ObjCamera *cam) {
     Mat4f *sp2C;
     struct GdControl *ctrl;
 
-    ctrl = &gGdCtrl;
+    ctrl = &gdControllerInfo;
     if (!(cam->flags & 0x10)) {
         return;
     }

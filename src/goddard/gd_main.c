@@ -21,8 +21,8 @@ UNUSED static s32 sUnrefScnWidth = 320;
 UNUSED static s32 sUnrefScnHeight = 240;
 
 // bss
-struct GdControl gGdCtrl;     // @ 801B9920; processed controller info
-struct GdControl gGdCtrlPrev; // @ 801B9A18; previous frame's controller info
+struct GdControl gdControllerInfo;     // @ 801B9920; processed controller info
+struct GdControl gdControllerInfoPrevFrame; // @ 801B9A18; previous frame's controller info
 
 /**
  * Unused main function possibly from when this was a standalone demo
@@ -34,12 +34,12 @@ u32 __main__(void) {
     imin("main");
     gdInitSystem();
 
-    gGdCtrl.unk88 = 0.46799f;
-    gGdCtrl.unkA0 = -34.0f;
-    gGdCtrl.unkAC = 34.0f;
-    gGdCtrl.unk00 = 2;
-    gGdCtrl.newStartPress = FALSE;
-    gGdCtrl.prevFrame = &gGdCtrlPrev;
+    gdControllerInfo.unk88 = 0.46799f;
+    gdControllerInfo.unkA0 = -34.0f;
+    gdControllerInfo.unkAC = 34.0f;
+    gdControllerInfo.unk00 = 2;
+    gdControllerInfo.newStartPress = FALSE;
+    gdControllerInfo.prevFrame = &gdControllerInfoPrevFrame;
 
     imin("main - make_scene");
     make_scene();  // make_scene does nothing, though

@@ -71,7 +71,7 @@ void grabbable_joint_update_func(struct ObjJoint *self) {
         self->flags |= 0x2000;
         ;  // needed to match
     } else {
-        if (gGdCtrl.trgR == FALSE) { // R trigger is released
+        if (gdControllerInfo.trgR == FALSE) { // R trigger is released
             // Set velocity so that the joint approaches its initial position
             self->velocity.x -= offset.x * 0.5; //? 0.5f
             self->velocity.y -= offset.y * 0.5; //? 0.5f
@@ -111,8 +111,8 @@ void grabbable_joint_update_func(struct ObjJoint *self) {
     self->mat128[3][2] += self->velocity.z;
 
     if (self->header.drawFlags & OBJ_PICKED) {
-        gGdCtrl.csrX -= (gGdCtrl.csrX - gGdCtrl.dragStartX) * 0.2;
-        gGdCtrl.csrY -= (gGdCtrl.csrY - gGdCtrl.dragStartY) * 0.2;
+        gdControllerInfo.cursorX -= (gdControllerInfo.cursorX - gdControllerInfo.dragStartX) * 0.2;
+        gdControllerInfo.cursorY -= (gdControllerInfo.cursorY - gdControllerInfo.dragStartY) * 0.2;
     }
 
     // update position of attached objects
@@ -155,8 +155,8 @@ void eye_joint_update_func(struct ObjJoint *self) {
     sp44.z = (*sp5C)[3][2];
     world_pos_to_screen_coords(&sp44, sCurrentMoveCamera, sCurrentMoveView);
 
-    sp50.x = gGdCtrl.csrX - sp44.x;
-    sp50.y = -(gGdCtrl.csrY - sp44.y);
+    sp50.x = gdControllerInfo.cursorX - sp44.x;
+    sp50.y = -(gdControllerInfo.cursorY - sp44.y);
     sp50.z = 0.0f;
 
     sp50.x *= 2.0; //?2.0f

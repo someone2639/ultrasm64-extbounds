@@ -413,16 +413,15 @@ void Unknown80178ECC(f32 v0X, f32 v0Y, f32 v0Z, f32 v1X, f32 v1Y, f32 v1Z) {
  * of stub code
  */
 void draw_face(struct ObjFace *face) {
-    struct ObjVertex *vtx; // 3c
-    f32 z;                 // 38
-    f32 y;                 // 34
-    f32 x;                 // 30
-    s32 i;             // 20; also used to store mtl's gddl number
-    s32 hasTextCoords; // 1c
-    Vtx *gbiVtx;       // 18
+    struct ObjVertex *vtx;
+    f32 z;
+    f32 y;
+    f32 x;
+    s32 i;
+    s32 useVtxTextureCoords = FALSE;
+    Vtx *gbiVtx;
 
     imin("draw_face");
-    hasTextCoords = FALSE;
     if (sUseSelectedColor == FALSE && face->mtlId >= 0) { // -1 == colored face
         if (face->mtl != NULL) {
             if ((i = face->mtl->gddlNumber) != 0) {
@@ -452,11 +451,11 @@ void draw_face(struct ObjFace *face) {
         //! @bug This function seems to have some parts based on older versions of ObjVertex
         //!      as the struct requests fields passed the end of an ObjVertex.
         //!      The bad code is statically unreachable, so...
-        if (hasTextCoords) {
+        if (useVtxTextureCoords) {
             set_vtx_tc_buf(((struct BetaVtx *) vtx)->s, ((struct BetaVtx *) vtx)->t);
         }
 
-        gbiVtx = gd_dl_make_vertex(x, y, z, vtx->alpha);
+        gbiVtx = gdMakeVertex(x, y, z, vtx->alpha);
 
         if (gbiVtx != NULL) {
             vtx->gbiVerts = make_vtx_link(vtx->gbiVerts, gbiVtx);
@@ -488,21 +487,6 @@ void draw_rect_fill(s32 color, f32 ulx, f32 uly, f32 lrx, f32 lry) {
 void draw_rect_stroke(s32 color, f32 ulx, f32 uly, f32 lrx, f32 lry) {
     gd_dl_set_fill(gd_get_colour(color));
     gd_draw_border_rect(ulx, uly, lrx, lry);
-}
-
-/**
- * Uncalled function that calls other orphan stub functions.
- * @note Not called
- */
-void Unknown801792F0(struct GdObj *obj) {
-    char objId[32];
-    struct GdVec3f objPos;
-
-    format_object_id(objId, obj);
-    set_cur_dynobj(obj);
-    dGetWorldPosition(&objPos);
-    func_801A4438(objPos.x, objPos.y, objPos.z);
-    stub_draw_label_text(objId);
 }
 
 /**
@@ -712,8 +696,8 @@ void check_grabbable_click(struct GdObj *input) {
     objPos.y = (*mtx)[3][1];
     objPos.z = (*mtx)[3][2];
     world_pos_to_screen_coords(&objPos, gViewUpdateCamera, sUpdateViewState.view);
-    if (ABS(gGdCtrl.csrX - objPos.x) < 20.0f) {
-        if (ABS(gGdCtrl.csrY - objPos.y) < 20.0f) {
+    if (ABS(gdControllerInfo.cursorX - objPos.x) < 20.0f) {
+        if (ABS(gdControllerInfo.cursorY - objPos.y) < 20.0f) {
             // store (size, Obj Type, Obj Index) in s16 pick buffer array
             store_in_pickbuf(2);
             store_in_pickbuf(obj->type);
@@ -1404,8 +1388,8 @@ void update_view(struct ObjView *view) {
     }
 
     if (view->components != NULL) {
-        if (gGdCtrl.dragging) {
-            if (gd_getproperty(3, 0) != FALSE && gGdCtrl.startedDragging != FALSE) {
+        if (gdControllerInfo.dragging) {
+            if (gd_getproperty(3, 0) != FALSE && gdControllerInfo.startedDragging != FALSE) {
                 init_pick_buf(sPickBuffer, ARRAY_COUNT(sPickBuffer));
                 gdDrawScene(FIND_PICKS, sUpdateViewState.view->components, NULL);
                 pickOffset = get_cur_pickbuf_offset(sPickBuffer);
@@ -1451,8 +1435,8 @@ void update_view(struct ObjView *view) {
                     sPickedObject->drawFlags |= OBJ_PICKED;
                     sPickedObject->drawFlags |= OBJ_HIGHLIGHTED;
                     sUpdateViewState.view->pickedObj = sPickedObject;
-                    gGdCtrl.dragStartX = gGdCtrl.csrX = sGrabCords.x;
-                    gGdCtrl.dragStartY = gGdCtrl.csrY = sGrabCords.y;
+                    gdControllerInfo.dragStartX = gdControllerInfo.cursorX = sGrabCords.x;
+                    gdControllerInfo.dragStartY = gdControllerInfo.cursorY = sGrabCords.y;
                 }
             }
 

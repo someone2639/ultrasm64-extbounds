@@ -23,7 +23,6 @@
 // data
 struct ObjGroup *gMarioFaceGrp = NULL;
 struct ObjShape *gSpotShape = NULL;        // Shape used for drawing lights?
-static struct ObjShape *sGrabJointTestShape = NULL; // Test shape for showing grab joints. This isn't rendered due to make_grabber_joint setting the drawFlags to OBJ_INVISIBLE.
 struct ObjShape *gShapeRedSpark = NULL;
 struct ObjShape *gShapeSilverSpark = NULL;
 struct ObjShape *gShapeRedStar = NULL;
@@ -817,7 +816,7 @@ void animate_mario_head_gameover(struct ObjAnimator *self) {
  */
 void animate_mario_head_normal(struct ObjAnimator *self) {
     s32 state = 0; // TODO: label these states
-    s32 aBtnPressed = gGdCtrl.dragging;
+    s32 aBtnPressed = gdControllerInfo.dragging;
 
     switch (self->state) {
         case 0:

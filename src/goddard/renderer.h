@@ -80,7 +80,7 @@ void gd_dl_scale(f32 x, f32 y, f32 z);
 void func_8019F2C4(f32 arg0, s8 arg1);
 void gd_dl_lookat(struct ObjCamera *cam, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7);
 void check_tri_display(s32 vtxcount);
-Vtx *gd_dl_make_vertex(f32 x, f32 y, f32 z, f32 alpha);
+Vtx *gdMakeVertex(f32 x, f32 y, f32 z, f32 alpha);
 void gdTriangleRegistered(void);
 void gdMakeTriangle(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 z2, f32 x3, f32 y3, f32 z3);
 void gdFlushVtxBuffer(void);
