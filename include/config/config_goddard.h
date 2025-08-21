@@ -23,15 +23,15 @@
  * Configure Face Settings
  **************************/
 
-#define GODDARD_TOTAL_HEAP_SIZE 0x5000000
+#define GODDARD_TOTAL_HEAP_SIZE 0x500000
 
-#define GODDARD_MAIN_FACE_SCENE dynlist_mario
+#define GODDARD_MAIN_FACE_SCENE dynlist_mario_master
 
 // default 1900
-#define GODDARD_STATIC_DL_CMD_COUNT 5000
+#define GODDARD_STATIC_DL_CMD_COUNT 1900
 
 // default 600
-#define GODDARD_DYNAMIC_DL_CMD_COUNT 5000
+#define GODDARD_DYNAMIC_DL_CMD_COUNT 600
 
 // default 100
-#define GODDARD_FACE_DL_CMD_COUNT 5000
+#define GODDARD_FACE_DL_CMD_COUNT 100

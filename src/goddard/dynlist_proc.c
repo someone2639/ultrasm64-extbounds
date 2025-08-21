@@ -2872,11 +2872,11 @@ struct GdObj *gdProcessDynList(struct DynList *dynlist_buf) {
 
 
     while (dynlist_buf->cmd != GDCMD_END_LIST) {
-        gd_printf("DynCmd %d(%d %d {%f %f %f}\n", dynlist_buf->cmd,
-            Dyn1AsName(dynlist_buf),
-            Dyn2AsName(dynlist_buf),
-            DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf)
-        );
+        // gd_printf("DynCmd %d(%d %d {%f %f %f}\n", dynlist_buf->cmd,
+        //     Dyn1AsName(dynlist_buf),
+        //     Dyn2AsName(dynlist_buf),
+        //     DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf)
+        // );
         switch (dynlist_buf->cmd) {
             case GDCMD_SET_NAME_SUFFIX:
                 dSetNameSuffix(Dyn1AsStr(dynlist_buf));

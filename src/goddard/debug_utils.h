@@ -56,9 +56,7 @@ void print_stack_trace();
 
 #define fatal_print(str) {osSyncPrintf(str); while (1);}
 #define fatal_printf(fmt, ...) {\
-char buffer[0x200]; \
-sprintf(buffer, fmt , ## __VA_ARGS__); \
-osSyncPrintf(fmt); \
+osSyncPrintf(fmt , ## __VA_ARGS__); \
 print_stack_trace(); \
 while (1); \
 }
