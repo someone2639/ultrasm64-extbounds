@@ -303,11 +303,11 @@ static void level_cmd_load_mario_head(void) {
     // TODO: Fix these hardcoded sizes
     void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(GODDARD_TOTAL_HEAP_SIZE), MEMORY_POOL_LEFT);
     if (addr != NULL) {
-        gdm_init(addr, DOUBLE_SIZE_ON_64_BIT(GODDARD_TOTAL_HEAP_SIZE));
-        gd_add_to_heap(gZBuffer, sizeof(gZBuffer)); // 0x25800
-        gd_add_to_heap(gFramebuffer0, 3 * sizeof(gFramebuffer0)); // 0x70800
-        gdm_setup();
-        gdm_maketestdl(CMD_GET(s16, 2));
+        gdInitMemory(addr, DOUBLE_SIZE_ON_64_BIT(GODDARD_TOTAL_HEAP_SIZE));
+        gdAddMemoryToHeap(gZBuffer, sizeof(gZBuffer)); // 0x25800
+        gdAddMemoryToHeap(gFramebuffers, sizeof(gFramebuffers)); // 0x70800
+        gdSetupFace();
+        gdLoadScene(CMD_GET(s16, 2));
     }
 #endif
     sCurrentCmd = CMD_NEXT;

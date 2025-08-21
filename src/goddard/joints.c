@@ -1100,24 +1100,6 @@ void func_80191A1C(struct ObjBone *a0) {
     gGdTempBone = a0;
 }
 
-/* 2403C8 -> 240530 */
-void func_80191BF8(struct ObjJoint *j) {
-    f32 sp1C;
-    f32 sp18 = -2.0f;
-
-    if (!(j->flags & 0x1)) {
-        j->unk3C.y += sp18;
-    }
-
-    if ((sp1C = j->unk3C.y - (D_801A8058 + 30.0f)) < 0.0f && j->velocity.y < 0.0f) {
-        sp1C += j->velocity.y;
-        sp1C *= 0.8; //? 0.8f
-        func_80190F3C(j, -j->velocity.x * 0.7, -sp1C, -j->velocity.z * 0.7);
-    }
-
-    func_80190F3C(j, 0.0f, 0.0f, 0.0f);
-}
-
 /* 240530 -> 240624 */
 void func_80191D60(struct ObjJoint *j) {
     j->velocity.x += j->unk3C.x - j->worldPos.x;
@@ -1138,13 +1120,6 @@ void func_80191E54(struct ObjJoint *j) {
     j->unk3C.x = j->worldPos.x;
     j->unk3C.y = j->worldPos.y;
     j->unk3C.z = j->worldPos.z;
-}
-
-/* 240658 -> 2406B8 */
-void func_80191E88(struct ObjGroup *grp) {
-    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191BF8, grp);
-    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191D60, grp);
-    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191E54, grp);
 }
 
 /* 2406B8 -> 2406E0; orig name: func_80191EE8 */

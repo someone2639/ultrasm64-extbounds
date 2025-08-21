@@ -198,36 +198,6 @@ void collision_something_801926A4(struct ObjNet *net) {
     net->torque.y *= 0.9;  //? 0.9f
 }
 
-/* 2412A0 -> 24142C; not called */
-void func_80192AD0(struct ObjNet *net) {
-    UNUSED u8 filler1[4];
-    struct ObjGroup *sp60;
-    UNUSED u8 filler2[68];
-    struct ObjNet *sp18;
-
-    if ((sp60 = net->unk1C8) == NULL) {
-        return;
-    }
-
-    sp18 = net->unk1F0;
-    net->worldPos.x = net->unk1F4.x;
-    net->worldPos.y = net->unk1F4.y;
-    net->worldPos.z = net->unk1F4.z;
-    gd_rotate_and_translate_vec3f(&net->worldPos, &sp18->mat128);
-
-    net->worldPos.x += net->unk1F0->worldPos.x;
-    net->worldPos.y += net->unk1F0->worldPos.y;
-    net->worldPos.z += net->unk1F0->worldPos.z;
-    net->unk200.x = 0.0f;
-    net->unk200.y = 10.0f;
-    net->unk200.z = -4.0f;
-    gd_rotate_and_translate_vec3f(&net->unk200, &sp18->mat128);
-
-    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191824, sp60);
-    func_80191E88(sp60);
-    apply_to_obj_types_in_group(OBJ_TYPE_BONES, (applyproc_t) func_8018F328, net->unk20C);
-}
-
 /* 24142C -> 24149C; orig name: func_80192C5C */
 void move_bonesnet(struct ObjNet *net) {
     struct ObjGroup *sp24;

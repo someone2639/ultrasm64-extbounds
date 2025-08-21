@@ -436,7 +436,7 @@ void draw_face(struct ObjFace *face) {
 
     check_tri_display(face->vtxCount);
 
-    if (!gGdUseVtxNormal) {
+    if (!gdUseSmoothShading) {
         set_Vtx_norm_buf_1(&face->normal);
     }
 
@@ -445,7 +445,7 @@ void draw_face(struct ObjFace *face) {
         x = vtx->pos.x;
         y = vtx->pos.y;
         z = vtx->pos.z;
-        if (gGdUseVtxNormal) {
+        if (gdUseSmoothShading) {
             set_Vtx_norm_buf_2(&vtx->normal);
         }
         //! @bug This function seems to have some parts based on older versions of ObjVertex

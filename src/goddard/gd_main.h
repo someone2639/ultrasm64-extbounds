@@ -75,8 +75,7 @@ struct GdControl { // gdControllerInfo
 
 // data
 extern s32 gGdMoveScene;
-extern f32 D_801A8058;
-extern s32 gGdUseVtxNormal;
+extern s32 gdUseSmoothShading;
 
 // bss
 extern struct GdControl gdControllerInfo;

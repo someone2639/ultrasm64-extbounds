@@ -1054,15 +1054,14 @@ void Unknown8019C288(s32 stickX, s32 stickY) {
     ctrl->stickYf = (f32)(stickY / 2);
 }
 
-void gd_add_to_heap(void *addr, u32 size) {
+void gdAddMemoryToHeap(void *addr, u32 size) {
     // TODO: is this `1` for permanence special?
     gd_add_mem_to_heap(size, addr, 1);
 }
 
 /* 24AAE0 -> 24AB7C */
-void gdm_init(void *blockpool, u32 size) {
-
-    imin("gdm_init");
+void gdInitMemory(void *blockpool, u32 size) {
+    imin("gdInitMemory");
     // Align downwards?
     size = (size - 8) & ~7;
     // Align to next double word boundry?
@@ -1079,9 +1078,9 @@ void gdm_init(void *blockpool, u32 size) {
 /**
  * Initializes the Mario head demo
  */
-void gdm_setup(void) {
+void gdSetupFace(void) {
 
-    imin("gdm_setup");
+    imin("gdSetupFace");
     sMarioSceneGrp = NULL;
     sUpdateMarioScene = FALSE;
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF);
@@ -1123,8 +1122,8 @@ struct ObjView *make_view_withgrp(char *name, struct ObjGroup *grp) {
 }
 
 /* 24AD14 -> 24AEB8 */
-void gdm_maketestdl(s32 id) {
-    imin("gdm_maketestdl");
+void gdLoadScene(s32 id) {
+    imin("gdLoadScene");
     switch (id) {
         case GD_SCENE_REGULAR_MARIO: // normal Mario head
             if (sMarioSceneGrp == NULL) {
@@ -1143,7 +1142,7 @@ void gdm_maketestdl(s32 id) {
             sMSceneView = make_view_withgrp("mscene", sMarioSceneGrp);
             break;
         default:
-            fatal_printf("gdm_maketestdl(%d): unknown dl", id);
+            fatal_printf("gdLoadScene(%d): unknown dl", id);
     }
     imout();
 }
@@ -1211,7 +1210,7 @@ Gfx *gdm_gettestdl(s32 id) {
             if (sMSceneView == NULL) {
                 gd_printf("MSceneView not initialized! Attempting to fix...\n");
 
-                gdm_maketestdl(id);
+                gdLoadScene(id);
 
                 if (sMSceneView == NULL) {
                     fatal_printf("MSceneView Failed to initialize! Aborting.\n");
