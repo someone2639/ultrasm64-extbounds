@@ -19,168 +19,94 @@
 #include "skin.h"
 #include "types.h"
 
-#define MAX_GD_DLS 1000
-#define OS_MESG_SI_COMPLETE 0x33333333
-
-#ifndef NO_SEGMENTED_MEMORY
-#define GD_VIRTUAL_TO_PHYSICAL(addr) ((uintptr_t)(addr) &0x0FFFFFFF)
-#define GD_LOWER_24(addr) ((uintptr_t)(addr) &0x00FFFFFF)
-#define GD_LOWER_29(addr) (((uintptr_t)(addr)) & 0x1FFFFFFF)
-#else
-#define GD_VIRTUAL_TO_PHYSICAL(addr) (addr)
-#define GD_LOWER_24(addr) ((uintptr_t)(addr))
-#define GD_LOWER_29(addr) (((uintptr_t)(addr)))
-#endif
-
-#define MTX_INTPART_PACK(w1, w2) (((w1) &0xFFFF0000) | (((w2) >> 16) & 0xFFFF))
-#define MTX_FRACPART_PACK(w1, w2) ((((w1) << 16) & 0xFFFF0000) | ((w2) &0xFFFF))
-#define LOOKAT_PACK(c) ((s32) MIN(((c) * (128.0)), 127.0) & 0xff)
-
-// structs
-struct GdDisplayList {
-    /* Vertices */
-    /*0x00*/ s32 curVtxIdx;
-    /*0x04*/ s32 totalVtx;
-    /*0x08*/ Vtx *vtx;
-    /* Matrices */
-    /*0x0C*/ s32 curMtxIdx;
-    /*0x10*/ s32 totalMtx;
-    /*0x14*/ Mtx *mtx;
-    /* Lights */
-    /*0x18*/ s32 curLightIdx;
-    /*0x1C*/ s32 totalLights;
-    /*0x20*/ Lights4 *light;
-    /* Gfx-es */
-    /*0x24*/ s32 curGfxIdx;
-    /*0x28*/ s32 totalGfx;
-    /*0x2C*/ Gfx *gfx;    // active position in DL
-    /*0x30*/ Gfx **dlptr; // pointer to list/array of display lists for each frame?
-                          /* Viewports */
-    /*0x34*/ s32 curVpIdx;
-    /*0x38*/ s32 totalVp;
-    /*0x3C*/ Vp *vp;
-    /* GD DL Info */
-    /*0x40*/ u32 id;     // user specified
-    /*0x44*/ u32 number; // count
-    /*0x4C*/ struct GdDisplayList *parent; // not quite sure?
-};                                         /* sizeof = 0x50 */
-// accessor macros for gd dl
-#define DL_CURRENT_VTX(dl)   ((dl)->vtx[(dl)->curVtxIdx])
-#define DL_CURRENT_MTX(dl)   ((dl)->mtx[(dl)->curMtxIdx])
-#define DL_CURRENT_LIGHT(dl) ((dl)->light[(dl)->curLightIdx])
-#define DL_CURRENT_GFX(dl)   ((dl)->gfx[(dl)->curGfxIdx])
-#define DL_CURRENT_VP(dl)    ((dl)->vp[(dl)->curVpIdx])
-
-struct LightDirVec {
-    s32 x, y, z;
-};
-
-enum DynListBankFlag { TABLE_END = -1, STD_LIST_BANK = 3 };
-
-struct DynListBankInfo {
-    /* 0x00 */ enum DynListBankFlag flag;
-    /* 0x04 */ struct DynList *list;
-};
+struct ObjView *sMSceneView; // Mario scene view
+struct ObjGroup *sMarioSceneGrp;
+struct ObjView *sHandView = NULL;
+// two DLs, double buffered one per frame.
+//  seem to be basic dls that branch to actual lists?
+struct GdDisplayList *sMHeadMainDls[2];
 
 // bss
-#if defined(VERSION_EU) || defined(VERSION_SH)
-static OSMesgQueue D_801BE830; // controller msg queue
-static OSMesg D_801BE848[10];
-u8 EUpad1[0x40];
-static OSMesgQueue sGdDMAQueue; // @ 801BE8C8
-static OSMesg sGdMesgBuf[1]; // @ 801BE944
-static OSMesg sGdDMACompleteMsg; // msg buf for D_801BE8B0 queue
-static OSIoMesg sGdDMAReqMesg;
-static struct ObjView *D_801BE994; // store if View flag 0x40 set
-#endif
 static OSContStatus D_801BAE60[4];
-static OSContPadEx sGdContPads[4];    // @ 801BAE70
-static OSContPadEx sPrevFrameCont[4]; // @ 801BAE88
+static OSContPadEx sPrevFrameCont[4];
 static u8 D_801BAEA0;
-static struct ObjGadget *sTimerGadgets[GD_NUM_TIMERS]; // @ 801BAEA8
+static struct ObjGadget *sTimerGadgets[GD_NUM_TIMERS];
 static u32 D_801BAF28;                                 // RAM addr offset?
 static s16 sTriangleBuf[13][8];                          // [[s16; 8]; 13]? vert indices?
-static u8 *sMemBlockPoolBase; // @ 801BB00C
-static u32 sAllocMemory;      // @ 801BB010; malloc-ed bytes
+static u8 *sMemBlockPoolBase;
+static u32 sAllocMemory;      // malloc-ed bytes
 static s32 D_801BB018;
 static s32 D_801BB01C;
 static void *sLoadedTextures[0x10];          // texture pointers
 static s32 sTextureDisplayLists[0x10];            // gd_dl indices
-static s16 sVtxCvrtTCBuf[2];            // @ 801BB0A0
-static struct ObjGroup *sMarioSceneGrp; // @ 801BB0B0
+static s16 sVtxCvrtTCBuf[2];
 static s32 D_801BB0B4;                  // second offset into sTriangleBuf
 static s32 sVertexBufCount; // vtx's to load into RPD? Vtx len in GD Dl and in the lower bank (AF30)
 static s32 sTriangleBufCount;                  // number of triangles in sTriangleBuf
-static struct ObjView *sMSceneView;     // @ 801BB0C8; Mario scene view
 static s32 sVertexBufStartIndex;                  // Vtx start in GD Dl
-static s32 sUpdateMarioScene;           // @ 801BB0D8; update dl Vtx from ObjVertex?
 static struct GdVec3f sTextDrawPos;  // position to draw text? only set in one function, never used
-static Mtx sIdnMtx;           // @ 801BB100
-static Mat4f sInitIdnMat4;    // @ 801BB140
-static s8 sVtxCvrtNormBuf[3]; // @ 801BB180
+static Mtx sIdnMtx;
+static Mat4f sInitIdnMat4;
+static s8 sVtxCvrtNormBuf[3];
 static s16 sAlpha;
 static s32 sNumLights;
-static struct GdColour sAmbScaleColour;       // @ 801BB190
-static struct GdColour sLightScaleColours[2]; // @ 801BB1A0
+static struct GdColour sAmbScaleColour;
+static struct GdColour sLightScaleColours[2];
 static struct LightDirVec sLightDirections[2];
 static s32 sLightId;
 static Hilite sHilites[600];
 static struct GdVec3f D_801BD758;
 static struct GdVec3f D_801BD768; // had to migrate earlier
-static struct GdObj *sMenuGadgets[9]; // @ 801BD778; d_obj ptr storage? menu?
+static struct GdObj *sMenuGadgets[9]; // d_obj ptr storage? menu?
 static struct ObjView *sDebugViews[2];  // Seems to be a list of ObjViews for displaying debug info
-static struct GdDisplayList *sStaticDl;     // @ 801BD7A8
-static struct GdDisplayList *sDynamicMainDls[2]; // @ 801BD7B0
-static struct GdDisplayList *sGdDlStash;    // @ 801BD7B8
-static struct GdDisplayList *sMHeadMainDls[2]; // @ 801BD7C0; two DLs, double buffered one per frame - seem to be basic dls that branch to actual lists?
-static struct GdDisplayList *sViewDls[3][2];       // I guess? 801BD7C8 -> 801BD7E0?
-static struct GdDisplayList *sGdDLArray[MAX_GD_DLS]; // @ 801BD7E0; indexed by dl number (gddl+0x44)
-static s32 sPickBufLen;                              // @ 801BE780
-static s32 sPickBufPosition;                         // @ 801BE784
-static s16 *sPickBuf;                                // @ 801BE788
+static struct GdDisplayList *sStaticDl;
+static struct GdDisplayList *sDynamicMainDls[2];
+static struct GdDisplayList *sGdDlStash;
+static struct GdDisplayList *sViewDls[3][2];
+static struct GdDisplayList *sGdDLArray[MAX_GD_DLS]; // indexed by dl number (gddl+0x44)
+static s32 sPickBufLen;
+static s32 sPickBufPosition;
+static s16 *sPickBuf;
 static LookAt D_801BE790[2];
 static LookAt D_801BE7D0[3];
-#if defined(VERSION_JP) || defined(VERSION_US)
 static OSMesgQueue D_801BE830; // controller msg queue
 static OSMesg D_801BE848[10];
-static OSMesgQueue sGdDMAQueue; // @ 801BE8C8
-static OSMesg sGdMesgBuf[1]; // @ 801BE944
+static OSMesgQueue sGdDMAQueue;
+static OSMesg sGdMesgBuf[1];
 static OSMesg sGdDMACompleteMsg; // msg buf for D_801BE8B0 queue
 static OSIoMesg sGdDMAReqMesg;
 static struct ObjView *D_801BE994; // store if View flag 0x40 set
-#endif
 
 // data
 static s32 D_801A8674 = 0;
 static s32 D_801A867C = 0;
 static s32 D_801A8680 = 0;
-static f32 sTracked1FrameTime = 0.0f; // @ 801A8684
-static f32 sDynamicsTime = 0.0f;      // @ 801A8688
-static f32 sDLGenTime = 0.0f;         // @ 801A868C
-static f32 sRCPTime = 0.0f;           // @ 801A8690
-static f32 sTimeScaleFactor = 1.0f;   // @ D_801A8694
-static u32 sMemBlockPoolSize = 1;     // @ 801A8698
-static s32 sMemBlockPoolUsed = 0;     // @ 801A869C
+static f32 sTracked1FrameTime = 0.0f;
+static f32 sDynamicsTime = 0.0f;
+static f32 sDLGenTime = 0.0f;
+static f32 sRCPTime = 0.0f;
+static f32 sTimeScaleFactor = 1.0f;
+static u32 sMemBlockPoolSize = 1;
+static s32 sMemBlockPoolUsed = 0;
 static s32 sTextureCount = 0;  // maybe?
 static struct GdTimer *D_801A86A4 = NULL; // timer for dlgen, dynamics, or rcp
 static struct GdTimer *D_801A86A8 = NULL; // timer for dlgen, dynamics, or rcp
 static struct GdTimer *D_801A86AC = NULL; // timer for dlgen, dynamics, or rcp
-s32 gGdFrameBufNum = 0;                      // @ 801A86B0
-static struct ObjShape *sHandShape = NULL; // @ 801A86B8
+s32 gGdFrameBufNum = 0;
+static struct ObjShape *sHandShape = NULL;
 static s32 D_801A86BC = 1;
 static s32 D_801A86C0 = 0; // gd_dl id for something?
 static s32 sMtxParamType = G_MTX_PROJECTION;
-static struct ObjView *sActiveView = NULL;  // @ 801A86D8 current view? used when drawing dl
-static struct ObjView *sScreenView = NULL; // @ 801A86DC
+static struct ObjView *sActiveView = NULL;  // current view? used when drawing dl
+static struct ObjView *sScreenView = NULL;
 static struct ObjView *D_801A86E0 = NULL;
-static struct ObjView *sHandView = NULL; // @ 801A86E4
-static struct ObjView *sMenuView = NULL; // @ 801A86E8
-static u32 sItemsInMenu = 0;             // @ 801A86EC
+static struct ObjView *sMenuView = NULL;
+static u32 sItemsInMenu = 0;
 static s32 sDebugViewsCount = 0;               // number of elements in the sDebugViews array
-static s32 sCurrDebugViewIndex = 0;             // @ 801A86F4; timing activate cool down counter?
-static struct GdDisplayList *sCurrentGdDl = NULL; // @ 801A86FC
-static u32 sGdDlCount = 0;                        // @ 801A8700
-static struct DynListBankInfo sDynLists[] = {     // @ 801A8704
+static s32 sCurrDebugViewIndex = 0;             // timing activate cool down counter?
+struct GdDisplayList *sCurrentGdDl = NULL;
+static u32 sGdDlCount = 0;
+static struct DynListBankInfo sDynLists[] = {
     { STD_LIST_BANK, GODDARD_MAIN_FACE_SCENE },
     { TABLE_END, NULL }
 };
@@ -660,17 +586,7 @@ static Gfx gd_dl_sprite_start_tex_block[] = {
 extern u8 _faceDataSegmentRomStart[];
 extern u8 _faceDataSegmentRomEnd[];
 
-// forward declarations
-u32 new_gddl_from(Gfx *, s32);
-void gd_setup_cursor(struct ObjGroup *);
-void parse_p1_controller(void);
-void update_cursor(void);
-void update_view_and_dl(struct ObjView *);
 static void update_render_mode(void);
-void gddl_is_loading_shine_dl(s32);
-void func_801A3370(f32, f32, f32);
-void gd_put_sprite(u16 *, s32, s32, s32, s32);
-void reset_cur_dl_indices(void);
 
 // TODO: make a gddl_num_t?
 
@@ -1007,40 +923,6 @@ void setup_stars(void) {
     sGdDLArray[gShapeSilverSpark->dlNums[1]]->dlptr = gd_silver_sparkle_dl_array;
 }
 
-/* 24A8D0 -> 24AA40 */
-void setup_timers(void) {
-    start_timer("updateshaders");
-    stop_timer("updateshaders");
-    start_timer("childpos");
-    stop_timer("childpos");
-    start_timer("netupd");
-    stop_timer("netupd");
-    start_timer("drawshape2d");
-    stop_timer("drawshape2d");
-
-    start_timer("drawshape");
-    start_timer("drawobj");
-    start_timer("gdDrawScene");
-    start_timer("camsearch");
-    start_timer("move_animators");
-    start_timer("move_nets");
-    stop_timer("move_animators");
-    stop_timer("move_nets");
-    stop_timer("drawshape");
-    stop_timer("drawobj");
-    stop_timer("gdDrawScene");
-    stop_timer("camsearch");
-
-    start_timer("move_bones");
-    stop_timer("move_bones");
-    start_timer("move_skin");
-    stop_timer("move_skin");
-    start_timer("draw1");
-    stop_timer("draw1");
-    start_timer("dynamics");
-    stop_timer("dynamics");
-}
-
 /* 24AA40 -> 24AA58 */
 void Unknown8019C270(u8 *buf) {
     gGdStreamBuffer = buf;
@@ -1082,7 +964,6 @@ void gdSetupFace(void) {
 
     imin("gdSetupFace");
     sMarioSceneGrp = NULL;
-    sUpdateMarioScene = FALSE;
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF);
     osCreateMesgQueue(&sGdDMAQueue, sGdMesgBuf, ARRAY_COUNT(sGdMesgBuf));
     gdInitSystem();
@@ -1158,82 +1039,8 @@ void Unknown8019C840(void) {
     print_all_timers();
 }
 
-/**
- * Runs every frame at V-blank. Handles input and updates state.
- */
-void gd_vblank(void) {
-    gd_sfx_update();
-    if (sUpdateMarioScene) {
-        apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) convert_net_verts, sMarioSceneGrp);
-    }
-    sUpdateMarioScene = FALSE;
-    gGdFrameBufNum ^= 1;
-    reset_cur_dl_indices();
-    parse_p1_controller();
-    update_cursor();
-}
-
-/**
- * Copies the player1 controller data from p1cont to sGdContPads[0].
- */
-void gd_copy_p1_contpad(OSContPadEx *p1cont) {
-    u32 i;                                    // 24
-    u8 *src = (u8 *) p1cont;             // 20
-    u8 *dest = (u8 *) &sGdContPads[0]; // 1c
-
-    for (i = 0; i < sizeof(OSContPadEx); i++) {
-        dest[i] = src[i];
-    }
-
-    if (p1cont->button & Z_TRIG) {
-        print_all_timers();
-    }
-}
-
-s32 gd_sfx_to_play(void) {
-    return gd_new_sfx_to_play();
-}
-
-/* 24B088 -> 24B418 */
-Gfx *gdm_gettestdl(s32 id) {
-    struct GdDisplayList *gddl;
-    struct GdVec3f vec;
-
-    start_timer("dlgen");
-    vec.x = vec.y = vec.z = 0.0f;
-    gddl = NULL;
-
-    switch (id) {
-        case GD_SCENE_REGULAR_MARIO:
-        case GD_SCENE_DIZZY_MARIO:
-            setup_timers();
-            if (sMSceneView == NULL) {
-                gd_printf("MSceneView not initialized! Attempting to fix...\n");
-
-                gdLoadScene(id);
-
-                if (sMSceneView == NULL) {
-                    fatal_printf("MSceneView Failed to initialize! Aborting.\n");
-                }
-            }
-            update_view_and_dl(sMSceneView);
-            if (sHandView != NULL) {
-                update_view_and_dl(sHandView);
-            }
-            sCurrentGdDl = sMHeadMainDls[gGdFrameBufNum];
-            gSPEndDisplayList(next_gfx());
-            gddl = sCurrentGdDl;
-            sUpdateMarioScene = TRUE;
-            break;
-        default:
-            fatal_printf("gdm_gettestdl(): %d out of range", id);
-    }
-
-    if (gddl == NULL) {
-        fatal_printf("no display list");
-    }
-    stop_timer("dlgen");
-    return (void *) osVirtualToPhysical(gddl->gfx);
+void gdFinishDrawing(void) {
+    gSPEndDisplayList(next_gfx());
 }
 
 /* 24B418 -> 24B4CC; not called */

@@ -97,4 +97,6 @@ extern void gd_fclose(struct GdFile *);
 extern u32 gd_get_file_size(struct GdFile *);
 extern s32 gd_fread_line(char *, u32, struct GdFile *);
 
+void setup_timers();
+
 #endif // GD_DEBUGGING_UTILS_H

@@ -28,7 +28,7 @@ void register_light(struct ObjLight *);
 
 // types
 /**
- * Modes for gdDrawScene()
+ * Modes for gdDrawView()
  */
 enum SceneType {
     RENDER_SCENE = 26, ///< render the primitives to screen
@@ -720,10 +720,10 @@ void check_grabbable_click(struct GdObj *input) {
  * @param interactables components of `ObjView`
  * @param lightgrp lights of `ObjView
  */
-void gdDrawScene(enum SceneType process, struct ObjGroup *interactables, struct ObjGroup *lightgrp) {
+void gdDrawView(enum SceneType process, struct ObjGroup *interactables, struct ObjGroup *lightgrp) {
 
-    restart_timer("gdDrawScene");
-    imin("gdDrawScene()");
+    restart_timer("gdDrawView");
+    imin("gdDrawView()");
     sUnreadShapeFlag = 0;
     sUpdateViewState.unreadCounter = 0;
     restart_timer("draw1");
@@ -780,7 +780,7 @@ void gdDrawScene(enum SceneType process, struct ObjGroup *interactables, struct 
     gd_setproperty(GD_PROP_LIGHTING, 1.0f, 0.0f, 0.0f);
     gd_dl_pop_matrix();
     imout();
-    split_timer("gdDrawScene");
+    split_timer("gdDrawView");
     return;
 }
 
@@ -1391,7 +1391,7 @@ void update_view(struct ObjView *view) {
         if (gdControllerInfo.dragging) {
             if (gd_getproperty(3, 0) != FALSE && gdControllerInfo.startedDragging != FALSE) {
                 init_pick_buf(sPickBuffer, ARRAY_COUNT(sPickBuffer));
-                gdDrawScene(FIND_PICKS, sUpdateViewState.view->components, NULL);
+                gdDrawView(FIND_PICKS, sUpdateViewState.view->components, NULL);
                 pickOffset = get_cur_pickbuf_offset(sPickBuffer);
                 sPickDataTemp = 0;
                 sPickedObject = NULL;
@@ -1449,7 +1449,7 @@ void update_view(struct ObjView *view) {
             }
         }
 
-        gdDrawScene(RENDER_SCENE, sUpdateViewState.view->components, sUpdateViewState.view->lights);
+        gdDrawView(RENDER_SCENE, sUpdateViewState.view->components, sUpdateViewState.view->lights);
     }
 
     border_active_view();

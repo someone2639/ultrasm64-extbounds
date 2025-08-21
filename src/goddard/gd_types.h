@@ -508,7 +508,7 @@ struct ObjView {
     /* 0x2C */ struct ObjGroup *lights;     // only lights?
     /* 0x30 */ struct GdObj *pickedObj; // selected with cursor (`update_view`)
     /* 0x34 */ enum GdViewFlags flags;
-    /* 0x38 */ s32 projectionType; // enum? if 1 use guPerspective, if 0 (or 2?) use guOrtho (see `gdDrawScene`)
+    /* 0x38 */ s32 projectionType; // enum? if 1 use guPerspective, if 0 (or 2?) use guOrtho (see `gdDrawView`)
     /* 0x3C */ struct GdVec3f upperLeft; // position vec?
     /* 0x48 */ f32 unk48; // what are these? are they another vec?
     /* 0x4C */ f32 unk4C;

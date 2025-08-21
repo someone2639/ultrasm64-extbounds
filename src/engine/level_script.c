@@ -17,7 +17,7 @@
 #include "game/object_list_processor.h"
 #include "game/save_file.h"
 #include "game/sound_init.h"
-#include "goddard/renderer.h"
+#include "goddard/gd_main.h"
 #include "geo_layout.h"
 #include "graph_node.h"
 #include "level_script.h"
@@ -300,15 +300,7 @@ static void level_cmd_load_yay0(void) {
 
 static void level_cmd_load_mario_head(void) {
 #ifdef KEEP_MARIO_HEAD
-    // TODO: Fix these hardcoded sizes
-    void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(GODDARD_TOTAL_HEAP_SIZE), MEMORY_POOL_LEFT);
-    if (addr != NULL) {
-        gdInitMemory(addr, DOUBLE_SIZE_ON_64_BIT(GODDARD_TOTAL_HEAP_SIZE));
-        gdAddMemoryToHeap(gZBuffer, sizeof(gZBuffer)); // 0x25800
-        gdAddMemoryToHeap(gFramebuffers, sizeof(gFramebuffers)); // 0x70800
-        gdSetupFace();
-        gdLoadScene(CMD_GET(s16, 2));
-    }
+    gdInit(CMD_GET(s16, 2));
 #endif
     sCurrentCmd = CMD_NEXT;
 }

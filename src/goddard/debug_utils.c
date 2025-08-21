@@ -415,6 +415,39 @@ f32 get_scaled_timer_total(const char *name) {
  * Miscellaneous debug functions
  */
 
+void setup_timers(void) {
+    start_timer("updateshaders");
+    stop_timer("updateshaders");
+    start_timer("childpos");
+    stop_timer("childpos");
+    start_timer("netupd");
+    stop_timer("netupd");
+    start_timer("drawshape2d");
+    stop_timer("drawshape2d");
+
+    start_timer("drawshape");
+    start_timer("drawobj");
+    start_timer("gdDrawView");
+    start_timer("camsearch");
+    start_timer("move_animators");
+    start_timer("move_nets");
+    stop_timer("move_animators");
+    stop_timer("move_nets");
+    stop_timer("drawshape");
+    stop_timer("drawobj");
+    stop_timer("gdDrawView");
+    stop_timer("camsearch");
+
+    start_timer("move_bones");
+    stop_timer("move_bones");
+    start_timer("move_skin");
+    stop_timer("move_skin");
+    start_timer("draw1");
+    stop_timer("draw1");
+    start_timer("dynamics");
+    stop_timer("dynamics");
+}
+
 /**
  * Prints the stack trace registered by callng imin()/imout()
  */

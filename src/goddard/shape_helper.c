@@ -940,26 +940,26 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
 
     // Make sparkle particles
 
-    // particle = make_particle(0, COLOUR_WHITE, 0.0f, 0.0f, 0.0f);
-    // particle->unk60 = 3;
-    // particle->unk64 = 3;
-    // particle->attachedToObj = &camera->header;
-    // particle->shapePtr = gShapeSilverSpark;
-    // addto_group(gGdLightGroup, &particle->header);
+    particle = make_particle(0, COLOUR_WHITE, 0.0f, 0.0f, 0.0f);
+    particle->unk60 = 3;
+    particle->unk64 = 3;
+    particle->attachedToObj = &camera->header;
+    particle->shapePtr = gShapeSilverSpark;
+    addto_group(gGdLightGroup, &particle->header);
 
-    // particle = make_particle(0, COLOUR_WHITE, 0.0f, 0.0f, 0.0f);
-    // particle->unk60 = 3;
-    // particle->unk64 = 2;
-    // particle->attachedToObj = dUseObject("N228l"); // DYNOBJ_SILVER_STAR_LIGHT
-    // particle->shapePtr = gShapeSilverSpark;
-    // addto_group(gGdLightGroup, &particle->header);
+    particle = make_particle(0, COLOUR_WHITE, 0.0f, 0.0f, 0.0f);
+    particle->unk60 = 3;
+    particle->unk64 = 2;
+    particle->attachedToObj = dUseObject("N228l"); // DYNOBJ_SILVER_STAR_LIGHT
+    particle->shapePtr = gShapeSilverSpark;
+    addto_group(gGdLightGroup, &particle->header);
 
-    // particle = make_particle(0, COLOUR_RED, 0.0f, 0.0f, 0.0f);
-    // particle->unk60 = 3;
-    // particle->unk64 = 2;
-    // particle->attachedToObj = dUseObject("N231l"); // DYNOBJ_RED_STAR_LIGHT
-    // particle->shapePtr = gShapeRedSpark;
-    // addto_group(gGdLightGroup, &particle->header);
+    particle = make_particle(0, COLOUR_RED, 0.0f, 0.0f, 0.0f);
+    particle->unk60 = 3;
+    particle->unk64 = 2;
+    particle->attachedToObj = dUseObject("N231l"); // DYNOBJ_RED_STAR_LIGHT
+    particle->shapePtr = gShapeRedSpark;
+    addto_group(gGdLightGroup, &particle->header);
 
     mainShapesGrp = (struct ObjGroup *) dUseObject("N1000l");  // DYNOBJ_MARIO_MAIN_SHAPES_GROUP
     create_gddl_for_shapes(mainShapesGrp);
@@ -967,65 +967,67 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
 
     // Make grabbers to move the face with the cursor
 
-    // grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, -500.0f, 0.0f, -150.0f);
-    // faceJoint = dUseObject("N167l");  // DYNOBJ_MARIO_LEFT_EAR_JOINT_1
-    // grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
+    static struct ObjShape *sGrabJointTestShape = NULL;
 
-    // grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 500.0f, 0.0f, -150.0f);
-    // faceJoint = dUseObject("N176l");  // DYNOBJ_MARIO_RIGHT_EAR_JOINT_1
-    // grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
+    grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, -500.0f, 0.0f, -150.0f);
+    faceJoint = dUseObject("N167l");  // DYNOBJ_MARIO_LEFT_EAR_JOINT_1
+    grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
 
-    // grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 0.0f, 700.0f, 300.0f);
-    // faceJoint = dUseObject("N131l");  // DYNOBJ_MARIO_CAP_JOINT_1
-    // grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
+    grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 500.0f, 0.0f, -150.0f);
+    faceJoint = dUseObject("N176l");  // DYNOBJ_MARIO_RIGHT_EAR_JOINT_1
+    grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
 
-    // // drag eyelids and eyebrows along with cap?
-    // faceJoint = dUseObject("N206l");  // DYNOBJ_LEFT_EYELID_JOINT_1
-    // addto_group(grabberJoint->attachedObjsGrp, faceJoint);
-    // faceJoint = dUseObject("N215l");  // DYNOBJ_RIGHT_EYELID_JOINT_1
-    // addto_group(grabberJoint->attachedObjsGrp, faceJoint);
-    // faceJoint = dUseObject("N31l");  // DYNOBJ_MARIO_LEFT_EYEBROW_MPART_JOINT_1
-    // addto_group(grabberJoint->attachedObjsGrp, faceJoint);
-    // faceJoint = dUseObject("N65l");  // DYNOBJ_MARIO_RIGHT_EYEBROW_MPART_JOINT_1
-    // addto_group(grabberJoint->attachedObjsGrp, faceJoint);
+    grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 0.0f, 700.0f, 300.0f);
+    faceJoint = dUseObject("N131l");  // DYNOBJ_MARIO_CAP_JOINT_1
+    grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
 
-    // grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 0.0f, 0.0f, 600.0f);
-    // faceJoint = dUseObject("N185l");  // DYNOBJ_MARIO_NOSE_JOINT_1
-    // grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
+    // drag eyelids and eyebrows along with cap?
+    faceJoint = dUseObject("N206l");  // DYNOBJ_LEFT_EYELID_JOINT_1
+    addto_group(grabberJoint->attachedObjsGrp, faceJoint);
+    faceJoint = dUseObject("N215l");  // DYNOBJ_RIGHT_EYELID_JOINT_1
+    addto_group(grabberJoint->attachedObjsGrp, faceJoint);
+    faceJoint = dUseObject("N31l");  // DYNOBJ_MARIO_LEFT_EYEBROW_MPART_JOINT_1
+    addto_group(grabberJoint->attachedObjsGrp, faceJoint);
+    faceJoint = dUseObject("N65l");  // DYNOBJ_MARIO_RIGHT_EYEBROW_MPART_JOINT_1
+    addto_group(grabberJoint->attachedObjsGrp, faceJoint);
 
-    // grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 0.0f, -300.0f, 300.0f);
-    // faceJoint = dUseObject("N194l");  // DYNOBJ_MARIO_LEFT_JAW_JOINT
-    // grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
+    grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 0.0f, 0.0f, 600.0f);
+    faceJoint = dUseObject("N185l");  // DYNOBJ_MARIO_NOSE_JOINT_1
+    grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
 
-    // grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 250.0f, -150.0f, 300.0f);
-    // faceJoint = dUseObject("N158l");  // DYNOBJ_MARIO_RIGHT_LIP_CORNER_JOINT_1
-    // grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
+    grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 0.0f, -300.0f, 300.0f);
+    faceJoint = dUseObject("N194l");  // DYNOBJ_MARIO_LEFT_JAW_JOINT
+    grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
 
-    // faceJoint = dUseObject("N15l");  // DYNOBJ_MARIO_LEFT_MUSTACHE_JOINT_1
-    // addto_group(grabberJoint->attachedObjsGrp, faceJoint);
+    grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 250.0f, -150.0f, 300.0f);
+    faceJoint = dUseObject("N158l");  // DYNOBJ_MARIO_RIGHT_LIP_CORNER_JOINT_1
+    grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
 
-    // grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, -250.0f, -150.0f, 300.0f);
-    // faceJoint = dUseObject("N149l");  // DYNOBJ_MARIO_LEFT_LIP_CORNER_JOINT_1
-    // grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
+    faceJoint = dUseObject("N15l");  // DYNOBJ_MARIO_LEFT_MUSTACHE_JOINT_1
+    addto_group(grabberJoint->attachedObjsGrp, faceJoint);
 
-    // faceJoint = dUseObject("N6l");  // DYNOBJ_MARIO_RIGHT_MUSTACHE_JOINT_1
-    // addto_group(grabberJoint->attachedObjsGrp, faceJoint);
+    grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, -250.0f, -150.0f, 300.0f);
+    faceJoint = dUseObject("N149l");  // DYNOBJ_MARIO_LEFT_LIP_CORNER_JOINT_1
+    grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
 
-    // // make the left eye follow cursor
-    // grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 100.0f, 200.0f, 400.0f);
-    // faceJoint = dUseObject("N112l");  // DYNOBJ_MARIO_RIGHT_EYE_UNKNOWN_NET
-    // grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
-    // grabberJoint->updateFunc = eye_joint_update_func;
-    // grabberJoint->rootAnimator = animator;
-    // grabberJoint->header.drawFlags &= ~OBJ_IS_GRABBABLE;
+    faceJoint = dUseObject("N6l");  // DYNOBJ_MARIO_RIGHT_MUSTACHE_JOINT_1
+    addto_group(grabberJoint->attachedObjsGrp, faceJoint);
 
-    // // make the right eye follow cursor
-    // grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, -100.0f, 200.0f, 400.0f);
-    // faceJoint = dUseObject("N96l");  // DYNOBJ_MARIO_LEFT_EYE_UNKNOWN_NET
-    // grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
-    // grabberJoint->updateFunc = eye_joint_update_func;
-    // grabberJoint->rootAnimator = animator;
-    // grabberJoint->header.drawFlags &= ~OBJ_IS_GRABBABLE;
+    // make the left eye follow cursor
+    grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, 100.0f, 200.0f, 400.0f);
+    faceJoint = dUseObject("N112l");  // DYNOBJ_MARIO_RIGHT_EYE_UNKNOWN_NET
+    grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
+    grabberJoint->updateFunc = eye_joint_update_func;
+    grabberJoint->rootAnimator = animator;
+    grabberJoint->header.drawFlags &= ~OBJ_IS_GRABBABLE;
+
+    // make the right eye follow cursor
+    grabberJoint = make_grabber_joint(sGrabJointTestShape, 0, -100.0f, 200.0f, 400.0f);
+    faceJoint = dUseObject("N96l");  // DYNOBJ_MARIO_LEFT_EYE_UNKNOWN_NET
+    grabberJoint->attachedObjsGrp = make_group(1, faceJoint);
+    grabberJoint->updateFunc = eye_joint_update_func;
+    grabberJoint->rootAnimator = animator;
+    grabberJoint->header.drawFlags &= ~OBJ_IS_GRABBABLE;
 
     sp48 = make_group_of_type(OBJ_TYPE_JOINTS, sp38, NULL);
     sp54 = make_net(0, NULL, sp48, NULL, NULL);

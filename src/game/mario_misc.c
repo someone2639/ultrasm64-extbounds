@@ -12,7 +12,7 @@
 #include "engine/math_util.h"
 #include "envfx_snow.h"
 #include "game_init.h"
-#include "goddard/renderer.h"
+#include "goddard/gd_main.h"
 #include "interaction.h"
 #include "level_update.h"
 #include "mario_actions_cutscene.h"
@@ -94,8 +94,8 @@ Gfx *geo_draw_mario_head_goddard(s32 callContext, struct GraphNode *node, UNUSED
         if (gPlayer1Controller->controllerData != NULL && !gWarpTransition.isActive) {
             gd_copy_p1_contpad(gPlayer1Controller->controllerData);
         }
-        gfx = (Gfx *) PHYSICAL_TO_VIRTUAL(gdm_gettestdl(asGenerated->parameter));
-        gGoddardVblankCallback = gd_vblank;
+        gfx = (Gfx *) PHYSICAL_TO_VIRTUAL(gdDrawScene(asGenerated->parameter));
+        gGoddardVblankCallback = gdSceneTick;
         play_menu_sounds(gd_sfx_to_play());
     }
     return gfx;

@@ -76,9 +76,16 @@ struct GdControl { // gdControllerInfo
 // data
 extern s32 gGdMoveScene;
 extern s32 gdUseSmoothShading;
+extern OSContPadEx sGdContPads[4];
 
 // bss
 extern struct GdControl gdControllerInfo;
 extern struct GdControl gdControllerInfoPrevFrame;
+
+void gd_copy_p1_contpad(OSContPadEx *p1cont);
+s32 gd_sfx_to_play(void);
+void gdInit(s16 sceneID);
+void gdSceneTick(void);
+Gfx *gdDrawScene(s32 sceneID);
 
 #endif // GD_MAIN_H

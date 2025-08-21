@@ -7,7 +7,24 @@
 #include "gd_types.h"
 #include "macros.h"
 
-// types
+#define MAX_GD_DLS 1000
+#define OS_MESG_SI_COMPLETE 0x33333333
+
+#ifndef NO_SEGMENTED_MEMORY
+#define GD_VIRTUAL_TO_PHYSICAL(addr) ((uintptr_t)(addr) &0x0FFFFFFF)
+#define GD_LOWER_24(addr) ((uintptr_t)(addr) &0x00FFFFFF)
+#define GD_LOWER_29(addr) (((uintptr_t)(addr)) & 0x1FFFFFFF)
+#else
+#define GD_VIRTUAL_TO_PHYSICAL(addr) (addr)
+#define GD_LOWER_24(addr) ((uintptr_t)(addr))
+#define GD_LOWER_29(addr) (((uintptr_t)(addr)))
+#endif
+
+#define MTX_INTPART_PACK(w1, w2) (((w1) &0xFFFF0000) | (((w2) >> 16) & 0xFFFF))
+#define MTX_FRACPART_PACK(w1, w2) ((((w1) << 16) & 0xFFFF0000) | ((w2) &0xFFFF))
+#define LOOKAT_PACK(c) ((s32) MIN(((c) * (128.0)), 127.0) & 0xff)
+
+
 /// Properties types used in [gd_setproperty](@ref gd_setproperty); most are stubbed out.
 enum GdProperty {
     GD_PROP_OVERLAY       = 4,
@@ -33,8 +50,59 @@ enum GdSceneId {
     GD_SCENE_CAR5  // destroy car?
 };
 
+// structs
+struct GdDisplayList {
+    /* Vertices */
+    /*0x00*/ s32 curVtxIdx;
+    /*0x04*/ s32 totalVtx;
+    /*0x08*/ Vtx *vtx;
+    /* Matrices */
+    /*0x0C*/ s32 curMtxIdx;
+    /*0x10*/ s32 totalMtx;
+    /*0x14*/ Mtx *mtx;
+    /* Lights */
+    /*0x18*/ s32 curLightIdx;
+    /*0x1C*/ s32 totalLights;
+    /*0x20*/ Lights4 *light;
+    /* Gfx-es */
+    /*0x24*/ s32 curGfxIdx;
+    /*0x28*/ s32 totalGfx;
+    /*0x2C*/ Gfx *gfx;    // active position in DL
+    /*0x30*/ Gfx **dlptr; // pointer to list/array of display lists for each frame?
+                          /* Viewports */
+    /*0x34*/ s32 curVpIdx;
+    /*0x38*/ s32 totalVp;
+    /*0x3C*/ Vp *vp;
+    /* GD DL Info */
+    /*0x40*/ u32 id;     // user specified
+    /*0x44*/ u32 number; // count
+    /*0x4C*/ struct GdDisplayList *parent; // not quite sure?
+};                                         /* sizeof = 0x50 */
+// accessor macros for gd dl
+#define DL_CURRENT_VTX(dl)   ((dl)->vtx[(dl)->curVtxIdx])
+#define DL_CURRENT_MTX(dl)   ((dl)->mtx[(dl)->curMtxIdx])
+#define DL_CURRENT_LIGHT(dl) ((dl)->light[(dl)->curLightIdx])
+#define DL_CURRENT_GFX(dl)   ((dl)->gfx[(dl)->curGfxIdx])
+#define DL_CURRENT_VP(dl)    ((dl)->vp[(dl)->curVpIdx])
+
+struct LightDirVec {
+    s32 x, y, z;
+};
+
+enum DynListBankFlag { TABLE_END = -1, STD_LIST_BANK = 3 };
+
+struct DynListBankInfo {
+    /* 0x00 */ enum DynListBankFlag flag;
+    /* 0x04 */ struct DynList *list;
+};
+
 // data
 extern s32 gGdFrameBufNum;
+extern struct ObjGroup *sMarioSceneGrp;
+extern struct ObjView *sMSceneView;
+extern struct ObjView *sHandView;
+extern struct GdDisplayList *sCurrentGdDl;
+extern struct GdDisplayList *sMHeadMainDls[2];
 
 // functions
 u32 get_alloc_mem_amt(void);
@@ -60,10 +128,7 @@ void gdAddMemoryToHeap(void *addr, u32 size);
 void gdInitMemory(void *blockpool, u32 size);
 void gdSetupFace(void);
 void gdLoadScene(s32 id);
-void gd_vblank(void);
-void gd_copy_p1_contpad(OSContPadEx *p1cont);
-s32 gd_sfx_to_play(void);
-Gfx *gdm_gettestdl(s32 id);
+void gdFinishDrawing();
 void gd_draw_rect(f32 ulx, f32 uly, f32 lrx, f32 lry);
 void gd_draw_border_rect(f32 ulx, f32 uly, f32 lrx, f32 lry);
 void gd_dl_set_fill(struct GdColour *colour);
@@ -122,5 +187,15 @@ void store_in_pickbuf(s16 data);
 s32 get_cur_pickbuf_offset(UNUSED s16 *arg0);
 void set_vtx_tc_buf(f32 tcS, f32 tcT);
 struct GdObj *load_dynlist(struct DynList *dynlist);
+
+u32 new_gddl_from(Gfx *, s32);
+void gd_setup_cursor(struct ObjGroup *);
+void parse_p1_controller(void);
+void update_cursor(void);
+void update_view_and_dl(struct ObjView *);
+void gddl_is_loading_shine_dl(s32);
+void func_801A3370(f32, f32, f32);
+void gd_put_sprite(u16 *, s32, s32, s32, s32);
+void reset_cur_dl_indices(void);
 
 #endif // GD_RENDERER_H
