@@ -49,9 +49,6 @@ struct GdFile {
     /* 0x50 */ u32 size;
 }; /* sizeof() = 0x54 */
 
-// bss
-extern u8 *gGdStreamBuffer;
-
 void print_stack_trace();
 
 #define fatal_print(str) {osSyncPrintf(str); while (1);}

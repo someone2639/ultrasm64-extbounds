@@ -80,11 +80,9 @@ void reset_net(struct ObjNet *net) {
 
 /* 240A64 -> 240ACC */
 void func_80192294(struct ObjNet *net) {
-    UNUSED s32 sp1C = 0;
-
     if (net->attachedToObj == NULL) {
         restart_timer("childpos");
-        sp1C = transform_child_objects_recursive(&net->header, NULL);
+        transform_child_objects_recursive(&net->header, NULL);
         split_timer("childpos");
     }
 }
@@ -92,7 +90,6 @@ void func_80192294(struct ObjNet *net) {
 /* 240ACC -> 240B84 */
 void func_801922FC(struct ObjNet *net) {
     struct ObjGroup *group; // 24
-    UNUSED u8 filler[8];
 
     gGdSkinNet = net;
     // TODO: netype constants?
@@ -201,7 +198,6 @@ void collision_something_801926A4(struct ObjNet *net) {
 /* 24142C -> 24149C; orig name: func_80192C5C */
 void move_bonesnet(struct ObjNet *net) {
     struct ObjGroup *sp24;
-    UNUSED u8 filler[12];
 
     imin("move_bonesnet");
     gd_set_identity_mat4(&D_801B9DC8);
@@ -269,10 +265,8 @@ void func_80192CCC(struct ObjNet *net) {
 
 /* 241768 -> 241AB4; orig name: func_80192F98 */
 void convert_gd_verts_to_Vn(struct ObjGroup *grp) {
-    UNUSED u8 filler1[20];
     Vtx *vn;       // 28
     u8 nx, ny, nz; // 24, 25, 26
-    UNUSED u8 filler2[4];
     register struct VtxLink *vtxlink; // a1
 #ifndef GBI_FLOATS
     register s16 *vnPos;              // a2
@@ -317,7 +311,6 @@ void convert_gd_verts_to_Vn(struct ObjGroup *grp) {
 
 /* 241AB4 -> 241BCC; orig name: func_801932E4 */
 void convert_gd_verts_to_Vtx(struct ObjGroup *grp) {
-    UNUSED u8 filler[24];
     register struct VtxLink *vtxlink; // a1
 #ifndef GBI_FLOATS
     register s16 *vtxcoords;          // a2

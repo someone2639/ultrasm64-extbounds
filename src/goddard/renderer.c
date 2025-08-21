@@ -686,114 +686,6 @@ f64 gd_sqrt_d(f64 x) {
     return sqrtf(x);
 }
 
-
-#if defined(ISVPRINT) || defined(UNF)
-#define stubbed_printf osSyncPrintf
-#else
-/**
- * Unused
- */
-f64 stub_renderer_1(UNUSED f64 x) {
-    return 0.0;
-}
-
-/* 249BCC -> 24A19C */
-void gd_printf(const char *format, ...) {
-    s32 i;
-    char c;
-    char f;
-    char buf[0x100];
-    char *csr = buf;
-    char spec[8];    // specifier string
-    union PrintVal val;
-    va_list args;
-
-    *csr = '\0';
-    va_start(args, format);
-    while ((c = *format++)) {
-        switch (c) {
-            case '%':
-                f = *format++;
-                i = 0;
-                // handle f32 precision formatter (N.Mf)
-                if (f >= '0' && f <= '9') {
-                    for (i = 0; i < 3; i++) {
-                        if ((f >= '0' && f <= '9') || f == '.') {
-                            spec[i] = f;
-                        } else {
-                            break;
-                        }
-
-                        f = *format++;
-                    }
-                }
-
-                spec[i] = f;
-                i++;
-                spec[i] = '\0';
-
-                switch ((c = spec[0])) {
-                    case 'd':
-                        val.i = va_arg(args, s32);
-                        csr = sprint_val_withspecifiers(csr, val, spec);
-                        break;
-                    case 'x':
-                        val.i = va_arg(args, u32);
-                        csr = sprint_val_withspecifiers(csr, val, spec);
-                        break;
-                    case '%':
-                        *csr = '%';
-                        csr++;
-                        *csr = '\0';
-                        break;
-                        break; // needed to match
-                    case 'f':
-                        val.f = (f32) va_arg(args, double);
-                        csr = sprint_val_withspecifiers(csr, val, spec);
-                        break;
-                    case 's':
-                        csr = gd_strcat(csr, va_arg(args, char *));
-                        break;
-                    case 'c':
-                        //! @bug formatter 'c' uses `s32` for va_arg instead of `char`
-                        *csr = va_arg(args, s32);
-                        csr++;
-                        *csr = '\0';
-                        break;
-                    default:
-                        if (spec[3] == 'f') {
-                            val.f = (f32) va_arg(args, double);
-                            csr = sprint_val_withspecifiers(csr, val, spec);
-                        }
-                        break;
-                }
-                break;
-            case '\\':
-                *csr = '\\';
-                csr++;
-                *csr = '\0';
-                break;
-            case '\n':
-                *csr = '\n';
-                csr++;
-                *csr = '\0';
-                break;
-            default:
-                *csr = c;
-                csr++;
-                *csr = '\0';
-                break;
-        }
-    }
-    va_end(args);
-
-    *csr = '\0';
-    if (csr - buf >= ARRAY_COUNT(buf) - 1) {
-        fatal_printf("printf too long");
-    }
-}
-#endif
-
 /* 24A19C -> 24A1D4 */
 void gd_exit(UNUSED s32 code) {
     gd_printf("exit\n");
@@ -871,13 +763,6 @@ void branch_cur_dl_to_num(s32 dlNum) {
 }
 
 /**
- * Unused (not called)
- */
-Gfx *get_dl_gfx(s32 num) {
-    return sGdDLArray[num]->gfx;
-}
-
-/**
  * Creates `ObjShape`s for the stars and sparkles
  */
 void setup_stars(void) {
@@ -906,11 +791,6 @@ void setup_stars(void) {
     gShapeSilverSpark->dlNums[1] = gShapeSilverSpark->dlNums[0];
     sGdDLArray[gShapeSilverSpark->dlNums[0]]->dlptr = gd_silver_sparkle_dl_array;
     sGdDLArray[gShapeSilverSpark->dlNums[1]]->dlptr = gd_silver_sparkle_dl_array;
-}
-
-/* 24AA40 -> 24AA58 */
-void Unknown8019C270(u8 *buf) {
-    gGdStreamBuffer = buf;
 }
 
 /* 24AA58 -> 24AAA8 */
@@ -956,10 +836,6 @@ void gdSetupFace(void) {
     reset_cur_dl_indices();
     setup_stars();
     imout();
-}
-
-/* 24AC18 -> 24AC2C */
-void stub_renderer_2(UNUSED u32 a0) {
 }
 
 void print_gdm_stats(void) {
