@@ -161,7 +161,7 @@ void draw_shape(struct ObjShape *shape, s32 flag,
 
     sp1C.x = sp1C.y = sp1C.z = 0.0f;
     if (flag & 2) {
-        gd_dl_load_trans_matrix(f, g, h);
+        gdDisplayListTranslate(f, g, h);
         sp1C.x += f;
         sp1C.y += g;
         sp1C.z += h;
@@ -211,7 +211,7 @@ void draw_shape(struct ObjShape *shape, s32 flag,
     }
 
     if (flag & 4) {
-        gd_dl_mul_trans_matrix(i, j, k);
+        gdDisplayListDisplacement(i, j, k);
     }
 
     if (flag & 1) {
@@ -242,7 +242,7 @@ void draw_shape_2d(struct ObjShape *shape, s32 flag, UNUSED f32 c, UNUSED f32 d,
         if (gViewUpdateCamera != NULL) {
             gd_rotate_and_translate_vec3f(&sp1C, &gViewUpdateCamera->unkE8);
         }
-        gd_dl_load_trans_matrix(sp1C.x, sp1C.y, sp1C.z);
+        gdDisplayListTranslate(sp1C.x, sp1C.y, sp1C.z);
     }
     draw_shape_faces(shape);
     split_timer("drawshape2d");
@@ -473,7 +473,7 @@ void draw_face(struct ObjFace *face) {
  * @param lrx,lry lower right point
  */
 void draw_rect_fill(s32 color, f32 ulx, f32 uly, f32 lrx, f32 lry) {
-    gd_dl_set_fill(gd_get_colour(color));
+    gdDisplayListSetFillColor(gd_get_colour(color));
     gd_draw_rect(ulx, uly, lrx, lry);
 }
 
@@ -485,7 +485,7 @@ void draw_rect_fill(s32 color, f32 ulx, f32 uly, f32 lrx, f32 lry) {
  * @param lrx,lry lower right point
  */
 void draw_rect_stroke(s32 color, f32 ulx, f32 uly, f32 lrx, f32 lry) {
-    gd_dl_set_fill(gd_get_colour(color));
+    gdDisplayListSetFillColor(gd_get_colour(color));
     gd_draw_border_rect(ulx, uly, lrx, lry);
 }
 
@@ -749,12 +749,12 @@ void gdDrawView(enum SceneType process, struct ObjGroup *interactables, struct O
     if (gViewUpdateCamera != NULL) {
         draw_camera(gViewUpdateCamera);
     } else {
-        gd_dl_mul_trans_matrix(0.0f, 0.0f, -1000.0f);
+        gdDisplayListDisplacement(0.0f, 0.0f, -1000.0f);
     }
 
     setup_lights();
     set_gd_mtx_parameters(G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_PUSH);
-    gd_dl_push_matrix();
+    gdDisplayListPushMatrix();
     sSceneProcessType = process;
 
     if ((sNumActiveLights = sUpdateViewState.view->flags & VIEW_LIGHT)) {
@@ -778,7 +778,7 @@ void gdDrawView(enum SceneType process, struct ObjGroup *interactables, struct O
     gd_setproperty(GD_PROP_LIGHTING, 0.0f, 0.0f, 0.0f);
     apply_to_obj_types_in_group(OBJ_TYPE_LABELS, (applyproc_t) apply_obj_draw_fn, interactables);
     gd_setproperty(GD_PROP_LIGHTING, 1.0f, 0.0f, 0.0f);
-    gd_dl_pop_matrix();
+    gdDisplayListPopMatrix();
     imout();
     split_timer("gdDrawView");
     return;
@@ -799,7 +799,6 @@ void draw_nothing(UNUSED struct GdObj *nop) {
 void draw_shape_faces(struct ObjShape *shape) {
     sUpdateViewState.mtlDlNum = 0;
     sUpdateViewState.unreadCounter = 0;
-    gddl_is_loading_stub_dl(FALSE);
     sUnreadShapeFlag = (s32) shape->flag & 1;
     set_render_alpha(shape->alpha);
     if (shape->dlNums[gGdFrameBufNum] != 0) {
@@ -1001,7 +1000,7 @@ void Proc8017A980(struct ObjLight *light) {
 /* 229568 -> 229658; orig name: func_8017AD98 */
 void update_shaders(struct ObjShape *shape, struct GdVec3f *offset) {
     restart_timer("updateshaders");
-    stash_current_gddl();
+    gdDisplayListStash();
     sLightPositionOffset.x = offset->x;
     sLightPositionOffset.y = offset->y;
     sLightPositionOffset.z = offset->z;
@@ -1013,7 +1012,7 @@ void update_shaders(struct ObjShape *shape, struct GdVec3f *offset) {
         apply_to_obj_types_in_group(OBJ_TYPE_MATERIALS, (applyproc_t) apply_obj_draw_fn,
                                     shape->mtlGroup);
     }
-    pop_gddl_stash();
+    gdDisplayListStashPop();
     split_timer("updateshaders");
 }
 

@@ -45,8 +45,8 @@ static s32 sVertexBufCount; // vtx's to load into RPD? Vtx len in GD Dl and in t
 static s32 sTriangleBufCount;                  // number of triangles in sTriangleBuf
 static s32 sVertexBufStartIndex;                  // Vtx start in GD Dl
 static struct GdVec3f sTextDrawPos;  // position to draw text? only set in one function, never used
-static Mtx sIdnMtx;
-static Mat4f sInitIdnMat4;
+static Mtx gdRCPIdentityMatrix;
+static Mat4f gdIdentityMatrix;
 static s8 sVtxCvrtNormBuf[3];
 static s16 sAlpha;
 static s32 sNumLights;
@@ -851,16 +851,6 @@ void *gd_malloc_temp(u32 size) {
     return gd_malloc(size, TEMP_G_MEM_BLOCK);
 }
 
-/* 24A458 -> 24A4A4 */
-void *Unknown8019BC88(u32 size, u32 count) {
-    return gd_malloc_perm(size * count);
-}
-
-/* 24A4A4 -> 24A4DC */
-void *Unknown8019BCD4(u32 size) {
-    return gd_malloc_perm(size);
-}
-
 /* 24A4DC -> 24A598 */
 void draw_indexed_dl(s32 dlNum, s32 gfxIdx) {
     Gfx *dl;
@@ -1230,7 +1220,7 @@ void gd_draw_border_rect(f32 ulx, f32 uly, f32 lrx, f32 lry) {
     gDPSetRenderMode(next_gfx(), G_RM_AA_ZB_OPA_INTER, G_RM_NOOP2);
 }
 
-void gd_dl_set_fill(struct GdColour *colour) {
+void gdDisplayListSetFillColor(struct GdColour *colour) {
     u8 r, g, b;
 
     r = colour->r * 255.0f;
@@ -1271,11 +1261,11 @@ void begin_gddl(s32 num) {
     sCurrentGdDl->curVpIdx = 0;
 }
 
-void stash_current_gddl(void) {
+void gdDisplayListStash(void) {
     sGdDlStash = sCurrentGdDl;
 }
 
-void pop_gddl_stash(void) {
+void gdDisplayListStashPop(void) {
     sCurrentGdDl = sGdDlStash;
 }
 
@@ -1398,28 +1388,28 @@ void gd_dl_load_matrix(Mat4f *mtx) {
  * identity matrix.
  */
 void gd_dl_load_identity_matrix(void) {
-    gSPMatrix(next_gfx(), osVirtualToPhysical(&sIdnMtx), sMtxParamType | G_MTX_LOAD | G_MTX_NOPUSH);
+    gSPMatrix(next_gfx(), osVirtualToPhysical(&gdRCPIdentityMatrix), sMtxParamType | G_MTX_LOAD | G_MTX_NOPUSH);
 }
 
 /**
  * Adds a display list operation that pushes the current matrix onto the matrix
  * stack.
  */
-void gd_dl_push_matrix(void) {
-    gSPMatrix(next_gfx(), osVirtualToPhysical(&sIdnMtx), sMtxParamType | G_MTX_MUL | G_MTX_PUSH);
+void gdDisplayListPushMatrix(void) {
+    gSPMatrix(next_gfx(), osVirtualToPhysical(&gdRCPIdentityMatrix), sMtxParamType | G_MTX_MUL | G_MTX_PUSH);
 }
 
 /**
  * Adds a display list operation that pops a matrix from the matrix stack.
  */
-void gd_dl_pop_matrix(void) {
+void gdDisplayListPopMatrix(void) {
     gSPPopMatrix(next_gfx(), sMtxParamType);
 }
 
 /**
  * Adds a display list operation that translates the current matrix by `x`, `y`, and `z`.
  */
-void gd_dl_mul_trans_matrix(f32 x, f32 y, f32 z) {
+void gdDisplayListDisplacement(f32 x, f32 y, f32 z) {
     guTranslate(&DL_CURRENT_MTX(sCurrentGdDl), x, y, z);
     gSPMatrix(next_gfx(), osVirtualToPhysical(&DL_CURRENT_MTX(sCurrentGdDl)), sMtxParamType | G_MTX_MUL | G_MTX_NOPUSH);
     next_mtx();
@@ -1428,7 +1418,7 @@ void gd_dl_mul_trans_matrix(f32 x, f32 y, f32 z) {
 /**
  * Adds a display list operation that loads a translation matrix.
  */
-void gd_dl_load_trans_matrix(f32 x, f32 y, f32 z) {
+void gdDisplayListTranslate(f32 x, f32 y, f32 z) {
     guTranslate(&DL_CURRENT_MTX(sCurrentGdDl), x, y, z);
     gSPMatrix(next_gfx(), osVirtualToPhysical(&DL_CURRENT_MTX(sCurrentGdDl)),
               sMtxParamType | G_MTX_LOAD | G_MTX_NOPUSH);
@@ -1763,10 +1753,6 @@ s32 gd_dl_material_lighting(s32 id, struct GdColour *colour, s32 material) {
     }
     switch (material) {
         case GD_MTL_TEX_OFF:
-            gddl_is_loading_stub_dl(FALSE);
-            gddl_is_loading_stub_dl(FALSE);
-            gddl_is_loading_stub_dl(FALSE);
-            gddl_is_loading_stub_dl(FALSE);
             gddl_is_loading_shine_dl(FALSE);
             gddl_is_loading_shine_dl(FALSE);
             gddl_is_loading_shine_dl(FALSE);
@@ -1774,7 +1760,6 @@ s32 gd_dl_material_lighting(s32 id, struct GdColour *colour, s32 material) {
             numLights = NUMLIGHTS_2;
             break;
         case GD_MTL_STUB_DL:
-            gddl_is_loading_stub_dl(TRUE);
             break;
         case GD_MTL_SHINE_DL:
             gddl_is_loading_shine_dl(TRUE);
@@ -1786,7 +1771,6 @@ s32 gd_dl_material_lighting(s32 id, struct GdColour *colour, s32 material) {
         case GD_MTL_BREAK:
             break;
         default:
-            gddl_is_loading_stub_dl(FALSE);
             gddl_is_loading_shine_dl(FALSE);
 
             DL_CURRENT_LIGHT(sCurrentGdDl).a.l.col[0] = colour->r * 255.0f;
@@ -1925,7 +1909,7 @@ static void update_render_mode(void) {
 void Unknown801A1B30(void) {
     gDPPipeSync(next_gfx());
     gdSetFrameBuffer();
-    gd_dl_set_fill(&sActiveView->colour);
+    gdDisplayListSetFillColor(&sActiveView->colour);
     gDPFillRectangle(next_gfx(), (u32)(sActiveView->upperLeft.x), (u32)(sActiveView->upperLeft.y),
                      (u32)(sActiveView->upperLeft.x + sActiveView->lowerRight.x - 1.0f),
                      (u32)(sActiveView->upperLeft.y + sActiveView->lowerRight.y - 1.0f));
@@ -1951,14 +1935,6 @@ void gdClearZBuffer(void) {
 void gd_set_one_cycle(void) {
     gDPSetCycleType(next_gfx(), G_CYC_1CYCLE);
     update_render_mode();
-}
-
-/* 250B30 -> 250B44 */
-void stub_renderer_3(void) {
-}
-
-/* 250B44 -> 250B58 */
-void gddl_is_loading_stub_dl(UNUSED s32 dlLoad) {
 }
 
 /* 250B58 -> 250C18 */
@@ -2153,7 +2129,7 @@ void func_801A3324(f32 x, f32 y, f32 z) {
 
 /* 251B40 -> 251BC8 */
 void func_801A3370(f32 x, f32 y, f32 z) {
-    gd_dl_mul_trans_matrix(x, y, z);
+    gdDisplayListDisplacement(x, y, z);
     D_801BD768.x += x;
     D_801BD768.y += y;
     D_801BD768.z += z;
@@ -2161,7 +2137,7 @@ void func_801A3370(f32 x, f32 y, f32 z) {
 
 void border_active_view(void) {
     if (sActiveView->flags & VIEW_BORDERED) {
-        gd_dl_set_fill(gd_get_colour(1));
+        gdDisplayListSetFillColor(gd_get_colour(1));
         gd_draw_border_rect(0.0f, 0.0f, (sActiveView->lowerRight.x - 1.0f),
                             (sActiveView->lowerRight.y - 1.0f));
     }
@@ -2691,8 +2667,8 @@ void gdInitSystem(void) {
     }
 
     sNumLights = NUMLIGHTS_2;
-    gd_set_identity_mat4(&sInitIdnMat4);
-    mat4_to_mtx(&sInitIdnMat4, &sIdnMtx);
+    gd_set_identity_mat4(&gdIdentityMatrix);
+    mat4_to_mtx(&gdIdentityMatrix, &gdRCPIdentityMatrix);
     remove_all_memtrackers();
     null_obj_lists();
     start_memtracker("total");
@@ -2828,15 +2804,15 @@ UNUSED void Unknown801A5C80(struct ObjGroup *parentGroup) {
 }
 
 void gd_put_sprite(u16 *sprite, s32 x, s32 y, s32 wx, s32 wy) {
-    s32 c; // 5c
-    s32 r; // 58
+    s32 column; // 5c
+    s32 row; // 58
 
     gSPDisplayList(next_gfx(), osVirtualToPhysical(gd_dl_sprite_start_tex_block));
-    for (r = 0; r < wy; r += 32) {
-        for (c = 0; c < wx; c += 32) {
-             gDPLoadTextureBlock(next_gfx(), (r * 32) + sprite + c, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0,
+    for (row = 0; row < wy; row += 32) {
+        for (column = 0; column < wx; column += 32) {
+             gDPLoadTextureBlock(next_gfx(), (row * 32) + sprite + column, G_IM_FMT_RGBA, G_IM_SIZ_16b, 32, 32, 0,
                 G_TX_WRAP | G_TX_NOMIRROR, G_TX_WRAP | G_TX_NOMIRROR, G_TX_NOMASK, G_TX_NOMASK, G_TX_NOLOD, G_TX_NOLOD)
-             gSPTextureRectangle(next_gfx(), x << 2, (y + r) << 2, (x + 32) << 2, (y + r + 32) << 2,
+             gSPTextureRectangle(next_gfx(), x << 2, (y + row) << 2, (x + 32) << 2, (y + row + 32) << 2,
                 G_TX_RENDERTILE, 0, 0, 1 << 10, 1 << 10);
         }
     }
@@ -2850,7 +2826,6 @@ void gd_put_sprite(u16 *sprite, s32 x, s32 y, s32 wx, s32 wy) {
 void gdInitMouse(struct ObjGroup *parentgrp) {
     struct ObjView *mouseview; // 34
     struct ObjGroup *mousegrp; // 30
-    UNUSED struct ObjNet *net; // 2c
 
     sHandShape = make_shape(0, "mouse");
     sHandShape->dlNums[0] = gd_startdisplist(7);
@@ -2861,7 +2836,7 @@ void gdInitMouse(struct ObjGroup *parentgrp) {
     gd_enddlsplist_parent();
 
     dStartGroup("mouseg");
-    net = (struct ObjNet *) dMakeObject(D_NET, AsDynName(0));
+    dMakeObject(D_NET, AsDynName(0));
     dSetInitPos(0.0f, 0.0f, 0.0f);
     dSetType(3);
     dSetShapePointerFromPointer(&sHandShape);
