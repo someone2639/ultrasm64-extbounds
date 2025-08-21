@@ -95,7 +95,6 @@ static struct GdTimer *D_801A86AC = NULL; // timer for dlgen, dynamics, or rcp
 s32 gGdFrameBufNum = 0;
 static struct ObjShape *sHandShape = NULL;
 static s32 D_801A86BC = 1;
-static s32 D_801A86C0 = 0; // gd_dl id for something?
 static s32 sMtxParamType = G_MTX_PROJECTION;
 static struct ObjView *sActiveView = NULL;  // current view? used when drawing dl
 static struct ObjView *sScreenView = NULL;
@@ -582,10 +581,6 @@ static Gfx gd_dl_sprite_start_tex_block[] = {
     gsSPEndDisplayList(),
 };
 
-// linker (ROM addresses)
-extern u8 _faceDataSegmentRomStart[];
-extern u8 _faceDataSegmentRomEnd[];
-
 static void update_render_mode(void);
 
 // TODO: make a gddl_num_t?
@@ -1010,7 +1005,7 @@ void gdLoadScene(s32 id) {
             if (sMarioSceneGrp == NULL) {
                 load_mario_head(animate_mario_head_normal);
                 sMarioSceneGrp = gMarioFaceGrp; // gMarioFaceGrp set by load_mario_head
-                gd_setup_cursor(NULL);
+                gdInitMouse(NULL);
             }
             sMSceneView = make_view_withgrp("mscene", sMarioSceneGrp);
             break;
@@ -1018,7 +1013,7 @@ void gdLoadScene(s32 id) {
             if (sMarioSceneGrp == NULL) {
                 load_mario_head(animate_mario_head_gameover);
                 sMarioSceneGrp = gMarioFaceGrp;
-                gd_setup_cursor(NULL);
+                gdInitMouse(NULL);
             }
             sMSceneView = make_view_withgrp("mscene", sMarioSceneGrp);
             break;
@@ -1541,7 +1536,6 @@ void gd_dl_lookat(struct ObjCamera *cam, f32 arg1, f32 arg2, f32 arg3, f32 arg4,
 }
 
 void check_tri_display(s32 vtxcount) {
-    D_801A86C0 = sCurrentGdDl->curVtxIdx;
     D_801BB0B4 = 0;
     if (vtxcount != 3) {
         fatal_printf("cant display no tris\n");
@@ -2282,10 +2276,6 @@ void gd_setproperty(enum GdProperty prop, f32 f1, f32 f2, f32 f3) {
     }
 }
 
-/* 2522B0 -> 2522C0 */
-void stub_renderer_5(void) {
-}
-
 /* 2522C0 -> 25245C */
 void gd_create_ortho_matrix(f32 l, f32 r, f32 b, f32 t, f32 n, f32 f) {
     uintptr_t orthoMtx;
@@ -2404,41 +2394,6 @@ void gd_init_controllers(void) {
     }
 }
 
-/* 252BAC -> 252BC0 */
-void stub_renderer_6(UNUSED struct GdObj *obj) {
-}
-
-/**
- * Unused - This is likely a stub version of the `defpup` function from the IRIX
- * Graphics Library. It was used to define a popup menu. See the IRIX "Graphics
- * Library Reference Manual, C Edition" for details.
- *
- * @param menufmt  a format string defining the menu items to be added to the
- *                 popup menu.
- * @return  an identifier of the menu just defined
- */
-long defpup(UNUSED const char *menufmt, ...) {
-   return 0;
-}
-
-/**
- * Unused - called when the user picks an item from the "Control Type" menu.
- * Presumably, this would allow switching inputs between controller, keyboard,
- * and mouse.
- *
- * @param itemId  ID of the menu item that was clicked
- *                (1 = "U-64 Analogue Joystick", 2 = "Keyboard", 3 = "Mouse")
- */
-void menu_cb_control_type(UNUSED u32 itemId) {
-}
-
-/**
- * Unused - called when the user clicks the "Re-Calibrate Controller" item from
- * the "Dynamics" menu.
- */
-void menu_cb_recalibrate_controller(UNUSED u32 itemId) {
-}
-
 /* 252C08 -> 252C70 */
 void func_801A4438(f32 x, f32 y, f32 z) {
     sTextDrawPos.x = x - (sActiveView->lowerRight.x / 2.0f);
@@ -2528,13 +2483,6 @@ void Unknown801A47B8(struct ObjView *v) {
     }
 }
 
-void stub_renderer_7(void) {
-}
-
-/* 252FC4 -> 252FD8 */
-void stub_renderer_8(UNUSED u32 arg0) {
-}
-
 /**
  * Unused - called by func_801A520C and Unknown801A5344
  */
@@ -2556,26 +2504,13 @@ void func_801A4848(s32 linkDl) {
     sCurrentGdDl = curDl;
 }
 
-/**
- * Unused - called by func_801A520C and Unknown801A5344
- */
-void stub_renderer_9(void) {
-}
-
-/* 253094 -> 2530A8 */
-void stub_renderer_10(UNUSED u32 arg0) {
-}
-
 /* 2530A8 -> 2530C0 */
-void stub_draw_label_text(UNUSED char *s) {
-    UNUSED char *save = s;
+void stub_draw_label_text(char *s) {
+    gd_printf("stub_draw_label_text: '%s'\n", s);
 }
 
 void set_active_view(struct ObjView *v) {
     sActiveView = v;
-}
-
-void stub_renderer_11(void) {
 }
 
 /**
@@ -2721,56 +2656,6 @@ void update_view_and_dl(struct ObjView *view) {
     }
 }
 
-/**
- * Unused - called by __main__
- */
-void func_801A520C(void) {
-
-    start_timer("1frame");
-    start_timer("cpu");
-    // stub_renderer_9();
-    reset_cur_dl_indices();
-    parse_p1_controller();
-    setup_timers();
-    start_timer("dlgen");
-    apply_to_obj_types_in_group(OBJ_TYPE_VIEWS, (applyproc_t) update_view_and_dl, gGdViewsGroup);
-    stop_timer("dlgen");
-    restart_timer("netupd");
-    if (!gdControllerInfo.newStartPress) {
-        apply_to_obj_types_in_group(OBJ_TYPE_VIEWS, (applyproc_t) Proc801A5110, gGdViewsGroup);
-    }
-    split_timer("netupd");
-    split_timer("cpu");
-    // func_801A4808();
-    restart_timer("cpu");
-    // func_801A025C();
-    update_cursor();
-    // func_801A4918();
-    stop_timer("1frame");
-    sTracked1FrameTime = get_scaled_timer_total("1frame");
-    split_timer("cpu");
-    // func_801A01EC();
-}
-
-/**
- * Unused
- */
-UNUSED void Unknown801A5344(void) {
-    if ((sActiveView = sScreenView) == NULL) {
-        return;
-    }
-
-    reset_cur_dl_indices();
-    sScreenView->gdDlNum = gd_startdisplist(8);
-    start_view_dl(sScreenView);
-    gd_set_one_cycle();
-    gd_enddlsplist_parent();
-    func_801A4848(sScreenView->gdDlNum);
-    // stub_renderer_9();
-    // func_801A4808();
-    sScreenView->gdDlNum = 0;
-}
-
 /* 253BC8 -> 2540E0 */
 void gdInitSystem(void) {
     s32 i; // 34
@@ -2861,22 +2746,6 @@ void gdInitSystem(void) {
 }
 
 /**
- * Unused - reverses the characters in `str`.
- */
-void reverse_string(char *str, s32 len) {
-    char buf[100];
-    s32 i;
-
-    for (i = 0; i < len; i++) {
-        buf[i] = str[len - i - 1];
-    }
-
-    for (i = 0; i < len; i++) {
-        str[i] = buf[i];
-    }
-}
-
-/**
  * Initializes the pick buffer. This functions like the `pick` or `gselect`
  * functions from IRIS GL.
  * @param buf  pointer to an array of 16-bit values
@@ -2958,124 +2827,6 @@ UNUSED void Unknown801A5C80(struct ObjGroup *parentGroup) {
     }
 }
 
-/* 254560 -> 2547C8 */
-UNUSED void Unknown801A5D90(struct ObjGroup *arg0) {
-    struct ObjLabel *mtLabel;  // 254
-    struct ObjGroup *labelgrp; // 250
-    struct ObjView *memview;   // 24c
-    s32 trackerNum;                 // memtracker id and/or i
-    s32 sp244;                 // label y position?
-    s32 sp240;                 // done checking all memtrakcers
-    s32 sp23C;                 // memtracker label made?
-    char mtStatsFmt[0x100];    // 13c
-    char groupId[0x100];       // 3c
-    struct MemTracker *mt;     // 38
-
-    sp240 = FALSE;
-    trackerNum = -1;
-
-    while (!sp240) {
-        sprintf(groupId, "memg%d\n", trackerNum);
-        dStartGroup(AsDynName(groupId));
-        sp244 = 20;
-        sp23C = FALSE;
-
-        for (;;) {
-            trackerNum++;
-            mt = get_memtracker_by_index(trackerNum);
-
-            if (mt->name != NULL) {
-                sprintf(mtStatsFmt, "%s  %%6.2fk", mt->name);
-                mtLabel = (struct ObjLabel *) dMakeObject(D_LABEL, AsDynName(0));
-                dSetRelativePosition(10.0f, sp244, 0.0f);
-                dSetParmPointer(PARM_PTR_CHAR, gd_strdup(mtStatsFmt));
-                dAddValuePointer(NULL, 0, OBJ_VALUE_FLOAT, (uintptr_t) &mt->total);
-                mtLabel->unk30 = 3;
-                dAddValproc(cvrt_val_to_kb);
-                sp23C = TRUE;
-                sp244 += 14;
-                if (sp244 > 200) {
-                    break;
-                }
-            }
-
-            if (trackerNum >= GD_NUM_MEM_TRACKERS) {
-                sp240 = TRUE;
-                break;
-            }
-        }
-
-        dEndGroup(AsDynName(groupId));
-        labelgrp = (struct ObjGroup *) dUseObject(AsDynName(groupId));
-
-        if (sp23C) {
-            memview = make_view("memview",
-                                (VIEW_2_COL_BUF | VIEW_ALLOC_ZBUF | VIEW_UNK_2000 | VIEW_UNK_4000
-                                 | VIEW_1_CYCLE | VIEW_DRAW),
-                                2, 0, 10, 320, 200, labelgrp);
-            memview->colour.r = 0.0f;
-            memview->colour.g = 0.0f;
-            memview->colour.b = 0.0f;
-            addto_group(arg0, &labelgrp->header);
-            memview->flags &= ~VIEW_UPDATE;
-            add_debug_view(memview);
-        }
-    }
-}
-
-/* 2547C8 -> 254AC0 */
-UNUSED void Unknown801A5FF8(struct ObjGroup *arg0) {
-    struct ObjView *menuview;      // 3c
-    UNUSED struct ObjLabel *label; // 38
-    struct ObjGroup *menugrp;      // 34
-
-    dStartGroup("menug");
-    sMenuGadgets[0] = dMakeObject(D_GADGET, "menu0");
-    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
-    dSetWorldPos(5.0f, 0.0f, 0.0f);
-    dSetScale(100.0f, 20.0f, 0.0f);
-    dSetType(6);
-    dSetColourNum(2);
-    label = (struct ObjLabel *) dMakeObject(D_LABEL, AsDynName(0));
-    dSetRelativePosition(5.0f, 18.0f, 0.0f);
-    dSetParmPointer(PARM_PTR_CHAR, "ITEM 1");
-    dAddValuePointer("menu0", 0x40000, 0, (uintptr_t) NULL);
-
-    sMenuGadgets[1] = dMakeObject(D_GADGET, "menu1");
-    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
-    dSetWorldPos(5.0f, 25.0f, 0.0f);
-    dSetScale(100.0f, 20.0f, 0.0f);
-    dSetType(6);
-    dSetColourNum(4);
-    label = (struct ObjLabel *) dMakeObject(D_LABEL, AsDynName(0));
-    dSetRelativePosition(5.0f, 18.0f, 0.0f);
-    dSetParmPointer(PARM_PTR_CHAR, "ITEM 2");
-    dAddValuePointer("menu1", 0x40000, 0, (uintptr_t) NULL);
-
-    sMenuGadgets[2] = dMakeObject(D_GADGET, "menu2");
-    dSetObjectDrawFlag(OBJ_IS_GRABBABLE);
-    dSetWorldPos(5.0f, 50.0f, 0.0f);
-    dSetScale(100.0f, 20.0f, 0.0f);
-    dSetType(6);
-    dSetColourNum(3);
-    label = (struct ObjLabel *) dMakeObject(D_LABEL, AsDynName(0));
-    dSetRelativePosition(5.0f, 18.0f, 0.0f);
-    dSetParmPointer(PARM_PTR_CHAR, "ITEM 3");
-    dAddValuePointer("menu2", 0x40000, 0, (uintptr_t) NULL);
-    sItemsInMenu = 3;
-    dEndGroup("menug");
-
-    menugrp = (struct ObjGroup *) dUseObject("menug");
-    menuview = make_view(
-        "menuview", (VIEW_2_COL_BUF | VIEW_ALLOC_ZBUF | VIEW_BORDERED | VIEW_UNK_2000 | VIEW_UNK_4000),
-        2, 100, 20, 110, 150, menugrp);
-    menuview->colour.r = 0.0f;
-    menuview->colour.g = 0.0f;
-    menuview->colour.b = 0.0f;
-    addto_group(arg0, &menugrp->header);
-    sMenuView = menuview;
-}
-
 void gd_put_sprite(u16 *sprite, s32 x, s32 y, s32 wx, s32 wy) {
     s32 c; // 5c
     s32 r; // 58
@@ -3096,7 +2847,7 @@ void gd_put_sprite(u16 *sprite, s32 x, s32 y, s32 wx, s32 wy) {
     gSPTexture(next_gfx(), 0x8000, 0x8000, 0, G_TX_RENDERTILE, G_OFF);
 }
 
-void gd_setup_cursor(struct ObjGroup *parentgrp) {
+void gdInitMouse(struct ObjGroup *parentgrp) {
     struct ObjView *mouseview; // 34
     struct ObjGroup *mousegrp; // 30
     UNUSED struct ObjNet *net; // 2c
@@ -3311,8 +3062,6 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
             fatal_printf("load_dynlist() unkown bank");
     }
 
-#define PAGE_SIZE 65536  // size of a 64K TLB page
-
     segSize = dynlistSegEnd - dynlistSegStart;
     allocSegSpace = gd_malloc_temp(segSize + PAGE_SIZE);
 
@@ -3340,8 +3089,6 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
             GD_LOWER_24(((uintptr_t) allocSegSpace) + (i * 2 * PAGE_SIZE) + PAGE_SIZE),  // odd page address
             -1);
     }
-
-#undef PAGE_SIZE
 
     // process the dynlist
     loadedList = gdProcessDynList(dynlist);

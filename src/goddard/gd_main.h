@@ -73,6 +73,10 @@ struct GdControl { // gdControllerInfo
     /* 0xF0 */ struct GdControl *prevFrame; // previous frame data
 };
 
+// linker-generated symbols
+extern u8 _faceDataSegmentRomStart[];
+extern u8 _faceDataSegmentRomEnd[];
+
 // data
 extern s32 gGdMoveScene;
 extern s32 gdUseSmoothShading;

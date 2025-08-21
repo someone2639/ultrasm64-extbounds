@@ -7,6 +7,9 @@
 #include "gd_types.h"
 #include "macros.h"
 
+// size of a 64K TLB page
+#define PAGE_SIZE 65536
+
 #define MAX_GD_DLS 1000
 #define OS_MESG_SI_COMPLETE 0x33333333
 
@@ -189,7 +192,7 @@ void set_vtx_tc_buf(f32 tcS, f32 tcT);
 struct GdObj *load_dynlist(struct DynList *dynlist);
 
 u32 new_gddl_from(Gfx *, s32);
-void gd_setup_cursor(struct ObjGroup *);
+void gdInitMouse(struct ObjGroup *);
 void parse_p1_controller(void);
 void update_cursor(void);
 void update_view_and_dl(struct ObjView *);
