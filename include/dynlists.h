@@ -1,7 +1,7 @@
 #ifndef GD_DYNLISTS_H
 #define GD_DYNLISTS_H
 
-#include "../gd_types.h"
+#include "src/goddard/gd_types.h"
 
 // Dynamic Object names
 enum {

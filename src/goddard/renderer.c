@@ -2,11 +2,12 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#include "config/config_goddard.h"
+
 #include "behaviors.h"
 #include "debug_utils.h"
 #include "draw_objects.h"
 #include "dynlist_proc.h"
-#include "dynlists/dynlists.h"
 #include "gd_macros.h"
 #include "gd_main.h"
 #include "gd_math.h"

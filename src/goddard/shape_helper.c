@@ -1,15 +1,18 @@
 #include <PR/ultratypes.h>
 
+#include "config/config_goddard.h"
+
 #if defined(VERSION_JP) || defined(VERSION_US)
 #include "prevent_bss_reordering.h"
 #endif
+
+#include "dynlists.h"
+#include "dynlist_macros.h"
 
 #include "behaviors.h"
 #include "debug_utils.h"
 #include "draw_objects.h"
 #include "dynlist_proc.h"
-#include "dynlists/dynlist_macros.h"
-#include "dynlists/dynlists.h"
 #include "gd_main.h"
 #include "gd_math.h"
 #include "gd_types.h"

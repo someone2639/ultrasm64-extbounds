@@ -3,8 +3,8 @@
 #include "dynlist_macros.h"
 #include "dynlists.h"
 #include "animdata.h"
-#include "../dynlist_proc.h"
-#include "../shape_helper.h"
+#include "src/goddard/dynlist_proc.h"
+#include "src/goddard/shape_helper.h"
 
 struct DynList dynlist_mario_master[] = {
     BeginList(),

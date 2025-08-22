@@ -3,6 +3,8 @@
 
 #include <PR/ultratypes.h>
 
+#include "gd_types.h"
+
 // In various files of the Goddard subsystem, there are miscellaneous
 // unused rodata strings. These are likely byproducts of a printf macro
 // that was stubbed out as "#define printf", letting printf calls expand
@@ -76,6 +78,7 @@ struct GdControl { // gdControllerInfo
 // linker-generated symbols
 extern u8 _faceDataSegmentRomStart[];
 extern u8 _faceDataSegmentRomEnd[];
+extern struct DynList GODDARD_MAIN_FACE_SCENE[];
 
 // data
 extern s32 gGdMoveScene;

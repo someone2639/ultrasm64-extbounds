@@ -2,7 +2,7 @@
 
 #include "macros.h"
 #include "animdata.h"
-#include "../gd_types.h"
+#include "src/goddard/gd_types.h"
 
 static s16 animdata_mario_eyebrows_1_1[][3] = {
     { -68, 0, 1775 },   { -68, 0, 1774 },   { -68, 0, 1774 },   { -68, 0, 1773 },   { -68, 0, 1773 },

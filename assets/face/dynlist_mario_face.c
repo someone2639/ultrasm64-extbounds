@@ -3,7 +3,7 @@
 #include "macros.h"
 #include "dynlist_macros.h"
 #include "dynlists.h"
-#include "../dynlist_proc.h"
+#include "src/goddard/dynlist_proc.h"
 
 static s16 mario_Face_VtxData[][3] = {
     { 434, 326, -209 },   { 283, 371, -268 },   { 344, 531, -97 },    { 360, 187, -363 },

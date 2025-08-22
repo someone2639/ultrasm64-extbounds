@@ -2,7 +2,7 @@
 
 #include "macros.h"
 #include "animdata.h"
-#include "../gd_types.h"
+#include "src/goddard/gd_types.h"
 
 static s16 animdata_mario_lips_2_1[][3] = {
     { -97, -3, -1771 },   { -97, -3, -1772 },   { -97, -3, -1772 },   { -97, -4, -1773 },

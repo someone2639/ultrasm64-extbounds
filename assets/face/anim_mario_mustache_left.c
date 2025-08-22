@@ -2,7 +2,7 @@
 
 #include "macros.h"
 #include "animdata.h"
-#include "../gd_types.h"
+#include "src/goddard/gd_types.h"
 
 static s16 animdata_mario_mustache_left_1[][3] = {
     { -1799, -1645, -293 }, { -1799, -1645, -293 }, { -1800, -1645, -292 }, { -1800, -1645, -291 },

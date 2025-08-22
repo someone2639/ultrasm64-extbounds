@@ -1,7 +1,7 @@
 #ifndef GD_ANIMDATA_H
 #define GD_ANIMDATA_H
 
-#include "../gd_types.h"
+#include "src/goddard/gd_types.h"
 #define END_ANIMDATA_INFO_ARR { -1, GD_ANIM_EMPTY, NULL }
 
 extern struct AnimDataInfo anim_mario_mustache_right[];

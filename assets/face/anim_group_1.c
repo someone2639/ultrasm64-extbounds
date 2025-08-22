@@ -2,7 +2,7 @@
 
 #include "macros.h"
 #include "animdata.h"
-#include "../gd_types.h"
+#include "src/goddard/gd_types.h"
 
 static s16 animdata_mario_eyebrows_equalizer_1[][3] = {
     { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },    { 0, 0, 0 },

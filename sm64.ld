@@ -433,19 +433,7 @@ SECTIONS
 #ifdef KEEP_MARIO_HEAD
    BEGIN_SEG(faceData, 0x04000000)
    {
-      BUILD_DIR/libgoddard.a:dynlist_mario_master.o(.data*);
-      BUILD_DIR/libgoddard.a:dynlist_mario_face.o(.data*);
-      BUILD_DIR/libgoddard.a:dynlists_mario_eyes.o(.data*);
-      BUILD_DIR/libgoddard.a:dynlists_mario_eyebrows_mustache.o(.data*);
-      BUILD_DIR/libgoddard.a:anim_mario_mustache_right.o(.data*);
-      BUILD_DIR/libgoddard.a:anim_mario_mustache_left.o(.data*);
-      BUILD_DIR/libgoddard.a:anim_mario_lips_1.o(.data*);
-      BUILD_DIR/libgoddard.a:anim_mario_lips_2.o(.data*);
-      BUILD_DIR/libgoddard.a:anim_mario_eyebrows_1.o(.data*);
-      BUILD_DIR/libgoddard.a:anim_group_1.o(.data*);
-      BUILD_DIR/libgoddard.a:anim_group_2.o(.data*);
-      BUILD_DIR/libgoddard.a:*.o(.data*);
-      BUILD_DIR/libgoddard.a:*.o(.rodata*);
+      KEEP(BUILD_DIR/assets/face*.o(.data*));
    }
    END_SEG(faceData)
 #endif

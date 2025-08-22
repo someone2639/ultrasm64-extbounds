@@ -3,7 +3,7 @@
 #include "macros.h"
 #include "dynlist_macros.h"
 #include "dynlists.h"
-#include "../dynlist_proc.h"
+#include "src/goddard/dynlist_proc.h"
 
 static s16 verts_mario_eye_right[][3] = {
     { 306, 26, 83 },   { 318, 18, 81 },   { 312, -13, 94 },  { 308, 43, 53 },   { 320, 35, 50 },
