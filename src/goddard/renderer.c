@@ -2548,7 +2548,7 @@ void gdInitSystem(void) {
     gd_set_identity_mat4(&gdIdentityMatrix);
     mat4_to_mtx(&gdIdentityMatrix, &gdRCPIdentityMatrix);
     remove_all_memtrackers();
-    null_obj_lists();
+    gdResetObjectLists();
     start_memtracker("total");
     remove_all_timers();
 

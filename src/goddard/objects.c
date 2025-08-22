@@ -1716,7 +1716,7 @@ void reset_nets_and_gadgets(struct ObjGroup *group) {
     apply_to_obj_types_in_group(OBJ_TYPE_GADGETS, (applyproc_t) reset_gadget, group);
 }
 
-void null_obj_lists(void) {
+void gdResetObjectLists(void) {
     D_801B9E44 = 0;
     gGdObjCount = 0;
     gGdGroupCount = 0;

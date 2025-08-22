@@ -100,6 +100,6 @@ void func_8018100C(struct ObjLight *light);
 void move_lights_in_grp(struct ObjGroup *group);
 void proc_view_movement(struct ObjView *view);
 void reset_nets_and_gadgets(struct ObjGroup *group);
-void null_obj_lists(void);
+void gdResetObjectLists(void);
 
 #endif // GD_OBJECTS_H
