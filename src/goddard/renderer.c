@@ -1923,7 +1923,6 @@ void parse_p1_controller(void) {
     }
     // toggle if A is pressed? or is this just some seed for an rng?
     gdctrl->dragging = gdctrl->btnA;
-    gdctrl->unkD8b20 = gdctrl->unkD8b40 = FALSE;
     gdctrl->AbtnPressWait = FALSE;
 
     if (gdctrl->startedDragging) {

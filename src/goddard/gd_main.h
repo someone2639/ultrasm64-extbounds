@@ -21,58 +21,45 @@
 
 // structs
 struct GdControl { // gdControllerInfo
-    /* 0x00 */ s32 unk00;  // set but never used
-    /* 0x04 */ u8  filler1[4];
-    /* 0x08 */ s32 dleft; // Dpad-left (mask)
-    /* 0x0C */ s32 dright; // Dpad-right (mask)
-    /* 0x10 */ s32 dup; // Dpad-up (mask)
-    /* 0x14 */ s32 ddown; // Dpad-down (mask)
-    /* 0x18 */ s32 cleft; // bool C-left
-    /* 0x1C */ s32 cright; // bool C-right
-    /* 0x20 */ s32 cup; // bool C-up
-    /* 0x24 */ s32 cdown; // bool C-down
-    /* 0x28 */ void * unk28;     // null-checked ptr? symbol not deref-ed in extant code?
-    /* 0x2C */ void * unk2C;     // some sort of old texture ptr? symbol not deref-ed in extant code?
-    /* 0x30 */ void * unk30;     // null-checked ptr? symbol not deref-ed in extant code?
-    /* 0x34 */ s32 btnA; // bool A button
-    /* 0x38 */ s32 btnB; // bool B button
-    /* 0x3C */ u8  filler2[8];
-    /* 0x44 */ s32 trgL; // bool L trigger pressed
-    /* 0x48 */ s32 trgR; // bool R trigger pressed
-    /* 0x4C */ s32 unk4C;
-    /* 0x50 */ s32 unk50;
-    /* 0x54 */ s32 newStartPress; // toggle bit? start pressed?
-    /* 0x58 */ u8  filler3[36];
-    /* 0x7C */ f32 stickXf;
-    /* 0x80 */ f32 stickYf;
-    /* 0x84 */ u8  filler4[4];
-    /* 0x88 */ f32 unk88;  // set but never used
-    /* 0x8C */ u8  filler5[20];
-    /* 0xA0 */ f32 unkA0;  // set but never used
-    /* 0xA4 */ u8  filler6[8];
-    /* 0xAC */ f32 unkAC;
-    /* 0xB0 */ u8  filler7[8];
-    /* 0xB8 */ s32 dragStartX; // cursor x position when there was a new (A) press?
-    /* 0xBC */ s32 dragStartY; // cursor y position when there was a new (A) press?
-    /* 0xC0 */ s32 stickDeltaX;
-    /* 0xC4 */ s32 stickDeltaY;
-    /* 0xC8 */ s32 stickX;
-    /* 0xCC */ s32 stickY;
-    /* 0xD0 */ s32 cursorX; // bounded by screen view
-    /* 0xD4 */ s32 cursorY; // bounded by screen view
-    /* 0xD8 */ /* hand/cursor state bitfield? */
-        /* b80 */ u8 dragging : 1;  // bool (A) pressed
-        /* b40 */ u8 unkD8b40 : 1; // set to FALSE and unused
-        /* b20 */ u8 unkD8b20 : 1; // set to FALSE and unused
-        /* b10 */ u8 startedDragging : 1;  // bool new (A) press
-        /* b08 */ u8 unkD8b08 : 1;
-        /* b04 */ u8 unkD8b04 : 1;
-        /* b02 */ u8 AbtnPressWait : 1;  // bool 10 frames between (A) presses (cursor cool down?)
-    /* 0xDC */ u32 dragStartFrame; // first frame of new a press
-    /* 0xE0 */ u8  filler8[8];
-    /* 0xE8 */ u32 currFrame; // frame count?
-    /* 0xEC */ u8  filler9[4];
-    /* 0xF0 */ struct GdControl *prevFrame; // previous frame data
+    s32 unk00;  // set but never used
+    s32 dleft; // Dpad-left (mask)
+    s32 dright; // Dpad-right (mask)
+    s32 dup; // Dpad-up (mask)
+    s32 ddown; // Dpad-down (mask)
+    s32 cleft; // bool C-left
+    s32 cright; // bool C-right
+    s32 cup; // bool C-up
+    s32 cdown; // bool C-down
+    void * unk28;     // null-checked ptr? symbol not deref-ed in extant code?
+    void * unk2C;     // some sort of old texture ptr? symbol not deref-ed in extant code?
+    void * unk30;     // null-checked ptr? symbol not deref-ed in extant code?
+    s32 btnA; // bool A button
+    s32 btnB; // bool B button
+    s32 trgL; // bool L trigger pressed
+    s32 trgR; // bool R trigger pressed
+    s32 unk4C;
+    s32 unk50;
+    s32 newStartPress; // toggle bit? start pressed?
+    f32 stickXf;
+    f32 stickYf;
+    f32 unk88;  // set but never used
+    f32 unkA0;  // set but never used
+    f32 unkAC;
+    s32 dragStartX; // cursor x position when there was a new (A) press?
+    s32 dragStartY; // cursor y position when there was a new (A) press?
+    s32 stickDeltaX;
+    s32 stickDeltaY;
+    s32 stickX;
+    s32 stickY;
+    s32 cursorX; // bounded by screen view
+    s32 cursorY; // bounded by screen view
+    /* hand/cursor state bitfield? */
+    u8 dragging;  // bool (A) pressed
+    u8 startedDragging;  // bool new (A) press
+    u8 AbtnPressWait;  // bool 10 frames between (A) presses (cursor cool down?)
+    u32 dragStartFrame; // first frame of new a press
+    u32 currFrame; // frame count?
+    struct GdControl *prevFrame; // previous frame data
 };
 
 // linker-generated symbols
