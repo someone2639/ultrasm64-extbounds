@@ -834,12 +834,10 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
 
 
     dUseIntegerNames(FALSE);
-    // FIXME: make segment address work once seg4 is disassembled
     gMarioFaceGrp = (struct ObjGroup *) load_dynlist(GODDARD_MAIN_FACE_SCENE);
     stop_memtracker("mario face");
 
     // Make camera
-
     camera = (struct ObjCamera *) dMakeObject(D_CAMERA, NULL);
     dSetRelativePosition(0.0f, 200.0f, 2000.0f);
     dSetWorldPos(0.0f, 200.0f, 2000.0f);

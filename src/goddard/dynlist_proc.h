@@ -77,6 +77,10 @@ typedef enum {
     GDCMD_END_LIST = 58,
 } DynlistCMD;
 
+// flags for dAttachTo and friends
+#define ATTACH_FLAG_RELATIVE_TO_PARENT 0x9
+#define ATTACH_FLAG_RELATIVE (0x4 | ATTACH_FLAG_RELATIVE_TO_PARENT)
+
 /// parameters types for `dSetParmPointer()`
 enum DParmPtr {
     PARM_PTR_OBJ_VTX = 1, ///< parameter is the index of a vertex to add to an `ObjFace`

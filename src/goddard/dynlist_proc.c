@@ -536,7 +536,7 @@ void dAttachTo(s32 flag, struct GdObj *obj) {
 
     addto_group(attgrp, sDynListCurObj);
 
-    if (flag & 9) {
+    if (flag & ATTACH_FLAG_RELATIVE_TO_PARENT) {
         dGetWorldPosition(&currObjPos);
         set_cur_dynobj(obj);
         dGetWorldPosition(&objPos);
@@ -569,7 +569,7 @@ void dAttachTo(s32 flag, struct GdObj *obj) {
                          sDynListCurInfo->name, sDynListCurObj->type);
     }
 
-    if (flag & 9) {
+    if (flag & ATTACH_FLAG_RELATIVE_TO_PARENT) {
         dSetAttachOffset(&currObjPos);
     }
 }
@@ -1183,7 +1183,7 @@ void dEndGroup(DynObjName name) {
 /**
  * Add the current dynamic object to the dynamic `ObjGroup` `name`.
  */
-void dAddto_group(DynObjName name) {
+void dAddToGroup(DynObjName name) {
     struct DynObjInfo *info = get_dynobj_info(name);
     struct ObjGroup *targetGrp;
 
@@ -2900,7 +2900,7 @@ struct GdObj *gdProcessDynList(struct DynList *dynlist_buf) {
                 dEndGroup(Dyn1AsName(dynlist_buf));
                 break;
             case GDCMD_ADD_TO_GROUP:
-                dAddto_group(Dyn1AsName(dynlist_buf));
+                dAddToGroup(Dyn1AsName(dynlist_buf));
                 break;
             case GDCMD_USE_OBJECT:
                 dUseObject(Dyn1AsName(dynlist_buf));

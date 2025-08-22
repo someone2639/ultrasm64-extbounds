@@ -31,7 +31,7 @@ struct DynList dynlist_mario_master[] = {
 
         // right eyelid skinning
         MakeNetWithSubGroup(DYNOBJ_RIGHT_EYELID_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 90.0, 0.0),
@@ -70,7 +70,7 @@ struct DynList dynlist_mario_master[] = {
 
         // left eyelid skinning
         MakeNetWithSubGroup(DYNOBJ_LEFT_EYELID_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 90.0, 0.0),
@@ -109,7 +109,7 @@ struct DynList dynlist_mario_master[] = {
 
         // right jaw skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_JAW_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 90.0, 0.0),
@@ -200,7 +200,7 @@ struct DynList dynlist_mario_master[] = {
 
         // nose skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_NOSE_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 90.0, 0.0),
@@ -260,7 +260,7 @@ struct DynList dynlist_mario_master[] = {
 
         // right ear skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_RIGHT_EAR_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(-90.0, 0.0, 0.0),
@@ -306,7 +306,7 @@ struct DynList dynlist_mario_master[] = {
 
         // left ear skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_LEFT_EAR_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(90.0, 180.0, 0.0),
@@ -352,7 +352,7 @@ struct DynList dynlist_mario_master[] = {
 
         // right lip corner skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_RIGHT_LIP_CORNER_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(-90.0, 0.0, 0.0),
@@ -398,7 +398,7 @@ struct DynList dynlist_mario_master[] = {
 
         // left lip corner skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_LEFT_LIP_CORNER_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(90.0, 180.0, 0.0),
@@ -444,7 +444,7 @@ struct DynList dynlist_mario_master[] = {
 
         // ???
         MakeNetWithSubGroup(0x8F),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 90.0, 0.0),
@@ -467,7 +467,7 @@ struct DynList dynlist_mario_master[] = {
 
         // cap skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_CAP_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 90.0, 0.0),
@@ -574,7 +574,7 @@ struct DynList dynlist_mario_master[] = {
 
         // right eye skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_RIGHT_EYE_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(90.0, 180.0, 0.0),
@@ -591,14 +591,14 @@ struct DynList dynlist_mario_master[] = {
         MakeDynObj(D_NET, DYNOBJ_MARIO_RIGHT_EYE_UNKNOWN_NET),
             SetType(3),
             SetShapePtr(DYNOBJ_MARIO_RIGHT_EYE_SHAPE),
-            AttachTo(0xd, DYNOBJ_MARIO_RIGHT_EYE_JOINT_1),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_RIGHT_EYE_JOINT_1),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 0.0, 0.0),
             SetAttachOffset(0.0, 0.0, 0.0),
 
         // left eye skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_LEFT_EYE_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetSkinShape(DYNOBJ_MARIO_FACE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(-90.0, 0.0, 0.0),
@@ -616,7 +616,7 @@ struct DynList dynlist_mario_master[] = {
         MakeDynObj(D_NET, DYNOBJ_MARIO_LEFT_EYE_UNKNOWN_NET),
             SetType(3),
             SetShapePtr(DYNOBJ_MARIO_LEFT_EYE_SHAPE),
-            AttachTo(0xd, DYNOBJ_MARIO_LEFT_EYE_JOINT_1),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_LEFT_EYE_JOINT_1),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 0.0, 0.0),
             SetAttachOffset(0.0, 0.0, 0.0),
@@ -626,13 +626,13 @@ struct DynList dynlist_mario_master[] = {
             SetType(2),
             SetShapePtr(DYNOBJ_MARIO_RIGHT_EYEBROW_SHAPE),
             // attach right eyebrow to head
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 0.0, 0.0),
             SetAttachOffset(20.8, 0.0, -8.5),
         // right part of right eyebrow skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_RIGHT_EYEBROW_RPART_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_RIGHT_EYEBROW_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_RIGHT_EYEBROW_NET),
             SetSkinShape(DYNOBJ_MARIO_RIGHT_EYEBROW_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(-90.0, 90.0, -90.0),
@@ -657,7 +657,7 @@ struct DynList dynlist_mario_master[] = {
         EndNetWithSubGroup(DYNOBJ_MARIO_RIGHT_EYEBROW_RPART_SKIN_NET),
         // left part of right eyebrow skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_RIGHT_EYEBROW_LPART_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_RIGHT_EYEBROW_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_RIGHT_EYEBROW_NET),
             SetSkinShape(DYNOBJ_MARIO_RIGHT_EYEBROW_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(-90.0, 90.0, -90.0),
@@ -680,7 +680,7 @@ struct DynList dynlist_mario_master[] = {
         EndNetWithSubGroup(DYNOBJ_MARIO_RIGHT_EYEBROW_LPART_SKIN_NET),
         // middle part of right eyebrow skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_RIGHT_EYEBROW_MPART_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_RIGHT_EYEBROW_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_RIGHT_EYEBROW_NET),
             SetSkinShape(DYNOBJ_MARIO_RIGHT_EYEBROW_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(-90.0, 90.0, -90.0),
@@ -724,13 +724,13 @@ struct DynList dynlist_mario_master[] = {
             SetType(2),
             SetShapePtr(DYNOBJ_MARIO_LEFT_EYEBROW_SHAPE),
             // attach left eyebrow to head
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 0.0, 0.0),
             SetAttachOffset(-18.5, 0.0, -1.0),
         // left part of left eyebrow skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_LEFT_EYEBROW_LPART_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_LEFT_EYEBROW_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_LEFT_EYEBROW_NET),
             SetSkinShape(DYNOBJ_MARIO_LEFT_EYEBROW_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 90.0, 0.0),
@@ -754,7 +754,7 @@ struct DynList dynlist_mario_master[] = {
         EndNetWithSubGroup(DYNOBJ_MARIO_LEFT_EYEBROW_LPART_SKIN_NET),
         // right part of left eyebrow skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_LEFT_EYEBROW_RPART_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_LEFT_EYEBROW_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_LEFT_EYEBROW_NET),
             SetSkinShape(DYNOBJ_MARIO_LEFT_EYEBROW_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 90.0, 0.0),
@@ -778,7 +778,7 @@ struct DynList dynlist_mario_master[] = {
         EndNetWithSubGroup(DYNOBJ_MARIO_LEFT_EYEBROW_RPART_SKIN_NET),
         // middle part of left eyebrow skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_LEFT_EYEBROW_MPART_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_LEFT_EYEBROW_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_LEFT_EYEBROW_NET),
             SetSkinShape(DYNOBJ_MARIO_LEFT_EYEBROW_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 90.0, 0.0),
@@ -822,13 +822,13 @@ struct DynList dynlist_mario_master[] = {
             SetType(2),
             SetShapePtr(DYNOBJ_MARIO_MUSTACHE_SHAPE),
             // attach mustache to head
-            AttachTo(0xd, DYNOBJ_MARIO_MAIN_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MAIN_NET),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.02, -0.002, 0.04),
             SetAttachOffset(0.0, 0.0, 0.0),
         // left mustache skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_LEFT_MUSTACHE_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MUSTACHE_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MUSTACHE_NET),
             SetSkinShape(DYNOBJ_MARIO_MUSTACHE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 180.0, 0.0),
@@ -872,7 +872,7 @@ struct DynList dynlist_mario_master[] = {
         EndNetWithSubGroup(DYNOBJ_MARIO_LEFT_MUSTACHE_SKIN_NET),
         // right mustache skinning
         MakeNetWithSubGroup(DYNOBJ_MARIO_RIGHT_MUSTACHE_SKIN_NET),
-            AttachTo(0xd, DYNOBJ_MARIO_MUSTACHE_NET),
+            AttachTo(ATTACH_FLAG_RELATIVE, DYNOBJ_MARIO_MUSTACHE_NET),
             SetSkinShape(DYNOBJ_MARIO_MUSTACHE_SHAPE),
             SetScale(1.0, 1.0, 1.0),
             SetRotation(0.0, 0.0, 0.0),
