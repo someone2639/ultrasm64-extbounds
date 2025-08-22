@@ -361,6 +361,7 @@ SECTIONS
       KEEP(BUILD_DIR/src/menu*.o(.rodata*));
 #ifdef KEEP_MARIO_HEAD
       KEEP(BUILD_DIR/libgoddard.a:*.o(.text*));
+      KEEP(BUILD_DIR/libgoddard.a:behaviors.o(.data*));
       KEEP(BUILD_DIR/libgoddard.a:gd_main.o(.data*));
       KEEP(BUILD_DIR/libgoddard.a:draw_objects.o(.data*));
       KEEP(BUILD_DIR/libgoddard.a:objects.o(.data*));
@@ -370,6 +371,7 @@ SECTIONS
       KEEP(BUILD_DIR/libgoddard.a:joints.o(.data*));
       KEEP(BUILD_DIR/libgoddard.a:shape_helper.o(.data*));
       KEEP(BUILD_DIR/libgoddard.a:renderer.o(.data*));
+      KEEP(BUILD_DIR/libgoddard.a:behaviors.o(.rodata*));
       KEEP(BUILD_DIR/libgoddard.a:gd_main.o(.rodata*));
       KEEP(BUILD_DIR/libgoddard.a:gd_memory.o(.rodata*));
       KEEP(BUILD_DIR/libgoddard.a:draw_objects.o(.rodata*));
