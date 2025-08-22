@@ -798,9 +798,9 @@ struct ObjNet *make_netfromshape(struct ObjShape *shape) {
  */
 s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
     struct ObjNet *sp54; // net made with sp48 group
-    struct ObjGroup *sp48; // Joint group
+    struct ObjGroup *jointGroup;
     struct ObjGroup *mainShapesGrp;
-    struct GdObj *sp38;       // object list head before making a bunch of joints
+    struct GdObj *jointListStart;
     struct GdObj *faceJoint;        // joint on the face that `grabberJoint` pulls
     struct ObjJoint *grabberJoint;  // joint that's dragged by the cursor
     struct ObjCamera *camera;
@@ -879,7 +879,7 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
 
     mainShapesGrp = (struct ObjGroup *) dUseObject("N1000l");  // DYNOBJ_MARIO_MAIN_SHAPES_GROUP
     create_gddl_for_shapes(mainShapesGrp);
-    sp38 = gGdObjectList;
+    jointListStart = gGdObjectList;
 
     // Make grabbers to move the face with the cursor
 
@@ -945,10 +945,10 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
     grabberJoint->rootAnimator = animator;
     grabberJoint->header.drawFlags &= ~OBJ_IS_GRABBABLE;
 
-    sp48 = make_group_of_type(OBJ_TYPE_JOINTS, sp38, NULL);
-    sp54 = make_net(0, NULL, sp48, NULL, NULL);
+    jointGroup = make_group_of_type(OBJ_TYPE_JOINTS, jointListStart, NULL);
+    sp54 = make_net(0, NULL, jointGroup, NULL, NULL);
     sp54->netType = 3;
-    addto_group(gMarioFaceGrp, &sp48->header);
+    addto_group(gMarioFaceGrp, &jointGroup->header);
     addto_groupfirst(gMarioFaceGrp, &sp54->header);
 
     return 0;
@@ -959,79 +959,4 @@ void gdResetDynListAndShapeProcessors(void) {
     gdResetDynListProcessor();
     gdResetShapeHelper();
     imout();
-}
-
-struct ObjGroup *Unknown8019AB98(UNUSED u32 a0) {
-    struct ObjLight *light1;
-    struct ObjLight *light2;
-    struct GdObj *oldObjHead = gGdObjectList; // obj head node before making lights
-
-    light1 = make_light(0, NULL, 0);
-    light1->position.x = 100.0f;
-    light1->position.y = 200.0f;
-    light1->position.z = 300.0f;
-
-    light1->diffuse.r = 1.0f;
-    light1->diffuse.g = 0.0f;
-    light1->diffuse.b = 0.0f;
-
-    light1->unk30 = 1.0f;
-
-    light1->unk68.x = 0.4f;
-    light1->unk68.y = 0.9f;
-
-    light1->unk80.x = 4.0f;
-    light1->unk80.y = 4.0f;
-    light1->unk80.z = 2.0f;
-
-    light2 = make_light(0, NULL, 1);
-    light2->position.x = 100.0f;
-    light2->position.y = 200.0f;
-    light2->position.z = 300.0f;
-
-    light2->diffuse.r = 0.0f;
-    light2->diffuse.g = 0.0f;
-    light2->diffuse.b = 1.0f;
-
-    light2->unk30 = 1.0f;
-
-    light2->unk80.x = -4.0f;
-    light2->unk80.y = 4.0f;
-    light2->unk80.z = -2.0f;
-
-    gGdLightGroup = make_group_of_type(OBJ_TYPE_LIGHTS, oldObjHead, NULL);
-
-    return gGdLightGroup;
-}
-
-struct ObjGroup *Unknown8019ADC4(UNUSED u32 a0) {
-    UNUSED struct ObjLight *unusedLight;
-    struct ObjLight *newLight;
-    struct GdObj *oldObjHead;
-
-    unusedLight = make_light(0, NULL, 0);
-    oldObjHead = gGdObjectList;
-    newLight = make_light(0, NULL, 0);
-
-    newLight->position.x = 0.0f;
-    newLight->position.y = -500.0f;
-    newLight->position.z = 0.0f;
-
-    newLight->diffuse.r = 1.0f;
-    newLight->diffuse.g = 0.0f;
-    newLight->diffuse.b = 0.0f;
-
-    newLight->unk30 = 1.0f;
-
-    gGdLightGroup = make_group_of_type(OBJ_TYPE_LIGHTS, oldObjHead, NULL);
-
-    return gGdLightGroup;
-}
-
-struct ObjGroup *Unknown8019AEC4(UNUSED u32 a0) {
-    UNUSED struct GdObj *sp1C = gGdObjectList;
-
-    gGdLightGroup = make_group(0);
-
-    return gGdLightGroup;
 }
