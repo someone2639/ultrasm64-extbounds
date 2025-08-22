@@ -117,6 +117,7 @@ enum DObjTypes {
 // functions
 void dStashDynobj(void);
 void dUnstashDynobj(void);
+void dSetID(s32 id);
 void gdResetDynListProcessor(void);
 struct GdObj* gdProcessDynList(struct DynList *dylist);
 void dSetNameSuffix(char *str);

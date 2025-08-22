@@ -19,17 +19,6 @@ struct DynList dynlist_mario_master[] = {
         CallList(dynlist_mario_mustache_shape),
     EndGroup(DYNOBJ_MARIO_MAIN_SHAPES_GROUP),
 
-    MakeDynObj(D_LIGHT, DYNOBJ_SILVER_STAR_LIGHT),
-        SetId(1),
-        SetDiffuse(1.0, 1.0, 1.0),
-        SetFlag(0x20),
-        SetShapePtrPtr(&gShapeSilverStar),
-
-    MakeDynObj(D_LIGHT, DYNOBJ_RED_STAR_LIGHT),
-        SetId(0),
-        SetDiffuse(1.0, 0.0, 0.0),
-        SetShapePtrPtr(&gShapeRedStar),
-
     StartGroup(0x1),
 
         MakeDynObj(D_NET, DYNOBJ_MARIO_MAIN_NET),

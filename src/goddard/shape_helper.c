@@ -818,6 +818,20 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
     animator = (struct ObjAnimator *) dMakeObject(D_ANIMATOR, AsDynName(DYNOBJ_MARIO_MAIN_ANIMATOR));
     animator->controlFunc = aniFn;
 
+    // Build the lights dynamically so the face can be actually standalone
+    struct ObjLight *silverLight = (struct ObjLight *)
+        dMakeObject(D_LIGHT, AsDynName(DYNOBJ_SILVER_STAR_LIGHT));
+            dSetID(1);
+            dSetDiffuse(1.0f, 1.0f, 1.0f);
+            dSetFlags(0x20);
+            dSetShapePointerFromPointer(&gShapeSilverStar);
+
+    struct ObjLight *redLight = (struct ObjLight *)
+        dMakeObject(D_LIGHT, AsDynName(DYNOBJ_RED_STAR_LIGHT));
+            dSetID(0);
+            dSetDiffuse(1.0f, 0.0f, 0.0f);
+            dSetShapePointerFromPointer(&gShapeRedStar);
+
 
     dUseIntegerNames(FALSE);
     // FIXME: make segment address work once seg4 is disassembled
@@ -848,17 +862,18 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
     particle->shapePtr = gShapeSilverSpark;
     addto_group(gGdLightGroup, &particle->header);
 
+
     particle = make_particle(0, COLOUR_WHITE, 0.0f, 0.0f, 0.0f);
     particle->unk60 = 3;
     particle->unk64 = 2;
-    particle->attachedToObj = dUseObject("N228l"); // DYNOBJ_SILVER_STAR_LIGHT
+    particle->attachedToObj = (struct GdObj *)silverLight;
     particle->shapePtr = gShapeSilverSpark;
     addto_group(gGdLightGroup, &particle->header);
 
     particle = make_particle(0, COLOUR_RED, 0.0f, 0.0f, 0.0f);
     particle->unk60 = 3;
     particle->unk64 = 2;
-    particle->attachedToObj = dUseObject("N231l"); // DYNOBJ_RED_STAR_LIGHT
+    particle->attachedToObj = (struct GdObj *)redLight;
     particle->shapePtr = gShapeRedSpark;
     addto_group(gGdLightGroup, &particle->header);
 
