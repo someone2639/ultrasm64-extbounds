@@ -23,11 +23,9 @@
 // structs
 struct Unk801B9E68 {
     /* 0x00 */ s32 count;
-    /* 0x04 */ u8 filler[20];
 }; /* sizeof() = 0x18 */
 
 struct Unk8017F3CC {
-    /*0x00*/ u8 filler[32];
     /*0x20*/ struct GdVec3f unk20;
 };
 
@@ -116,13 +114,6 @@ void get_some_bounding_box(struct GdBoundingBox *a0) {
     a0->maxX = gSomeBoundingBox.maxX;
     a0->maxY = gSomeBoundingBox.maxY;
     a0->maxZ = gSomeBoundingBox.maxZ;
-}
-
-/* @ 22A6A0 for 0x24 */
-void stub_objects_1(UNUSED struct ObjGroup *a0, UNUSED struct GdObj *a1) {
-    UNUSED u8 sp00[8];
-    /* Debug stub? */
-    return;
 }
 
 /**
@@ -333,7 +324,6 @@ struct GdObj *make_object(enum ObjTypeFlag objType) {
     return newObj;
 }
 
-/* @ 22AEA0 for 0xD0; orig name: func_8017C6D0 */
 struct ObjZone *make_zone(struct ObjGroup *a0, struct GdBoundingBox *bbox, struct ObjGroup *a2) {
     struct ObjZone *newZone = (struct ObjZone *) make_object(OBJ_TYPE_ZONES);
 
@@ -414,7 +404,6 @@ struct VtxLink *make_vtx_link(struct VtxLink *prevNode, Vtx *data) {
     return newNode;
 }
 
-/* @ 22B154 for 0x88; orig name: func8017C984 */
 struct ObjValPtr *make_valptr(struct GdObj *obj, s32 flag, enum ValPtrType type, size_t offset) {
     struct ObjValPtr *sp1C = (struct ObjValPtr *) make_object(OBJ_TYPE_VALPTRS);
 
@@ -431,7 +420,6 @@ void reset_plane(struct ObjPlane *plane) {
     struct ObjFace *sp4C;
     f32 sp48;
     f32 sp44;
-    UNUSED u8 filler[12];
     s32 i;
     s32 sp30;
     register f32 sp28;
@@ -506,9 +494,7 @@ void reset_plane(struct ObjPlane *plane) {
     imout();
 }
 
-/* @ 22B60C for 0x94; orig name: func_8017CE3C */
 struct ObjPlane *make_plane(s32 inZone, struct ObjFace *a1) {
-    UNUSED u8 filler[4];
     struct ObjPlane *newPlane = (struct ObjPlane *) make_object(OBJ_TYPE_PLANES);
 
     gGdPlaneCount++;
@@ -520,7 +506,6 @@ struct ObjPlane *make_plane(s32 inZone, struct ObjFace *a1) {
     return newPlane;
 }
 
-/* @ 22B6A0 for 0x21C; orig name: func_8017CED0 */
 struct ObjCamera *make_camera(s32 flags, struct GdObj *a1) {
     struct ObjCamera *newCam;
     struct ObjCamera *oldCameraHead;
@@ -584,7 +569,6 @@ struct ObjMaterial *make_material(UNUSED s32 a0, char *name, s32 id) {
     return newMtl;
 }
 
-/* @ 22B964 for 0x114; orig name: func_8017D194 */
 struct ObjLight *make_light(s32 flags, char *name, s32 id) {
     struct ObjLight *newLight;
 
@@ -608,7 +592,6 @@ struct ObjLight *make_light(s32 flags, char *name, s32 id) {
     return newLight;
 }
 
-/* @ 22BA78 for 0x294; orig name: func_8017D2A8*/
 struct ObjView *make_view(const char *name, s32 flags, s32 projectionType, s32 ulx, s32 uly, s32 lrx, s32 lry,
                           struct ObjGroup *parts) {
     struct ObjView *newView = (struct ObjView *) make_object(OBJ_TYPE_VIEWS);
@@ -659,7 +642,6 @@ struct ObjView *make_view(const char *name, s32 flags, s32 projectionType, s32 u
     return newView;
 }
 
-/* @ 22BD0C for 0x78; orig name: func_8017D53C */
 struct ObjAnimator *make_animator(void) {
     struct ObjAnimator *newAnim = (struct ObjAnimator *) make_object(OBJ_TYPE_ANIMATORS);
     newAnim->unk24 = 1.0f;
@@ -671,7 +653,6 @@ struct ObjAnimator *make_animator(void) {
     return newAnim;
 }
 
-/* @ 22BD84 for 0x78; orig name: func_8017D5B4 */
 struct ObjWeight *make_weight(UNUSED s32 a0, s32 vtxId, struct ObjVertex *vtx /* always NULL */, f32 weight) {
     struct ObjWeight *newWeight = (struct ObjWeight *) make_object(OBJ_TYPE_WEIGHTS);
 
@@ -749,9 +730,7 @@ void format_object_id(char *str, struct GdObj *obj) {
 struct ObjGroup *make_group(s32 count, ...) {
     va_list args;
     s32 i;
-    UNUSED u8 filler1[4];
     struct GdObj *curObj;
-    UNUSED u8 filler2[12];
     struct ObjGroup *newGroup;
     struct ObjGroup *oldGroupListHead;
     struct GdObj *vargObj;
@@ -811,7 +790,6 @@ struct ObjGroup *make_group(s32 count, ...) {
  */
 void addto_group(struct ObjGroup *group, struct GdObj *obj) {
     char strbuf[0x20];
-    UNUSED u8 filler[8];
 
     imin("addto_group");
 
@@ -875,20 +853,6 @@ s32 group_contains_obj(struct ObjGroup *group, struct GdObj *obj) {
     return FALSE;
 }
 
-/* @ 22C9B8 for 0x24 */
-s32 stub_objects_2(void) {
-    s32 sp4 = 0;
-    return sp4;
-}
-
-/**
- * Unused - called by __main__
- */
-s32 make_scene(void) {
-    s32 sp4 = 0;
-    return sp4;
-}
-
 /* @ 22CA00 for 0x88 */
 static void reset_joint_or_net(struct GdObj *obj) {
     struct GdObj *localObjPtr = obj;
@@ -916,7 +880,6 @@ void menu_cb_reset_positions(void) {
  * Unused (not called) - does nothing useful
  */
 struct GdObj *func_8017E2F0(struct GdObj *obj, enum ObjTypeFlag type) {
-    UNUSED u8 filler[4];
     enum ObjTypeFlag curObjType;
     struct ListNode *node;
 
@@ -953,7 +916,6 @@ s32 apply_to_obj_types_in_group(s32 types, applyproc_t func, struct ObjGroup *gr
     struct GdObj *linkedObj;
     enum ObjTypeFlag linkedObjType;
     applyproc_t objFn;
-    UNUSED u8 filler[32];
     s32 fnAppliedCount;
 
     fnAppliedCount = 0;
@@ -998,9 +960,7 @@ void func_8017E584(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     struct GdVec3f sp88;
     struct GdVec3f sp7C;
     struct GdVec3f sp70;
-    UNUSED u8 filler1[64]; // unused MyMatrix4x4? f32[4][4]
     f32 sp2C;
-    UNUSED u8 filler2[4];
     struct GdVec3f sp1C;
 
     sp70.x = a2->x;
@@ -1050,10 +1010,8 @@ void func_8017E584(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
 
 /* @ 22D008 for 0x1B4 */
 void func_8017E838(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
-    UNUSED u8 filler1[12];
     struct GdVec3f sp70;
     struct GdVec3f sp64;
-    UNUSED u8 filler2[64];
     struct GdVec3f sp18;
 
     sp64.x = a1->x;
@@ -1154,13 +1112,11 @@ s32 gd_plane_point_within(struct GdBoundingBox *box1, struct GdBoundingBox *box2
 s32 transform_child_objects_recursive(struct GdObj *obj, struct GdObj *parentObj) {
     struct ListNode *curLink;
     struct ObjGroup *curGroup;
-    UNUSED u8 filler1[4];
     Mat4f *parentUnkMtx;
     Mat4f *iMtx;
     Mat4f *unkMtx;
     Mat4f *rotMtx;
     Mat4f *rotMtx2;
-    UNUSED u8 filler2[24];
     struct GdVec3f scale;
 
     if (parentObj != NULL) {
@@ -1208,13 +1164,11 @@ s32 transform_child_objects_recursive(struct GdObj *obj, struct GdObj *parentObj
 s32 func_8017F210(struct GdObj *a0, struct GdObj *a1) {
     struct ListNode *sp6C;
     struct ObjGroup *sp68;
-    UNUSED u8 filler1[4];
     UNUSED Mat4f *sp60;
     Mat4f *sp5C;
     UNUSED Mat4f *sp58;
     Mat4f *sp54;
     Mat4f *sp50;
-    UNUSED u8 filler2[24];
     struct GdVec3f sp2C;
     s32 count = 0;
 
@@ -1261,11 +1215,6 @@ void func_8017F3CC(struct Unk8017F3CC *a0) {
     gd_rotate_and_translate_vec3f(&a0->unk20, D_801B9E48);
 }
 
-/* @ 22DBD4 for 0x20 */
-void stub_objects_3(UNUSED f32 a0, UNUSED struct GdObj *a1, UNUSED struct GdObj *a2) {
-    UNUSED u8 filler[48];
-}
-
 /**
  * Interpolates between animation transformations `t1` and `t2`, with `dt` as
  * the interpolation factor (between 0 and 1). Sets the current dynobj's matrix
@@ -1302,7 +1251,6 @@ void interpolate_animation_transform(struct GdAnimTransform *t1, struct GdAnimTr
     dSetIMatrix(&mtx);
 }
 
-/* @ 22DD94 for 0x1060; orig name: func_8017F5C4 */
 void move_animator(struct ObjAnimator *animObj) {
     struct AnimDataInfo *animData; // array?
     Mat4f *mtxArr;
@@ -1316,8 +1264,6 @@ void move_animator(struct ObjAnimator *animObj) {
     s16(*animDataCam)[6];         // camera GdPlaneH[]?
     struct GdObj *stubObj1 = NULL; // used only for call to stubbed function
     struct GdObj *stubObj2 = NULL; // used only for call to stubbed function
-    UNUSED u8 filler[12];
-    UNUSED struct GdVec3f unusedVec;
     s32 currKeyFrame;
     s32 nextKeyFrame;
     f32 dt;
@@ -1345,10 +1291,6 @@ void move_animator(struct ObjAnimator *animObj) {
     if (animData->type == 0) {
         return;
     }
-
-    unusedVec.x = 4.0f;
-    unusedVec.y = 1.0f;
-    unusedVec.z = 1.0f;
 
     if (animObj->frame > (f32) animData->count) {
         animObj->frame = 1.0f;
@@ -1528,18 +1470,7 @@ void move_animator(struct ObjAnimator *animObj) {
                 gd_add_vec3f_to_mat4f_offset(&localMtx, &triPtr->pos);
                 dSetIMatrix(&localMtx);
                 break;
-            case GD_ANIM_STUB:
-                if (stubObj1 == NULL) {
-                    stubObj1 = linkedObj;
-                } else {
-                    if (stubObj2 == NULL) {
-                        stubObj2 = linkedObj;
-                        stub_objects_3(animObj->frame, stubObj1, stubObj2);
-                    } else {
-                        fatal_printf("Too many objects to morph");
-                    }
-                }
-                break;
+            // There used to be object morphing functionality
             default:
                 fatal_printf("move_animator(): Unkown animation data type");
         }
@@ -1547,20 +1478,14 @@ void move_animator(struct ObjAnimator *animObj) {
     }
 }
 
-/* @ 22EDF4 for 0x300; orig name: func_80180624 */
 void drag_picked_object(struct GdObj *inputObj) {
-    UNUSED u8 filler1[12];
     struct GdVec3f displacement;
     struct GdVec3f spC4;
-    struct GdControl *ctrl;
+    struct GdControl *ctrl = &gdControllerInfo;
     Mat4f sp80;
     Mat4f sp40;
-    UNUSED u8 filler2[12];
     struct GdObj *obj;
-    UNUSED u8 filler3[4];
     f32 dispMag;
-
-    ctrl = &gdControllerInfo;
 
     if (gViewUpdateCamera == NULL) {
         return;
@@ -1610,28 +1535,23 @@ void drag_picked_object(struct GdObj *inputObj) {
     }
 }
 
-/* @ 22F0F4 for 0x50; orig name: func_80180924*/
 void move_animators(struct ObjGroup *group) {
     restart_timer("move_animators");
     apply_to_obj_types_in_group(OBJ_TYPE_ANIMATORS, (applyproc_t) move_animator, group);
     split_timer("move_animators");
 }
 
-/* @ 22F144 for 0x3C; orig name: func_80180974 */
 void find_and_drag_picked_object(struct ObjGroup *group) {
     apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) drag_picked_object, group);
 }
 
-/* @ 22F180 for 0x624; orig name: func_801809B0 */
 void move_camera(struct ObjCamera *cam) {
     struct GdObj *spEC;
     struct GdVec3f spE0;
     struct GdVec3f spD4;
     struct GdVec3f spC8;
-    UNUSED u8 filler1[12];
     struct GdVec3f spB0;
     Mat4f sp70;
-    UNUSED u8 filler2[64];
     Mat4f *sp2C;
     struct GdControl *ctrl;
 
@@ -1743,15 +1663,12 @@ void move_camera(struct ObjCamera *cam) {
     cam->worldPos.z += spE0.z;
 }
 
-/* @ 22F7A4 for 0x38; orig name: func_80180FD4 */
 void move_cameras_in_grp(struct ObjGroup *group) {
     apply_to_obj_types_in_group(OBJ_TYPE_CAMERAS, (applyproc_t) move_camera, group);
 }
 
-/* @ 22F7DC for 0x36C*/
 void func_8018100C(struct ObjLight *light) {
     Mat4f mtx;
-    UNUSED u8 filler[12];
 
     if (light->unk40 == 3) {
         if (light->unk30 > 0.0) { //? 0.0f
@@ -1768,53 +1685,13 @@ void func_8018100C(struct ObjLight *light) {
 
         light->unk3C &= ~1;
     }
-    // if (1)?
-    return;
-    // unreachable
-    light->position.x += light->unk80.x;
-    light->position.y += light->unk80.y;
-    light->position.z += light->unk80.z;
-
-    // should be position.x for second comparison?
-    if (light->position.x > 500.0f || light->position.y < -500.0f) {
-        light->unk80.x = -light->unk80.x;
-    }
-
-    if (light->position.y > 500.0f || light->position.y < -500.0f) {
-        light->unk80.y = -light->unk80.y;
-    }
-
-    if (light->position.z > 500.0f || light->position.z < -500.0f) {
-        light->unk80.z = -light->unk80.z;
-    }
-
-    return;
-    // more unreachable
-    D_801A81C0 += 1.0; //? 1.0f
-    D_801A81C4 += 0.6; //? 0.6f
-
-    gd_set_identity_mat4(&mtx);
-    gd_absrot_mat4(&mtx, GD_Y_AXIS, light->unk68.y);
-    gd_absrot_mat4(&mtx, GD_X_AXIS, light->unk68.x);
-    gd_absrot_mat4(&mtx, GD_Z_AXIS, light->unk68.z);
-    gd_mat4f_mult_vec3f(&light->unk8C, &mtx);
-
-    light->position.x = light->unk8C.x;
-    light->position.y = light->unk8C.y;
-    light->position.z = light->unk8C.z;
-    return;
-    // even more unreachable
-    gd_mat4f_mult_vec3f(&light->unk80, &mtx);
-    imout(); // this call would cause an issue if it was reachable
 }
 
-/* @ 22FB48 for 0x38; orig name: func_80181378 */
 void move_lights_in_grp(struct ObjGroup *group) {
     apply_to_obj_types_in_group(OBJ_TYPE_LIGHTS, (applyproc_t) func_8018100C, group);
 }
 
-/* @ 22FB80 for 0xAC; orig name: func_801813B0 */
-void move_group_members(void) {
+void gdMoveCurrentGroup(void) {
     s32 i;
 
     if (gGdMoveScene != 0) {
@@ -1822,36 +1699,29 @@ void move_group_members(void) {
         move_lights_in_grp(sCurrentMoveGrp);
         move_particles_in_grp(sCurrentMoveGrp);
         move_animators(sCurrentMoveGrp);
-
-        for (i = 0; i <= 0; i++) {
-            move_nets(sCurrentMoveGrp);
-        }
-
+        move_nets(sCurrentMoveGrp);
         move_cameras_in_grp(sCurrentMoveGrp);
     }
 }
 
-/* @ 22FC2C for 0x98; orig name: func_8018145C */
 void proc_view_movement(struct ObjView *view) {
     imin("movement");
     gdCurrentMoveCamera = view->activeCam;
     sCurrentMoveView = view;
     if ((sCurrentMoveGrp = view->components) != NULL) {
-        move_group_members();
+        gdMoveCurrentGroup();
     }
     if ((sCurrentMoveGrp = view->lights) != NULL) {
-        move_group_members();
+        gdMoveCurrentGroup();
     }
     imout();
 }
 
-/* @ 22FCC4 for 0x44; orig name: func_801814F4 */
 void reset_nets_and_gadgets(struct ObjGroup *group) {
     func_80193848(group);
     apply_to_obj_types_in_group(OBJ_TYPE_GADGETS, (applyproc_t) reset_gadget, group);
 }
 
-/* @ 22FD08 for 0x9C; orig name: func_80181538*/
 void null_obj_lists(void) {
     D_801B9E44 = 0;
     gGdObjCount = 0;
