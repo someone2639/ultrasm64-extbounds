@@ -87,7 +87,7 @@ void calc_face_normal(struct ObjFace *face) {
         normal.y = (((p2.z - p1.z) * (p3.x - p2.x)) - ((p2.x - p1.x) * (p3.z - p2.z))) * mul;
         normal.z = (((p2.x - p1.x) * (p3.y - p2.y)) - ((p2.y - p1.y) * (p3.x - p2.x))) * mul;
 
-        gd_normalize_vec3f(&normal);
+        gdVectorNormalize(&normal);
 
         face->normal.x = normal.x;
         face->normal.y = normal.y;

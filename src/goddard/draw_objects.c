@@ -168,7 +168,7 @@ void draw_shape(struct ObjShape *shape, s32 flag,
     }
 
     if ((flag & 0x10) && rotMtx != NULL) {
-        gd_dl_load_matrix(rotMtx);
+        gdLoadMatrix(rotMtx);
         sp1C.x += (*rotMtx)[3][0];
         sp1C.y += (*rotMtx)[3][1];
         sp1C.z += (*rotMtx)[3][2];
@@ -240,7 +240,7 @@ void draw_shape_2d(struct ObjShape *shape, s32 flag, UNUSED f32 c, UNUSED f32 d,
         sp1C.y = g;
         sp1C.z = h;
         if (gViewUpdateCamera != NULL) {
-            gd_rotate_and_translate_vec3f(&sp1C, &gViewUpdateCamera->unkE8);
+            gdTransformVector(&sp1C, &gViewUpdateCamera->unkE8);
         }
         gdDisplayListTranslate(sp1C.x, sp1C.y, sp1C.z);
     }
@@ -264,7 +264,7 @@ void draw_light(struct ObjLight *light) {
     sLightColours[0].b = light->colour.b;
 
     if (light->flags & LIGHT_UNK02) {
-        gd_set_identity_mat4(&sp54);
+        gdMakeIdentityMatrixF(&sp54);
         sp94.x = -light->unk80.x;
         sp94.y = -light->unk80.y;
         sp94.z = -light->unk80.z;
@@ -434,10 +434,10 @@ void draw_face(struct ObjFace *face) {
         }
     }
 
-    check_tri_display(face->vtxCount);
+    gdVerifyTriangle(face->vtxCount);
 
     if (!gdUseSmoothShading) {
-        set_Vtx_norm_buf_1(&face->normal);
+        gdSetNormalToFace(&face->normal);
     }
 
     for (i = 0; i < face->vtxCount; i++) {
@@ -446,7 +446,7 @@ void draw_face(struct ObjFace *face) {
         y = vtx->pos.y;
         z = vtx->pos.z;
         if (gdUseSmoothShading) {
-            set_Vtx_norm_buf_2(&vtx->normal);
+            gdSetNormalToVertex(&vtx->normal);
         }
         //! @bug This function seems to have some parts based on older versions of ObjVertex
         //!      as the struct requests fields passed the end of an ObjVertex.
@@ -474,7 +474,7 @@ void draw_face(struct ObjFace *face) {
  */
 void draw_rect_fill(s32 color, f32 ulx, f32 uly, f32 lrx, f32 lry) {
     gdDisplayListSetFillColor(gd_get_colour(color));
-    gd_draw_rect(ulx, uly, lrx, lry);
+    gdFillRectangle(ulx, uly, lrx, lry);
 }
 
 /**
@@ -486,7 +486,7 @@ void draw_rect_fill(s32 color, f32 ulx, f32 uly, f32 lrx, f32 lry) {
  */
 void draw_rect_stroke(s32 color, f32 ulx, f32 uly, f32 lrx, f32 lry) {
     gdDisplayListSetFillColor(gd_get_colour(color));
-    gd_draw_border_rect(ulx, uly, lrx, lry);
+    gdFillRectangleBorder(ulx, uly, lrx, lry);
 }
 
 /**
@@ -655,7 +655,7 @@ void func_80179B64(struct ObjGroup *group) {
 
 /* 22836C -> 228498 */
 void world_pos_to_screen_coords(struct GdVec3f *pos, struct ObjCamera *cam, struct ObjView *view) {
-    gd_rotate_and_translate_vec3f(pos, &cam->unkE8);
+    gdTransformVector(pos, &cam->unkE8);
     if (pos->z > -256.0f) {
         return;
     }
@@ -966,7 +966,7 @@ void Proc8017A980(struct ObjLight *light) {
     sLightPositionCache[light->id].x = light->position.x - sLightPositionOffset.x;
     sLightPositionCache[light->id].y = light->position.y - sLightPositionOffset.y;
     sLightPositionCache[light->id].z = light->position.z - sLightPositionOffset.z;
-    gd_normalize_vec3f(&sLightPositionCache[light->id]);
+    gdVectorNormalize(&sLightPositionCache[light->id]);
     if (light->flags & LIGHT_UNK20) {
         sPhongLightPosition.x = sLightPositionCache[light->id].x;
         sPhongLightPosition.y = sLightPositionCache[light->id].y;
@@ -1046,7 +1046,7 @@ void create_shape_gddl(struct ObjShape *s) {
     UNUSED s32 enddl;           // 1C
 
     create_shape_mtl_gddls(shape);
-    shapedl = gd_startdisplist(7);
+    shapedl = gdInitDisplayList(7);
     if (shapedl == 0) {
         return;
     }
@@ -1359,7 +1359,7 @@ void update_view(struct ObjView *view) {
 
     sUpdateViewState.view = view;
     set_active_view(view);
-    view->gdDlNum = gd_startdisplist(8);
+    view->gdDlNum = gdInitDisplayList(8);
     start_view_dl(sUpdateViewState.view);
     gd_shading(9);
 

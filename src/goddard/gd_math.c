@@ -12,8 +12,8 @@
  * Finds the square root of a float by treating
  * it as a double and finding the square root from there.
  */
-f32 gd_sqrt_f(f32 val) {
-    return (f32) gd_sqrt_d(val);
+f32 gdSqrtF(f32 val) {
+    return (f32) gdSqrt(val);
 }
 
 /**
@@ -22,7 +22,7 @@ f32 gd_sqrt_f(f32 val) {
  * at the position 'to'.
  * An effective goddard copy of mtxf_lookat.
  */
-void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 yTo, f32 zTo,
+void gdMatrixLookAtF(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 yTo, f32 zTo,
                      f32 zColY, f32 yColY, f32 xColY) {
     f32 invLength;
 
@@ -31,7 +31,7 @@ void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 y
     struct GdVec3f norm;
 
     // No reason to do this? mtx is set lower.
-    gd_set_identity_mat4(mtx);
+    gdMakeIdentityMatrixF(mtx);
 
     d.z = xTo - xFrom;
     d.y = yTo - yFrom;
@@ -45,7 +45,7 @@ void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 y
         norm.x = d.z;
         norm.y = d.y;
         norm.z = d.x;
-        gd_normalize_vec3f(&norm);
+        gdVectorNormalize(&norm);
         norm.x *= 10000.0f;
         norm.y *= 10000.0f;
         norm.z *= 10000.0f;
@@ -55,7 +55,7 @@ void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 y
         d.x = norm.z;
     }
 
-    invLength = -1.0 / gd_sqrt_f(SQ(d.z) + SQ(d.y) + SQ(d.x));
+    invLength = -1.0 / gdSqrtF(SQ(d.z) + SQ(d.y) + SQ(d.x));
     d.z *= invLength;
     d.y *= invLength;
     d.x *= invLength;
@@ -64,7 +64,7 @@ void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 y
     colX.y = xColY * d.z - zColY * d.x;
     colX.x = zColY * d.y - yColY * d.z;
 
-    invLength = 1.0 / gd_sqrt_f(SQ(colX.z) + SQ(colX.y) + SQ(colX.x));
+    invLength = 1.0 / gdSqrtF(SQ(colX.z) + SQ(colX.y) + SQ(colX.x));
 
     colX.z *= invLength;
     colX.y *= invLength;
@@ -74,7 +74,7 @@ void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 y
     yColY = d.x * colX.z - d.z * colX.x;
     xColY = d.z * colX.y - d.y * colX.z;
 
-    invLength = 1.0 / gd_sqrt_f(SQ(zColY) + SQ(yColY) + SQ(xColY));
+    invLength = 1.0 / gdSqrtF(SQ(zColY) + SQ(yColY) + SQ(xColY));
 
     zColY *= invLength;
     yColY *= invLength;
@@ -104,7 +104,7 @@ void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 y
 /**
  * Scales a mat4f in each dimension by a vector.
  */
-void gd_scale_mat4f_by_vec3f(Mat4f *mtx, struct GdVec3f *vec) {
+void gdVectorScaleF(Mat4f *mtx, struct GdVec3f *vec) {
     (*mtx)[0][0] *= vec->x;
     (*mtx)[0][1] *= vec->x;
     (*mtx)[0][2] *= vec->x;
@@ -135,8 +135,7 @@ void gd_rot_mat_about_vec(Mat4f *mtx, struct GdVec3f *vec) {
  * Adds each component of a vector to the
  * translation column of a mat4f matrix.
  */
-void gd_add_vec3f_to_mat4f_offset(Mat4f *mtx, struct GdVec3f *vec) {
-    UNUSED Mat4f temp;
+void gdMatrixTranslateF(Mat4f *mtx, struct GdVec3f *vec) {
     f32 z, y, x;
 
     x = vec->x;
@@ -162,21 +161,21 @@ void gd_create_origin_lookat(Mat4f *mtx, struct GdVec3f *vec, f32 roll) {
     f32 hMag;
     f32 c;
     f32 s;
-    f32 radPerDeg = RAD_PER_DEG;
+    f32 radPerDeg = GD_DTOR;
     struct GdVec3f unit;
 
     unit.x = vec->x;
     unit.y = vec->y;
     unit.z = vec->z;
 
-    gd_normalize_vec3f(&unit);
-    hMag = gd_sqrt_f(SQ(unit.x) + SQ(unit.z));
+    gdVectorNormalize(&unit);
+    hMag = gdSqrtF(SQ(unit.x) + SQ(unit.z));
 
     roll *= radPerDeg; // convert roll from degrees to radians
     s = gd_sin_d(roll);
     c = gd_cos_d(roll);
 
-    gd_set_identity_mat4(mtx);
+    gdMakeIdentityMatrixF(mtx);
     if (hMag != 0.0f) {
         invertedHMag = 1.0f / hMag;
         (*mtx)[0][0] = ((-unit.z * c) - (s * unit.y * unit.x)) * invertedHMag;
@@ -224,14 +223,14 @@ void gd_create_origin_lookat(Mat4f *mtx, struct GdVec3f *vec, f32 roll) {
 /**
  * Clamps a float within a set range about zero.
  */
-f32 gd_clamp_f32(f32 a, f32 b) {
-    if (b < a) {
-        a = b;
-    } else if (a < -b) {
-        a = -b;
+f32 gdClampF(f32 value, f32 limit) {
+    if (limit < value) {
+        value = limit;
+    } else if (value < -limit) {
+        value = -limit;
     }
 
-    return a;
+    return value;
 }
 
 /**
@@ -273,21 +272,6 @@ void gd_rot_2d_vec(f32 deg, f32 *x, f32 *y) {
 }
 
 /**
- * Rotates a matrix about one of its rows.
- */
-void UNUSED gd_rot_mat_about_row(Mat4f *mat, s32 row, f32 ang) {
-    Mat4f rot;
-    struct GdVec3f vec;
-
-    vec.x = (*mat)[row][0];
-    vec.y = (*mat)[row][1];
-    vec.z = (*mat)[row][2];
-
-    gd_create_rot_mat_angular(&rot, &vec, ang / 2.0);
-    gd_mult_mat4f(mat, &rot, mat);
-}
-
-/**
  * Rotates a mat4f matrix about a given axis
  * by a set angle in degrees.
  */
@@ -316,25 +300,25 @@ void gd_absrot_mat4(Mat4f *mtx, s32 axisnum, f32 ang) {
     }
 
     gd_create_rot_mat_angular(&rMat, &rot, ang / 2.0); //? 2.0f
-    gd_mult_mat4f(mtx, &rMat, mtx);
+    gdMultiplyMatrixF(mtx, &rMat, mtx);
 }
 
 
-f32 gd_vec3f_magnitude(struct GdVec3f *vec) {
-    return gd_sqrt_f(SQ(vec->x) + SQ(vec->y) + SQ(vec->z));
+f32 gdVectorLength(struct GdVec3f *vec) {
+    return gdSqrtF(SQ(vec->x) + SQ(vec->y) + SQ(vec->z));
 }
 
 /**
  * Normalizes a vec3f to have a length of 1.
  */
-s32 gd_normalize_vec3f(struct GdVec3f *vec) {
+s32 gdVectorNormalize(struct GdVec3f *vec) {
     f32 mag;
     if ((mag = SQ(vec->x) + SQ(vec->y) + SQ(vec->z)) == 0.0f) {
         return FALSE;
     }
 
-    mag = gd_sqrt_f(mag);
-    // gd_sqrt_f rounds near 0 numbers to 0, so verify again.
+    mag = gdSqrtF(mag);
+    // gdSqrtF rounds near 0 numbers to 0, so verify again.
     if (mag == 0.0f) {
         vec->x = 0.0f;
         vec->y = 0.0f;
@@ -369,20 +353,6 @@ void gd_cross_vec3f(struct GdVec3f *a, struct GdVec3f *b, struct GdVec3f *dst) {
  */
 f32 gd_dot_vec3f(struct GdVec3f *a, struct GdVec3f *b) {
     return (a->x * b->x) + (a->y * b->y) + (a->z * b->z);
-}
-
-/**
- * Inverts each element of src into dst.
- */
-void UNUSED gd_invert_elements_mat4f(Mat4f *src, Mat4f *dst) {
-    s32 i;
-    s32 j;
-
-    for (i = 0; i < 4; i++) {
-        for (j = 0; j < 4; j++) {
-            (*dst)[i][j] = 1.0f / (*src)[i][j];
-        }
-    }
 }
 
 /**
@@ -510,6 +480,16 @@ f32 gd_mat4f_det(Mat4f *mtx) {
 }
 
 /**
+ * Takes the individual values of a 2 by 2 matrix and
+ * returns the determinant.
+ */
+f32 gd_2x2_det(f32 a, f32 b, f32 c, f32 d) {
+    f32 det = a * d - b * c;
+
+    return det;
+}
+
+/**
  * Takes the individual values of a 3 by 3 matrix and
  * returns the determinant.
  */
@@ -522,35 +502,6 @@ f32 gd_3x3_det(f32 r0c0, f32 r0c1, f32 r0c2,
           + r2c0 * gd_2x2_det(r0c1, r0c2, r1c1, r1c2);
 
     return det;
-}
-
-/**
- * Takes the individual values of a 2 by 2 matrix and
- * returns the determinant.
- */
-f32 gd_2x2_det(f32 a, f32 b, f32 c, f32 d) {
-    f32 det = a * d - b * c;
-
-    return det;
-}
-
-/**
- * Creates a vector negative to what was passed in. Also sets the first row of a mat4f
- * to 1 0 0 0. Perhaps meant to be used at the end of gd_create_quat_rot_mat? Not
- * sure of the purpose of the vector portion, though.
- */
-void UNUSED gd_create_neg_vec_zero_first_mat_row(Mat4f *mtx, struct GdVec3f *vec, f32 x, f32 y, f32 z) {
-    s32 i;
-
-    vec->x = -x;
-    vec->y = -y;
-    vec->z = -z;
-
-    (*mtx)[0][0] = 1.0f;
-
-    for (i = 1; i < 4; i++) {
-        (*mtx)[0][i] = 0.0f;
-    }
 }
 
 /**
@@ -752,7 +703,7 @@ void gd_create_rot_mat_angular(Mat4f *mtx, struct GdVec3f *vec, f32 ang) {
 /**
  * Sets a mat4f matrix to an identity matrix.
  */
-void gd_set_identity_mat4(Mat4f *mtx) {
+void gdMakeIdentityMatrixF(Mat4f *mtx) {
     (*mtx)[0][0] = 1.0f;
     (*mtx)[0][1] = 0.0f;
     (*mtx)[0][2] = 0.0f;
@@ -774,7 +725,7 @@ void gd_set_identity_mat4(Mat4f *mtx) {
 /**
  * Copies a mat4f from src to dst.
  */
-void gd_copy_mat4f(const Mat4f *src, Mat4f *dst) {
+void gdCopyMatrixF(const Mat4f *src, Mat4f *dst) {
     (*dst)[0][0] = (*src)[0][0];
     (*dst)[0][1] = (*src)[0][1];
     (*dst)[0][2] = (*src)[0][2];
@@ -797,7 +748,7 @@ void gd_copy_mat4f(const Mat4f *src, Mat4f *dst) {
  * Transforms a vec3f, rotating with the main 3x3 portion of the mat4f
  * and translating with the 4th column.
  */
-void gd_rotate_and_translate_vec3f(struct GdVec3f *vec, const Mat4f *mtx) {
+void gdTransformVector(struct GdVec3f *vec, const Mat4f *mtx) {
     struct GdVec3f out;
 
     out.x = (*mtx)[0][0] * vec->x + (*mtx)[1][0] * vec->y + (*mtx)[2][0] * vec->z;
@@ -815,7 +766,7 @@ void gd_rotate_and_translate_vec3f(struct GdVec3f *vec, const Mat4f *mtx) {
 /**
  * Multiples a vec3f by the main 3x3 portion of a mat4f matrix.
  */
-void gd_mat4f_mult_vec3f(struct GdVec3f *vec, const Mat4f *mtx) {
+void gdRotateVector(struct GdVec3f *vec, const Mat4f *mtx) {
     struct GdVec3f out;
 
     out.x = (*mtx)[0][0] * vec->x + (*mtx)[1][0] * vec->y + (*mtx)[2][0] * vec->z;
@@ -827,56 +778,47 @@ void gd_mat4f_mult_vec3f(struct GdVec3f *vec, const Mat4f *mtx) {
     vec->z = out.z;
 }
 
-#define MAT4_DOT_PROD(A, B, R, row, col)                                                               \
-    {                                                                                                  \
-        (R)[(row)][(col)] = (A)[(row)][0] * (B)[0][(col)];                                             \
-        (R)[(row)][(col)] += (A)[(row)][1] * (B)[1][(col)];                                            \
-        (R)[(row)][(col)] += (A)[(row)][2] * (B)[2][(col)];                                            \
-        (R)[(row)][(col)] += (A)[(row)][3] * (B)[3][(col)];                                            \
+void gdMtxCatF(const float mf[4][4], const float nf[4][4], float res[4][4]) {
+    int i, j, k;
+    float temp[4][4];
+
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            temp[i][j] = 0.0;
+            for (k = 0; k < 4; k++) {
+                temp[i][j] += mf[i][k] * nf[k][j];
+            }
+        }
     }
 
-#define MAT4_MULTIPLY(A, B, R)                                                                         \
-    {                                                                                                  \
-        MAT4_DOT_PROD((A), (B), (R), 0, 0);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 0, 1);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 0, 2);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 0, 3);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 1, 0);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 1, 1);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 1, 2);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 1, 3);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 2, 0);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 2, 1);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 2, 2);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 2, 3);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 3, 0);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 3, 1);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 3, 2);                                                            \
-        MAT4_DOT_PROD((A), (B), (R), 3, 3);                                                            \
+    /* make sure we handle case where result is an input */
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++) {
+            res[i][j] = temp[i][j];
+        }
     }
+}
 
 /**
  * Multiplies two Mat4f matrices and puts it in dst.
  */
-void gd_mult_mat4f(const Mat4f *mA, const Mat4f *mB, Mat4f *dst) {
+void gdMultiplyMatrixF(const Mat4f *mA, const Mat4f *mB, Mat4f *dst) {
     Mat4f res;
 
-    MAT4_MULTIPLY((*mA), (*mB), res);
-    gd_copy_mat4f(&res, dst);
+    gdMtxCatF(*mA, *mB, res);
+    gdCopyMatrixF(&res, dst);
 }
-
-#undef MAT4_MULTIPLY
-#undef MAT4_DOT_PROD
 
 /**
  * Prints a vec3f vector.
  *
  * Printed the prefix at some point, as shown by how the function is used.
  */
-void gd_print_vec(UNUSED const char *prefix, const struct GdVec3f *vec) {
-
+void gdPrintVector(UNUSED const char *prefix, const struct GdVec3f *vec) {
+#ifdef printf
     printf("%f,%f,%f\n", vec->x, vec->y, vec->z);
     printf("\n");
+#endif // printf
 }
 
 /**
@@ -884,8 +826,8 @@ void gd_print_vec(UNUSED const char *prefix, const struct GdVec3f *vec) {
  *
  * Printed a prefix at some point, as shone by how the function is used.
  */
-void gd_print_bounding_box(UNUSED const char *prefix, UNUSED const struct GdBoundingBox *p) {
-
+void gdPrintBoundingBox(UNUSED const char *prefix, UNUSED const struct GdBoundingBox *p) {
+    printf("%s\n", prefix);
     printf("Min X = %f, Max X = %f \n", p->minX, p->maxX);
     printf("Min Y = %f, Max Y = %f \n", p->minY, p->maxY);
     printf("Min Z = %f, Max Z = %f \n", p->minZ, p->maxZ);
@@ -898,7 +840,7 @@ void gd_print_bounding_box(UNUSED const char *prefix, UNUSED const struct GdBoun
  * Although the prefix input is unused, the one usage of this function
  * does have a "Matrix:" prefix, so it was definitely used at one point.
  */
-void gd_print_mtx(UNUSED const char *prefix, const Mat4f *mtx) {
+void gdPrintMatrix(UNUSED const char *prefix, const Mat4f *mtx) {
     s32 i;
     s32 j;
 
@@ -913,7 +855,7 @@ void gd_print_mtx(UNUSED const char *prefix, const Mat4f *mtx) {
 /**
  * Prints a quaternion along with a prefix.
  */
-void UNUSED gd_print_quat(const char *prefix, const f32 f[4]) {
+void UNUSED gdPrintQuaternion(const char *prefix, const f32 f[4]) {
     s32 i;
 
     gd_printf(prefix);
@@ -921,42 +863,4 @@ void UNUSED gd_print_quat(const char *prefix, const f32 f[4]) {
         gd_printf("%f ", f[i]);
     }
     gd_printf("\n");
-}
-
-/**
- * Rotates a matrix or creates a rotation matrix about a vector made from an offset
- * of 100 and the passed in x, y, and z values.
- */
-void UNUSED gd_rot_mat_offset(Mat4f *dst, f32 x, f32 y, f32 z, s32 copy) {
-    f32 adj = 100.0f;
-    Mat4f rot;
-    f32 c;
-    f32 s;
-    f32 opp;
-    f32 mag;
-    struct GdVec3f vec;
-
-    opp = gd_sqrt_f(SQ(x) + SQ(y) + SQ(z));
-
-    if (opp == 0.0f) {
-        if (copy) {
-            gd_set_identity_mat4(dst);
-        }
-        return;
-    }
-
-    mag = gd_sqrt_f(SQ(adj) + SQ(opp));
-    c = adj / mag;
-    s = opp / mag;
-
-    vec.x = -y / opp;
-    vec.y = -x / opp;
-    vec.z = -z / opp;
-
-    gd_create_rot_matrix(&rot, &vec, s, c);
-    if (!copy) {
-        gd_mult_mat4f(dst, &rot, dst);
-    } else {
-        gd_copy_mat4f(&rot, dst);
-    }
 }

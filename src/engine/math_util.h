@@ -46,14 +46,14 @@ extern f32 gSineTable[];
 
 // Angle conversion macros
 
-#define RAD_PER_DEG (M_PI / 180.0f)
+#define GD_DTOR (M_PI / 180.0f)
 #define DEG_PER_RAD (180.0f / M_PI)
 
 #define angle_to_degrees(  x) (f32)(((s16)(x) / 65536.0f) * 360.0f)
 #define degrees_to_angle(  x) (s16)(((f32)(x) * 0x10000 ) / 360   )
 #define angle_to_radians(  x) (f32)(((s16)(x) * M_PI    ) / 0x8000)
 #define radians_to_angle(  x) (s16)(((f32)(x) / M_PI    ) * 0x8000)
-#define degrees_to_radians(x) (f32)( (f32)(x) * RAD_PER_DEG       )
+#define degrees_to_radians(x) (f32)( (f32)(x) * GD_DTOR       )
 #define radians_to_degrees(x) (f32)( (f32)(x) * DEG_PER_RAD       )
 
 

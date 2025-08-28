@@ -8,7 +8,7 @@
  */
 
 #define DEG_PER_RAD 57.29577950560105
-#define RAD_PER_DEG (1.0 / DEG_PER_RAD)
+#define GD_DTOR (1.0 / DEG_PER_RAD)
 
 #define ABS(val) (((val) < 0 ? (-(val)) : (val)))
 #define SQ(val) ((val) * (val))

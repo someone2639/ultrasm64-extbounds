@@ -113,7 +113,7 @@ s32 gd_get_ostime(void);
 f32 get_time_scale(void);
 f64 gd_sin_d(f64 x);
 f64 gd_cos_d(f64 x);
-f64 gd_sqrt_d(f64 x);
+f64 gdSqrt(f64 x);
 
 #if defined(ISVPRINT) || defined(UNF)
 #define gd_printf osSyncPrintf
@@ -132,14 +132,14 @@ void gdInitMemory(void *blockpool, u32 size);
 void gdSetupFace(void);
 void gdLoadScene(s32 id);
 void gdFinishDrawing();
-void gd_draw_rect(f32 ulx, f32 uly, f32 lrx, f32 lry);
-void gd_draw_border_rect(f32 ulx, f32 uly, f32 lrx, f32 lry);
+void gdFillRectangle(f32 ulx, f32 uly, f32 lrx, f32 lry);
+void gdFillRectangleBorder(f32 ulx, f32 uly, f32 lrx, f32 lry);
 void gdDisplayListSetFillColor(struct GdColour *colour);
 void gdDisplayListStash(void);
 void gdDisplayListStashPop(void);
-s32 gd_startdisplist(s32 memarea);
+s32 gdInitDisplayList(s32 memarea);
 s32 gd_enddlsplist_parent(void);
-void gd_dl_load_matrix(Mat4f *mtx);
+void gdLoadMatrix(Mat4f *mtx);
 void gdDisplayListPushMatrix(void);
 void gdDisplayListPopMatrix(void);
 void gdDisplayListDisplacement(f32 x, f32 y, f32 z);
@@ -147,7 +147,7 @@ void gdDisplayListTranslate(f32 x, f32 y, f32 z);
 void gd_dl_scale(f32 x, f32 y, f32 z);
 void func_8019F2C4(f32 arg0, s8 arg1);
 void gd_dl_lookat(struct ObjCamera *cam, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7);
-void check_tri_display(s32 vtxcount);
+void gdVerifyTriangle(s32 vtxcount);
 Vtx *gdMakeVertex(f32 x, f32 y, f32 z, f32 alpha);
 void gdTriangleRegistered(void);
 void gdMakeTriangle(f32 x1, f32 y1, f32 z1, f32 x2, f32 y2, f32 z2, f32 x3, f32 y3, f32 z3);
@@ -162,8 +162,8 @@ void gd_dl_hilite(s32, struct ObjCamera *, struct GdVec3f *, struct GdVec3f *, s
 void gd_dl_hilite(s32 idx, struct ObjCamera *cam, UNUSED struct GdVec3f *arg2, UNUSED struct GdVec3f *arg3,
                    struct GdVec3f *arg4, struct GdColour *colour);
 s32 gd_dl_material_lighting(s32 id, struct GdColour *colour, s32 material);
-void set_Vtx_norm_buf_1(struct GdVec3f *norm);
-void set_Vtx_norm_buf_2(struct GdVec3f *norm);
+void gdSetNormalToFace(struct GdVec3f *norm);
+void gdSetNormalToVertex(struct GdVec3f *norm);
 void set_gd_mtx_parameters(s32 params);
 void gd_set_one_cycle(void);
 void gddl_is_loading_stub_dl(UNUSED s32 dlLoad);
@@ -196,7 +196,7 @@ void gdInitMouse(struct ObjGroup *);
 void parse_p1_controller(void);
 void update_cursor(void);
 void update_view_and_dl(struct ObjView *);
-void gddl_is_loading_shine_dl(s32);
+void gdSetSpecular(s32);
 void func_801A3370(f32, f32, f32);
 void gd_put_sprite(u16 *, s32, s32, s32, s32);
 void reset_cur_dl_indices(void);

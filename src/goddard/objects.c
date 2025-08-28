@@ -520,8 +520,8 @@ struct ObjCamera *make_camera(s32 flags, struct GdObj *a1) {
 
     newCam->flags = flags | 0x10;
     newCam->unk30 = a1;
-    gd_set_identity_mat4(&newCam->unk64);
-    gd_set_identity_mat4(&newCam->unkA8);
+    gdMakeIdentityMatrixF(&newCam->unk64);
+    gdMakeIdentityMatrixF(&newCam->unkA8);
 
     newCam->unk180.x = 1.0f;
     newCam->unk180.y = 0.1f;
@@ -962,7 +962,7 @@ void func_8017E584(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     sp70.y = a2->y;
     sp70.z = a2->z;
 
-    gd_normalize_vec3f(&sp70);
+    gdVectorNormalize(&sp70);
 
     sp7C.x = a1->x;
     sp7C.y = a1->y;
@@ -972,20 +972,20 @@ void func_8017E584(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     sp1C.y = a0->centerOfGravity.y;
     sp1C.z = a0->centerOfGravity.z;
 
-    gd_rotate_and_translate_vec3f(&sp1C, &a0->mat128);
+    gdTransformVector(&sp1C, &a0->mat128);
 
     sp7C.x -= sp1C.x;
     sp7C.y -= sp1C.y;
     sp7C.z -= sp1C.z;
 
-    if (gd_normalize_vec3f(&sp7C) == FALSE) {
+    if (gdVectorNormalize(&sp7C) == FALSE) {
         sp7C.x = -sp70.x;
         sp7C.y = -sp70.y;
         sp7C.z = -sp70.z;
     }
 
     gd_cross_vec3f(&sp70, a1, &sp94);
-    sp2C = (f32) gd_sqrt_d((sp94.x * sp94.x) + (sp94.z * sp94.z));
+    sp2C = (f32) gdSqrt((sp94.x * sp94.x) + (sp94.z * sp94.z));
 
     if (sp2C > 1000.0) { //? 1000.0f
         sp2C = 1000.0f;
@@ -1017,7 +1017,7 @@ void func_8017E838(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     sp18.y = a0->centerOfGravity.y;
     sp18.z = a0->centerOfGravity.z;
 
-    gd_rotate_and_translate_vec3f(&sp18, &a0->mat128);
+    gdTransformVector(&sp18, &a0->mat128);
 
     sp64.x -= sp18.x;
     sp64.y -= sp18.y;
@@ -1045,10 +1045,10 @@ void func_8017E9EC(struct ObjNet *net) {
     sp5C.y = net->torque.y;
     sp5C.z = net->torque.z;
 
-    gd_normalize_vec3f(&sp5C);
-    sp18 = gd_vec3f_magnitude(&net->torque);
+    gdVectorNormalize(&sp5C);
+    sp18 = gdVectorLength(&net->torque);
     gd_create_rot_mat_angular(&sp1C, &sp5C, -sp18);
-    gd_mult_mat4f(&D_801B9DC8, &sp1C, &D_801B9DC8);
+    gdMultiplyMatrixF(&D_801B9DC8, &sp1C, &D_801B9DC8);
 }
 
 /**
@@ -1126,10 +1126,10 @@ s32 transform_child_objects_recursive(struct GdObj *obj, struct GdObj *parentObj
         dGetScale(&scale);
 
         unkMtx = dGetMatrixPointer();
-        gd_mult_mat4f(iMtx, parentUnkMtx, unkMtx);
+        gdMultiplyMatrixF(iMtx, parentUnkMtx, unkMtx);
 
-        gd_mult_mat4f(iMtx, rotMtx, rotMtx2);
-        gd_scale_mat4f_by_vec3f(rotMtx2, &scale);
+        gdMultiplyMatrixF(iMtx, rotMtx, rotMtx2);
+        gdVectorScaleF(rotMtx2, &scale);
     } else {
         set_cur_dynobj(obj);
         unkMtx = dGetMatrixPointer();
@@ -1137,9 +1137,9 @@ s32 transform_child_objects_recursive(struct GdObj *obj, struct GdObj *parentObj
         rotMtx = (Mat4f *) dGetRotationMatrixPointer();
 
         dGetScale(&scale);
-        gd_set_identity_mat4(unkMtx);
-        gd_copy_mat4f(iMtx, rotMtx);
-        gd_scale_mat4f_by_vec3f(rotMtx, &scale);
+        gdMakeIdentityMatrixF(unkMtx);
+        gdCopyMatrixF(iMtx, rotMtx);
+        gdVectorScaleF(rotMtx, &scale);
     }
 
     // Recursively call this function on attached children
@@ -1179,8 +1179,8 @@ s32 func_8017F210(struct GdObj *a0, struct GdObj *a1) {
         sp50 = (Mat4f *) dGetRotationMatrixPointer();
 
         dGetScale(&sp2C);
-        gd_mult_mat4f(sp5C, sp54, sp50);
-        gd_scale_mat4f_by_vec3f(sp50, &sp2C);
+        gdMultiplyMatrixF(sp5C, sp54, sp50);
+        gdVectorScaleF(sp50, &sp2C);
     } else {
         set_cur_dynobj(a0);
         sp58 = dGetMatrixPointer();
@@ -1188,8 +1188,8 @@ s32 func_8017F210(struct GdObj *a0, struct GdObj *a1) {
         sp54 = (Mat4f *) dGetRotationMatrixPointer();
 
         dGetScale(&sp2C);
-        gd_copy_mat4f(sp5C, sp54);
-        gd_scale_mat4f_by_vec3f(sp54, &sp2C);
+        gdCopyMatrixF(sp5C, sp54);
+        gdVectorScaleF(sp54, &sp2C);
     }
 
     set_cur_dynobj(a0);
@@ -1207,7 +1207,7 @@ s32 func_8017F210(struct GdObj *a0, struct GdObj *a1) {
 
 /* @ 22DB9C for 0x38; a0 might be ObjUnk200000* */
 void func_8017F3CC(struct Unk8017F3CC *a0) {
-    gd_rotate_and_translate_vec3f(&a0->unk20, D_801B9E48);
+    gdTransformVector(&a0->unk20, D_801B9E48);
 }
 
 /**
@@ -1218,7 +1218,7 @@ void func_8017F3CC(struct Unk8017F3CC *a0) {
 void interpolate_animation_transform(struct GdAnimTransform *t1, struct GdAnimTransform *t2, f32 dt) {
     Mat4f mtx;
 
-    gd_set_identity_mat4(&mtx);
+    gdMakeIdentityMatrixF(&mtx);
 
     if (dt != 0.0f) {
         struct GdAnimTransform transform;
@@ -1235,13 +1235,13 @@ void interpolate_animation_transform(struct GdAnimTransform *t1, struct GdAnimTr
 
         // not going to interpolate scale?
 
-        gd_scale_mat4f_by_vec3f(&mtx, &t1->scale);
+        gdVectorScaleF(&mtx, &t1->scale);
         gd_rot_mat_about_vec(&mtx, &transform.rotate);
-        gd_add_vec3f_to_mat4f_offset(&mtx, &transform.pos);
+        gdMatrixTranslateF(&mtx, &transform.pos);
     } else {
         dSetScale(t1->scale.x, t1->scale.y, t1->scale.z);
         gd_rot_mat_about_vec(&mtx, &t1->rotate);
-        gd_add_vec3f_to_mat4f_offset(&mtx, &t1->pos);
+        gdMatrixTranslateF(&mtx, &t1->pos);
     }
     dSetIMatrix(&mtx);
 }
@@ -1457,10 +1457,10 @@ void move_animator(struct ObjAnimator *animObj) {
                 break;
             case GD_ANIM_SCALE3F_ROT3F_POS3F_2:  // similar to GD_ANIM_SCALE3F_ROT3F_POS3F, but no interpolation? what matrix does dSetIMatrix set?
                 triPtr = (struct GdAnimTransform *) animData->data;
-                gd_set_identity_mat4(&localMtx);
-                gd_scale_mat4f_by_vec3f(&localMtx, &triPtr->scale);
+                gdMakeIdentityMatrixF(&localMtx);
+                gdVectorScaleF(&localMtx, &triPtr->scale);
                 gd_rot_mat_about_vec(&localMtx, &triPtr->rotate);
-                gd_add_vec3f_to_mat4f_offset(&localMtx, &triPtr->pos);
+                gdMatrixTranslateF(&localMtx, &triPtr->pos);
                 dSetIMatrix(&localMtx);
                 break;
             // There used to be object morphing functionality
@@ -1484,7 +1484,7 @@ void drag_picked_object(struct GdObj *inputObj) {
         return;
     }
 
-    dispMag = gd_vec3f_magnitude(&gViewUpdateCamera->unk40);
+    dispMag = gdVectorLength(&gViewUpdateCamera->unk40);
     dispMag /= 1000.0f;
 
     displacement.x = ((f32)(ctrl->cursorX - ctrl->dragStartX)) * dispMag;
@@ -1492,7 +1492,7 @@ void drag_picked_object(struct GdObj *inputObj) {
     displacement.z = 0.0f;
 
     gd_inverse_mat4f(&gViewUpdateCamera->unkE8, &sp40);
-    gd_mat4f_mult_vec3f(&displacement, &sp40);
+    gdRotateVector(&displacement, &sp40);
 
     obj = inputObj;
     if ((inputObj->drawFlags & OBJ_PICKED) && gdControllerInfo.dragging) {
@@ -1516,7 +1516,7 @@ void drag_picked_object(struct GdObj *inputObj) {
                 spC4.y = displacement.y;
                 spC4.z = displacement.z;
 
-                gd_mat4f_mult_vec3f(&spC4, &sp80);
+                gdRotateVector(&spC4, &sp80);
                 ((struct ObjNet *) obj)->matE8[3][0] += displacement.x;
                 ((struct ObjNet *) obj)->matE8[3][1] += displacement.y;
                 ((struct ObjNet *) obj)->matE8[3][2] += displacement.z;
@@ -1580,9 +1580,9 @@ void move_camera(struct ObjCamera *cam) {
         cam->unkA8[1][2] = 0.0f;
 
         // setting the unkA8 matrix above is pointless, if we're just going to overwrite it with the identity matrix.
-        gd_set_identity_mat4(&cam->unkA8);
+        gdMakeIdentityMatrixF(&cam->unkA8);
     } else {
-        gd_set_identity_mat4(&cam->unkA8);
+        gdMakeIdentityMatrixF(&cam->unkA8);
     }
 
     sp2C = &cam->unk64;
@@ -1620,7 +1620,7 @@ void move_camera(struct ObjCamera *cam) {
             cam->unk128.x -= cam->unk134.x;
         }
 
-        cam->unk128.x = gd_clamp_f32(cam->unk128.x, 80.0f);
+        cam->unk128.x = gdClampF(cam->unk128.x, 80.0f);
 
         cam->unk4C.x = cam->zoomPositions[cam->zoomLevel].x;
         cam->unk4C.y = cam->zoomPositions[cam->zoomLevel].y;
@@ -1633,7 +1633,7 @@ void move_camera(struct ObjCamera *cam) {
         cam->unk40.y += (cam->unk4C.y - cam->unk40.y) * cam->unk17C;
         cam->unk40.z += (cam->unk4C.z - cam->unk40.z) * cam->unk17C;
     } else {
-        gd_set_identity_mat4(sp2C);
+        gdMakeIdentityMatrixF(sp2C);
     }
 
     spD4.x = cam->unk40.x;
@@ -1644,8 +1644,8 @@ void move_camera(struct ObjCamera *cam) {
     spD4.y += spB0.y;
     spD4.z += spB0.z;
 
-    gd_mult_mat4f(sp2C, &cam->unkA8, &cam->unkA8);
-    gd_mat4f_mult_vec3f(&spD4, &cam->unkA8);
+    gdMultiplyMatrixF(sp2C, &cam->unkA8, &cam->unkA8);
+    gdRotateVector(&spD4, &cam->unkA8);
 
     cam->worldPos.x = spD4.x;
     cam->worldPos.y = spD4.y;

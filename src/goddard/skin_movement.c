@@ -20,7 +20,7 @@ void func_801815E0(Mat4f *mtx) {
     scratchVec.x = (*mtx)[0][0];
     scratchVec.y = (*mtx)[0][1];
     scratchVec.z = (*mtx)[0][2];
-    gd_normalize_vec3f(&scratchVec);
+    gdVectorNormalize(&scratchVec);
     (*mtx)[0][0] = scratchVec.x;
     (*mtx)[0][1] = scratchVec.y;
     (*mtx)[0][2] = scratchVec.z;
@@ -28,7 +28,7 @@ void func_801815E0(Mat4f *mtx) {
     scratchVec.x = (*mtx)[1][0];
     scratchVec.y = (*mtx)[1][1];
     scratchVec.z = (*mtx)[1][2];
-    gd_normalize_vec3f(&scratchVec);
+    gdVectorNormalize(&scratchVec);
     (*mtx)[1][0] = scratchVec.x;
     (*mtx)[1][1] = scratchVec.y;
     (*mtx)[1][2] = scratchVec.z;
@@ -36,7 +36,7 @@ void func_801815E0(Mat4f *mtx) {
     scratchVec.x = (*mtx)[2][0];
     scratchVec.y = (*mtx)[2][1];
     scratchVec.z = (*mtx)[2][2];
-    gd_normalize_vec3f(&scratchVec);
+    gdVectorNormalize(&scratchVec);
     (*mtx)[2][0] = scratchVec.x;
     (*mtx)[2][1] = scratchVec.y;
     (*mtx)[2][2] = scratchVec.z;
@@ -90,7 +90,7 @@ void func_80181894(struct ObjJoint *joint) {
                 stackVec.x = curWeight->vec20.x;
                 stackVec.y = curWeight->vec20.y;
                 stackVec.z = curWeight->vec20.z;
-                gd_rotate_and_translate_vec3f(&stackVec, &joint->matE8);
+                gdTransformVector(&stackVec, &joint->matE8);
 
                 connectedVtx = curWeight->vtx;
                 scaleFactor = curWeight->weightVal;
@@ -113,7 +113,7 @@ void reset_weight_vtx(struct ObjVertex *vtx) {
         localVec.y = vtx->pos.y;
         localVec.z = vtx->pos.z;
 
-        gd_rotate_and_translate_vec3f(&localVec, &D_801B9EA8);
+        gdTransformVector(&localVec, &D_801B9EA8);
         sResetCurWeight->vec20.x = localVec.x;
         sResetCurWeight->vec20.y = localVec.y;
         sResetCurWeight->vec20.z = localVec.z;

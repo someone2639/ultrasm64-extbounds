@@ -5,8 +5,8 @@
 
 #include "gd_types.h"
 
-#define printf(...)                                       \
-    osSyncPrintf(__VA_ARGS__)
+// #define printf(...) osSyncPrintf(__VA_ARGS__)
+#define printf(...)
 
 // structs
 struct GdControl { // gdControllerInfo

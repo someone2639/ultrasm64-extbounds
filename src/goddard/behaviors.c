@@ -84,7 +84,7 @@ void grabbable_joint_update_func(struct ObjJoint *self) {
         attobj = att->obj;
         set_cur_dynobj(attobj);
         attObjMtx = dGetMatrixPointer();
-        gd_add_vec3f_to_mat4f_offset(attObjMtx, &offset);
+        gdMatrixTranslateF(attObjMtx, &offset);
     }
 }
 
@@ -122,8 +122,8 @@ void eye_joint_update_func(struct ObjJoint *self) {
     sp50.x *= 2.0; //?2.0f
     sp50.y *= 2.0; //?2.0f
     sp50.z *= 2.0; //?2.0f
-    if (gd_vec3f_magnitude(&sp50) > 30.0f) {
-        gd_normalize_vec3f(&sp50);
+    if (gdVectorLength(&sp50) > 30.0f) {
+        gdVectorNormalize(&sp50);
         sp50.x *= 30.0f;
         sp50.y *= 30.0f;
         sp50.z *= 30.0f;
@@ -133,7 +133,7 @@ void eye_joint_update_func(struct ObjJoint *self) {
         attobj = att->obj;
         set_cur_dynobj(attobj);
         sp5C = dGetRotationMatrixPointer();
-        gd_add_vec3f_to_mat4f_offset(sp5C, &sp50);
+        gdMatrixTranslateF(sp5C, &sp50);
     }
 }
 

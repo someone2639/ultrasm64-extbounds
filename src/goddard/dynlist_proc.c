@@ -703,9 +703,9 @@ void alloc_animdata(struct ObjAnimator *animator) {
                     tri.p2.y = (f32)(*halfarr)[7];
                     tri.p2.z = (f32)(*halfarr)[8];
 
-                    gd_set_identity_mat4(&curMtxVec->matrix);
+                    gdMakeIdentityMatrixF(&curMtxVec->matrix);
                     gd_rot_mat_about_vec(&curMtxVec->matrix, &tri.p1);
-                    gd_add_vec3f_to_mat4f_offset(&curMtxVec->matrix, &tri.p2);
+                    gdMatrixTranslateF(&curMtxVec->matrix, &tri.p2);
 
                     ((struct AnimMtxVec *) allocSpace)[dataIdx].vec.x = tri.p0.x;
                     ((struct AnimMtxVec *) allocSpace)[dataIdx].vec.y = tri.p0.y;
@@ -812,11 +812,11 @@ void chk_shapegen(struct ObjShape *shape) {
                     vtxbuf[i]->normal.x = vtxbuf[i]->pos.x;
                     vtxbuf[i]->normal.y = vtxbuf[i]->pos.y;
                     vtxbuf[i]->normal.z = vtxbuf[i]->pos.z;
-                    gd_normalize_vec3f(&vtxbuf[i]->normal);
+                    gdVectorNormalize(&vtxbuf[i]->normal);
                 }
             } else {
                 for (i = 0; i < vtxdata->count; i++) {
-                    gd_normalize_vec3f(&vtxbuf[i]->normal);
+                    gdVectorNormalize(&vtxbuf[i]->normal);
                 }
             }
 
@@ -1775,7 +1775,7 @@ void dSetNormal(f32 x, f32 y, f32 z) {
     normal.x = x;
     normal.y = y;
     normal.z = z;
-    gd_normalize_vec3f(&normal);
+    gdVectorNormalize(&normal);
 
     switch (sDynListCurObj->type) {
         case OBJ_TYPE_VERTICES:
@@ -2642,20 +2642,20 @@ void dGetMatrix(Mat4f *dst) {
     dynobj = sDynListCurObj;
     switch (sDynListCurObj->type) {
         case OBJ_TYPE_NETS:
-            gd_copy_mat4f(&((struct ObjNet *) dynobj)->mat128, dst);
+            gdCopyMatrixF(&((struct ObjNet *) dynobj)->mat128, dst);
             break;
             break; // lol
         case OBJ_TYPE_JOINTS:
-            gd_copy_mat4f(&((struct ObjJoint *) dynobj)->matE8, dst);
+            gdCopyMatrixF(&((struct ObjJoint *) dynobj)->matE8, dst);
             break;
         case OBJ_TYPE_CAMERAS:
-            gd_copy_mat4f(&((struct ObjCamera *) dynobj)->unkE8, dst);
+            gdCopyMatrixF(&((struct ObjCamera *) dynobj)->unkE8, dst);
             break;
         case OBJ_TYPE_PARTICLES:
-            gd_set_identity_mat4(dst);
+            gdMakeIdentityMatrixF(dst);
             break;
         case OBJ_TYPE_SHAPES:
-            gd_set_identity_mat4(dst);
+            gdMakeIdentityMatrixF(dst);
             break;
         default:
             fatal_printf("%s: Object '%s'(%x) does not support this function.", "dGetMatrix()",
@@ -2673,16 +2673,16 @@ void dSet_matrix(Mat4f *src) {
 
     switch (sDynListCurObj->type) {
         case OBJ_TYPE_NETS:
-            gd_copy_mat4f(src, &((struct ObjNet *) sDynListCurObj)->mat128);
+            gdCopyMatrixF(src, &((struct ObjNet *) sDynListCurObj)->mat128);
             //! @bug When setting an `ObjNet` matrix, the source is copied twice
             //!      due to a probable copy-paste line repeat error
-            gd_copy_mat4f(src, &((struct ObjNet *) sDynListCurObj)->mat128);
+            gdCopyMatrixF(src, &((struct ObjNet *) sDynListCurObj)->mat128);
             break;
         case OBJ_TYPE_JOINTS:
-            gd_copy_mat4f(src, &((struct ObjJoint *) sDynListCurObj)->matE8);
+            gdCopyMatrixF(src, &((struct ObjJoint *) sDynListCurObj)->matE8);
             break;
         case OBJ_TYPE_CAMERAS:
-            gd_copy_mat4f(src, &((struct ObjCamera *) sDynListCurObj)->unk64);
+            gdCopyMatrixF(src, &((struct ObjCamera *) sDynListCurObj)->unk64);
             break;
         default:
             fatal_printf("%s: Object '%s'(%x) does not support this function.", "dSetMatrix()",
@@ -2701,10 +2701,10 @@ void dSet_rot_mtx(Mat4f *src) {
 
     switch (sDynListCurObj->type) {
         case OBJ_TYPE_JOINTS:
-            gd_copy_mat4f(src, &((struct ObjJoint *) sDynListCurObj)->mat128);
+            gdCopyMatrixF(src, &((struct ObjJoint *) sDynListCurObj)->mat128);
             break;
         case OBJ_TYPE_NETS:
-            gd_copy_mat4f(src, &((struct ObjNet *) sDynListCurObj)->mat168);
+            gdCopyMatrixF(src, &((struct ObjNet *) sDynListCurObj)->mat168);
             break;
         default:
             fatal_printf("%s: Object '%s'(%x) does not support this function.", "dSetRMatrix()",
@@ -2746,10 +2746,10 @@ void dSetIMatrix(Mat4f *src) {
     dynobj = sDynListCurObj;
     switch (sDynListCurObj->type) {
         case OBJ_TYPE_NETS:
-            gd_copy_mat4f(src, &((struct ObjNet *) dynobj)->matE8);
+            gdCopyMatrixF(src, &((struct ObjNet *) dynobj)->matE8);
             break;
         case OBJ_TYPE_JOINTS:
-            gd_copy_mat4f(src, &((struct ObjJoint *) dynobj)->mat168);
+            gdCopyMatrixF(src, &((struct ObjJoint *) dynobj)->mat168);
             break;
         case OBJ_TYPE_LIGHTS:
             ((struct ObjLight *) dynobj)->position.x = (*src)[3][0];
@@ -2834,7 +2834,7 @@ f32 dCalcWorldDistBtwn(struct GdObj *obj1, struct GdObj *obj2) {
     posdiff.y = obj2pos.y - obj1pos.y;
     posdiff.z = obj2pos.z - obj1pos.z;
 
-    return gd_vec3f_magnitude(&posdiff);
+    return gdVectorLength(&posdiff);
 }
 
 /**

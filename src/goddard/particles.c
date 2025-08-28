@@ -28,8 +28,13 @@ struct Connection {
 // data
 static s32 D_801A81D4[25] = {
     /*  ID?    X    Y    Z */
-    9,  3,  12,  -14, 25, 5,  16,  -25, 42, 4,  15, -39, 55,
-    -6, 20, -23, 70,  -2, 20, -23, 135, 0,  16, 0,  0 /* Terminator */
+    9,   3,  12,  -14,
+    25, 5,  16,  -25,
+    42, 4,  15, -39,
+    55,-6, 20, -23,
+    70,  -2, 20, -23,
+    135, 0,  16, 0,
+    0 /* Terminator */
 };
 static s32 D_801A8238[5] = {
     /*  ID? X   Y  Z */
@@ -144,7 +149,7 @@ void func_80182088(struct Connection *cxn) {
     sp4C.x = sp1C->pos.x - sp18->pos.x;
     sp4C.y = sp1C->pos.y - sp18->pos.y;
     sp4C.z = sp1C->pos.z - sp18->pos.z;
-    sp20 = gd_vec3f_magnitude(&sp4C);
+    sp20 = gdVectorLength(&sp4C);
     sp24 = sp20 - cxn->unk24;
     sp4C.x /= sp20;
     sp4C.y /= sp20;
@@ -236,7 +241,7 @@ struct Connection *make_connection(struct ObjVertex *vtx1, struct ObjVertex *vtx
     sp28.x -= sp1C.x;
     sp28.y -= sp1C.y;
     sp28.z -= sp1C.z;
-    conn->unk24 = gd_vec3f_magnitude(&sp28);
+    conn->unk24 = gdVectorLength(&sp28);
     // Duplicate conditional. Possibly should've checked `vtx2`;
     // Also, this shouldn't be called with particle types...
     if (vtx1->header.type == OBJ_TYPE_PARTICLES && vtx1->header.type == OBJ_TYPE_PARTICLES) {
@@ -296,7 +301,7 @@ void func_80182A08(struct ObjParticle *ptc, struct GdVec3f *b) {
                     sp20->unk38.x = gd_rand_float() * 50.0 - 25.0;
                     sp20->unk38.y = gd_rand_float() * 50.0 - 25.0;
                     sp20->unk38.z = gd_rand_float() * 50.0 - 25.0;
-                } while (gd_vec3f_magnitude(&sp20->unk38) > 30.0);
+                } while (gdVectorLength(&sp20->unk38) > 30.0);
                 sp20->unk38.x += b->x;
                 sp20->unk38.y += b->y;
                 sp20->unk38.z += b->z;
@@ -341,7 +346,6 @@ void move_particle(struct ObjParticle *ptc) {
                 if (sp4C->unk18C->pickedObj != NULL) {
                     set_cur_dynobj(sp4C->unk18C->pickedObj);
                     ptc->flags |= 0x20;
-                    ; // needed to match
                 } else {
                     ptc->flags &= ~0x10;
                     ptc->flags &= ~0x20;
@@ -418,7 +422,7 @@ void move_particle(struct ObjParticle *ptc) {
                             sp2C->unk38.x = gd_rand_float() * 64.0 - 32.0;
                             sp2C->unk38.y = gd_rand_float() * 64.0 - 32.0;
                             sp2C->unk38.z = gd_rand_float() * 64.0 - 32.0;
-                        } while (gd_vec3f_magnitude(&sp2C->unk38) > 32.0);
+                        } while (gdVectorLength(&sp2C->unk38) > 32.0);
                         sp2C->unk30 = gd_rand_float() * 180.0f;
                         sp2C->header.drawFlags &= ~OBJ_INVISIBLE;
                         sp2C->flags |= 8;

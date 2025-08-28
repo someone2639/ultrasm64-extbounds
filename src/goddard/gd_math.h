@@ -28,29 +28,29 @@ f32 gd_3x3_det(f32 r0c0, f32 r0c1, f32 r0c2,
                f32 r2c0, f32 r2c1, f32 r2c2);
 f32 gd_2x2_det(f32 a, f32 b, f32 c, f32 d);
 
-void gd_mat4f_lookat(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 yTo, f32 zTo,
+void gdMatrixLookAtF(Mat4f *mtx, f32 xFrom, f32 yFrom, f32 zFrom, f32 xTo, f32 yTo, f32 zTo,
                      f32 zColY, f32 yColY, f32 xColY);
-void gd_scale_mat4f_by_vec3f(Mat4f *mtx, struct GdVec3f *vec);
+void gdVectorScaleF(Mat4f *mtx, struct GdVec3f *vec);
 void gd_rot_mat_about_vec(Mat4f *mtx, struct GdVec3f *vec);
-void gd_add_vec3f_to_mat4f_offset(Mat4f *mtx, struct GdVec3f *vec);
+void gdMatrixTranslateF(Mat4f *mtx, struct GdVec3f *vec);
 void gd_create_origin_lookat(Mat4f *mtx, struct GdVec3f *vec, f32 roll);
-f32 gd_clamp_f32(f32 a, f32 b);
+f32 gdClampF(f32 value, f32 limit);
 void gd_clamp_vec3f(struct GdVec3f *vec, f32 limit);
 void gd_rot_2d_vec(f32 deg, f32 *x, f32 *y);
 void gd_absrot_mat4(Mat4f *mtx, s32 axisnum, f32 ang);
-f32 gd_vec3f_magnitude(struct GdVec3f *vec);
-s32 gd_normalize_vec3f(struct GdVec3f *vec);
+f32 gdVectorLength(struct GdVec3f *vec);
+s32 gdVectorNormalize(struct GdVec3f *vec);
 void gd_cross_vec3f(struct GdVec3f *a, struct GdVec3f *b, struct GdVec3f *dst);
 f32 gd_dot_vec3f(struct GdVec3f *a, struct GdVec3f *b);
 void gd_inverse_mat4f(Mat4f *src, Mat4f *dst);
 void gd_create_rot_mat_angular(Mat4f *mtx, struct GdVec3f *vec, f32 ang);
-void gd_set_identity_mat4(Mat4f *mtx);
-void gd_copy_mat4f(const Mat4f *src, Mat4f *dst);
-void gd_rotate_and_translate_vec3f(struct GdVec3f *vec, const Mat4f *mtx);
-void gd_mat4f_mult_vec3f(struct GdVec3f *vec, const Mat4f *mtx);
-void gd_mult_mat4f(const Mat4f *mA, const Mat4f *mB, Mat4f *dst);
-void gd_print_vec(UNUSED const char *prefix, const struct GdVec3f *vec);
-void gd_print_bounding_box(UNUSED const char *prefix, const struct GdBoundingBox *p);
-void gd_print_mtx(UNUSED const char *prefix, const Mat4f *mtx);
+void gdMakeIdentityMatrixF(Mat4f *mtx);
+void gdCopyMatrixF(const Mat4f *src, Mat4f *dst);
+void gdTransformVector(struct GdVec3f *vec, const Mat4f *mtx);
+void gdRotateVector(struct GdVec3f *vec, const Mat4f *mtx);
+void gdMultiplyMatrixF(const Mat4f *mA, const Mat4f *mB, Mat4f *dst);
+void gdPrintVector(UNUSED const char *prefix, const struct GdVec3f *vec);
+void gdPrintBoundingBox(UNUSED const char *prefix, const struct GdBoundingBox *p);
+void gdPrintMatrix(UNUSED const char *prefix, const Mat4f *mtx);
 
 #endif // GD_MATH_H
