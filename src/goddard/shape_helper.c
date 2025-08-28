@@ -2,10 +2,6 @@
 
 #include "config/config_goddard.h"
 
-#if defined(VERSION_JP) || defined(VERSION_US)
-#include "prevent_bss_reordering.h"
-#endif
-
 #include "dynlists.h"
 #include "dynlist_macros.h"
 
@@ -34,25 +30,15 @@ struct ObjShape *gShapeSilverStar = NULL;
 
 struct ObjShape *sSimpleShape = NULL;
 
-static f64 D_801A8668 = 0.0;
-
-// bss
-static char sGdLineBuf[0x100];
-static s32 sGdLineBufCsr;
-static struct GdFile *sGdShapeFile;
 static struct ObjShape *sGdShapeListHead;
 static u32 sGdShapeCount;
-static struct GdVec3f D_801BAC60;
 static struct ObjPlane *D_801BAC74;
 static struct ObjPlane *D_801BAC78; // sShapeNetHead?
 static struct ObjFace *D_801BAC9C;
 static struct ObjFace *D_801BACA0;
 /// factor for scaling vertices in an `ObjShape` when calling `scale_verts_in_shape()`
 static struct GdVec3f sVertexScaleFactor;
-/// factor for translating vertices in an `ObjShape` when calling `translate_verts_in_shape()`
-static struct GdVec3f sVertexTranslateOffset;
 static struct ObjGroup *D_801BAD08; // group of planes from make_netfromshape
-static struct GdVec3f sShapeCenter;   // printed with "c="
 
 // Forward Declarations
 struct ObjMaterial *find_or_add_new_mtl(struct ObjGroup *, s32, f32, f32, f32);
@@ -165,7 +151,7 @@ struct ObjFace *make_face_with_material(struct ObjMaterial *mtl) {
     return newFace;
 }
 
-void add_4_vertices_to_face(struct ObjFace *face, struct ObjVertex *vtx1, struct ObjVertex *vtx2,
+void gdFaceMakeQuad(struct ObjFace *face, struct ObjVertex *vtx1, struct ObjVertex *vtx2,
                      struct ObjVertex *vtx3, struct ObjVertex *vtx4) {
     face->vertices[0] = vtx1;
     face->vertices[1] = vtx2;
@@ -175,7 +161,7 @@ void add_4_vertices_to_face(struct ObjFace *face, struct ObjVertex *vtx1, struct
     calc_face_normal(face);
 }
 
-void add_3_vtx_to_face(struct ObjFace *face, struct ObjVertex *vtx1, struct ObjVertex *vtx2,
+void gdFaceMakeTriangle(struct ObjFace *face, struct ObjVertex *vtx1, struct ObjVertex *vtx2,
                        struct ObjVertex *vtx3) {
     face->vertices[0] = vtx1;
     face->vertices[1] = vtx2;
@@ -230,187 +216,6 @@ struct ObjShape *make_shape(s32 flag, const char *name) {
     return newShape;
 }
 
-void clear_buf_to_cr(void) {
-    sGdLineBufCsr = 0;
-    sGdLineBuf[sGdLineBufCsr] = '\r';
-}
-
-s8 get_current_buf_char(void) {
-    return sGdLineBuf[sGdLineBufCsr];
-}
-
-s8 get_and_advance_buf(void) {
-    if (get_current_buf_char() == '\0') {
-        return '\0';
-    }
-
-    return sGdLineBuf[sGdLineBufCsr++];
-}
-
-s8 load_next_line_into_buf(void) {
-    sGdLineBufCsr = 0;
-
-    if (gd_feof(sGdShapeFile) != 0) {
-        sGdLineBuf[sGdLineBufCsr] = '\0';
-    } else {
-        gd_fread_line(sGdLineBuf, 0xFF, sGdShapeFile);
-    }
-
-    return get_current_buf_char();
-}
-
-s32 is_line_end(char c) {
-    return c == '\r' || c == '\n';
-}
-
-s32 is_white_space(char c) {
-    return c == ' ' || c == '\t';
-}
-
-/* Advances buffer cursor to next non-white-space character, if possible.
- * Returns TRUE if a character is found, or FALSE if EOF or \0 */
-s32 scan_to_next_non_whitespace(void) {
-    char curChar;
-
-    for (curChar = get_current_buf_char(); curChar != '\0'; curChar = get_current_buf_char()) {
-        if (is_white_space(curChar)) {
-            get_and_advance_buf();
-            continue;
-        }
-
-        if (curChar == '\x1a') { //'SUB' character: "soft EOF" in older systems
-            return FALSE;
-            continue; // unreachable
-        }
-
-        if (is_line_end(curChar)) {
-            if (load_next_line_into_buf() == '\0') {
-                return FALSE;
-            }
-        } else {
-            break;
-        }
-    }
-
-    return !!curChar;
-}
-
-s32 is_next_buf_word(char *a0) {
-    char curChar;
-    char wordBuf[0xfc];
-    u32 bufLength;
-
-    bufLength = 0;
-    for (curChar = get_and_advance_buf(); curChar != '\0'; curChar = get_and_advance_buf()) {
-        if (is_white_space(curChar) || is_line_end(curChar)) {
-            break;
-            continue; // unreachable + nonsensical
-        }
-        wordBuf[bufLength] = curChar;
-        bufLength++;
-    }
-
-    wordBuf[bufLength] = '\0';
-
-    return !gd_str_not_equal(a0, wordBuf);
-}
-
-s32 getfloat(f32 *floatPtr) {
-    char charBuf[0x100];
-    u32 bufCsr;
-    char curChar;
-    u32 sp34;
-    f64 parsedDouble;
-
-    imin("getfloat");
-
-    if (is_line_end(get_current_buf_char())) {
-        fatal_printf("getfloat(): Unexpected EOL");
-    }
-
-    while (is_white_space(get_current_buf_char())) {
-        get_and_advance_buf();
-    }
-
-    bufCsr = 0;
-
-    for (curChar = get_and_advance_buf(); curChar != '\0'; curChar = get_and_advance_buf()) {
-        if (!is_white_space(curChar) && !is_line_end(curChar)) {
-            charBuf[bufCsr] = curChar;
-            bufCsr++;
-        } else {
-            break;
-        }
-    }
-
-    charBuf[bufCsr] = '\0';
-
-    parsedDouble = gd_lazy_atof(charBuf, &sp34);
-    *floatPtr = (f32) parsedDouble;
-
-    imout();
-    return !!bufCsr;
-}
-
-s32 getint(s32 *intPtr) {
-    char charBuf[0x100];
-    u32 bufCsr;
-    char curChar;
-
-    imin("getint");
-
-    if (is_line_end(get_current_buf_char())) {
-        fatal_printf("getint(): Unexpected EOL");
-    }
-
-    while (is_white_space(get_current_buf_char())) {
-        get_and_advance_buf();
-    }
-
-    bufCsr = 0;
-    for (curChar = get_and_advance_buf(); curChar != '\0'; curChar = get_and_advance_buf()) {
-        if (is_white_space(curChar) || is_line_end(curChar)) {
-            break;
-        }
-
-        charBuf[bufCsr] = curChar;
-        bufCsr++;
-    }
-
-    charBuf[bufCsr] = '\0';
-    *intPtr = gd_atoi(charBuf);
-
-    imout();
-    return !!bufCsr;
-}
-
-void func_8019807C(struct ObjVertex *vtx) {
-    gd_rot_2d_vec(D_801BAC60.x, &vtx->pos.y, &vtx->pos.z);
-    gd_rot_2d_vec(D_801BAC60.y, &vtx->pos.x, &vtx->pos.z);
-    gd_rot_2d_vec(D_801BAC60.z, &vtx->pos.x, &vtx->pos.y);
-}
-
-void func_801980E8(f32 *a0) {
-    gd_rot_2d_vec(D_801BAC60.x, &a0[1], &a0[2]);
-    gd_rot_2d_vec(D_801BAC60.y, &a0[0], &a0[2]);
-    gd_rot_2d_vec(D_801BAC60.z, &a0[0], &a0[1]);
-}
-
-void Unknown80198154(f32 x, f32 y, f32 z) {
-    D_801BAC60.x = x;
-    D_801BAC60.y = y;
-    D_801BAC60.z = z;
-}
-
-void Unknown80198184(struct ObjShape *shape, f32 x, f32 y, f32 z) {
-    UNUSED struct GdVec3f unusedVec;
-    unusedVec.x = x;
-    unusedVec.y = y;
-    unusedVec.z = z;
-
-    apply_to_obj_types_in_group(OBJ_TYPE_VERTICES, (applyproc_t) func_8019807C, shape->vtxGroup);
-}
-
 void scale_obj_position(struct GdObj *obj) {
     struct GdVec3f pos;
 
@@ -429,19 +234,6 @@ void scale_obj_position(struct GdObj *obj) {
     dSetInitPos(pos.x, pos.y, pos.z);
 }
 
-void translate_obj_position(struct GdObj *obj) {
-    struct GdVec3f pos;
-
-    set_cur_dynobj(obj);
-    dGetRelPos(&pos);
-
-    pos.x += sVertexTranslateOffset.x;
-    pos.y += sVertexTranslateOffset.y;
-    pos.z += sVertexTranslateOffset.z;
-
-    dSetRelativePosition(pos.x, pos.y, pos.z);
-}
-
 void scale_verts_in_shape(struct ObjShape *shape, f32 x, f32 y, f32 z) {
     sVertexScaleFactor.x = x;
     sVertexScaleFactor.y = y;
@@ -450,151 +242,6 @@ void scale_verts_in_shape(struct ObjShape *shape, f32 x, f32 y, f32 z) {
     if (shape->vtxGroup != NULL) {
         apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) scale_obj_position, shape->vtxGroup);
     }
-}
-
-// Guessing on the type of a0
-void translate_verts_in_shape(struct ObjShape *shape, f32 x, f32 y, f32 z) {
-    sVertexTranslateOffset.x = x;
-    sVertexTranslateOffset.y = y;
-    sVertexTranslateOffset.z = z;
-
-    apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) translate_obj_position, shape->vtxGroup);
-}
-
-void Unknown80198444(struct ObjVertex *vtx) {
-    f64 distance;
-
-    add_obj_pos_to_bounding_box(&vtx->header);
-
-    distance = vtx->pos.x * vtx->pos.x + vtx->pos.y * vtx->pos.y + vtx->pos.z * vtx->pos.z;
-
-    if (distance != 0.0) {
-        distance = gd_sqrt_d(distance); // sqrtd?
-
-        if (distance > D_801A8668) {
-            D_801A8668 = distance;
-        }
-    }
-}
-
-void Unknown80198524(struct ObjVertex *vtx) {
-    vtx->pos.x -= sShapeCenter.x;
-    vtx->pos.y -= sShapeCenter.y;
-    vtx->pos.z -= sShapeCenter.z;
-
-    vtx->pos.x /= D_801A8668;
-    vtx->pos.y /= D_801A8668;
-    vtx->pos.z /= D_801A8668;
-}
-
-void Unknown801985E8(struct ObjShape *shape) {
-    struct GdBoundingBox bbox;
-
-    D_801A8668 = 0.0;
-    reset_bounding_box();
-    apply_to_obj_types_in_group(OBJ_TYPE_VERTICES, (applyproc_t) Unknown80198444, shape->vtxGroup);
-
-    get_some_bounding_box(&bbox);
-
-    sShapeCenter.x = (f32)((bbox.minX + bbox.maxX) / 2.0); //? 2.0f
-    sShapeCenter.y = (f32)((bbox.minY + bbox.maxY) / 2.0); //? 2.0f
-    sShapeCenter.z = (f32)((bbox.minZ + bbox.maxZ) / 2.0); //? 2.0f
-
-    gd_print_vec("c=", &sShapeCenter);
-
-    apply_to_obj_types_in_group(OBJ_TYPE_VERTICES, (applyproc_t) Unknown80198524, shape->vtxGroup);
-}
-
-void get_OBJ_shape(struct ObjShape *shape) {
-    struct GdColour faceClr;
-    s32 curFaceVtx;
-    s32 faceVtxIndex;
-    struct GdVec3f tempVec;
-    struct ObjFace *newFace;
-    struct ObjVertex *vtxArr[4000];
-    struct ObjFace *faceArr[4000];
-    s32 faceCount = 0;
-    s32 vtxCount = 0;
-
-    faceClr.r = 1.0f;
-    faceClr.g = 0.5f;
-    faceClr.b = 1.0f;
-
-    sGdLineBufCsr = 0;
-
-    while (scan_to_next_non_whitespace()) {
-        switch (get_and_advance_buf()) {
-            case 'v':
-                getfloat(&tempVec.x);
-                getfloat(&tempVec.y);
-                getfloat(&tempVec.z);
-
-                vtxArr[vtxCount] = gd_make_vertex(tempVec.x, tempVec.y, tempVec.z);
-                func_8019807C(vtxArr[vtxCount]);
-                vtxCount++;
-
-                if (vtxCount >= 4000) {
-                    fatal_printf("Too many vertices in shape data");
-                }
-
-                shape->vtxCount++;
-                break;
-
-            case 'f':
-                newFace = make_face_with_colour(faceClr.r, faceClr.g, faceClr.b);
-                faceArr[faceCount] = newFace;
-                faceCount++;
-
-                if (faceCount >= 4000) {
-                    fatal_printf("Too many faces in shape data");
-                }
-
-                curFaceVtx = 0;
-                while (get_current_buf_char() != '\0') {
-                    getint(&faceVtxIndex);
-
-                    if (curFaceVtx > 3) {
-                        fatal_printf("Too many points in a face(%d)", curFaceVtx);
-                    }
-
-                    /* .obj vertex list is 1-indexed */
-                    newFace->vertices[curFaceVtx] = vtxArr[faceVtxIndex - 1];
-                    curFaceVtx++;
-
-                    if (is_line_end(get_current_buf_char())) {
-                        break;
-                    }
-                }
-
-                /* These are already set by make_face_with_colour... */
-                newFace->colour.r = faceClr.r;
-                newFace->colour.g = faceClr.g;
-                newFace->colour.b = faceClr.b;
-
-                newFace->vtxCount = curFaceVtx;
-
-                if (newFace->vtxCount > 3) {
-                    fatal_printf("Too many points in a face(%d)", newFace->vtxCount);
-                }
-
-                calc_face_normal(newFace);
-
-                shape->faceCount++;
-                break;
-
-            case 'g':
-                break;
-            case '#':
-                break;
-            default:
-                break;
-        }
-
-        clear_buf_to_cr();
-    }
-
-    shape->vtxGroup = make_group_of_type(OBJ_TYPE_VERTICES, (struct GdObj *) vtxArr[0], NULL);
-    shape->faceGroup = make_group_of_type(OBJ_TYPE_FACES, (struct GdObj *) faceArr[0], NULL);
 }
 
 struct ObjGroup *group_faces_in_mtl_grp(struct ObjGroup *mtlGroup, struct GdObj *fromObj,
@@ -735,9 +382,9 @@ struct ObjShape *make_grid_shape(enum ObjTypeFlag gridType, s32 a1, s32 a2, s32 
                 sp40 = D_801BAC9C;
             }
 
-            add_3_vtx_to_face(D_801BAC9C, objBuf[row][col + 1], objBuf[row + 1][col + 1],
+            gdFaceMakeTriangle(D_801BAC9C, objBuf[row][col + 1], objBuf[row + 1][col + 1],
                               objBuf[row][col]);
-            add_3_vtx_to_face(D_801BACA0, objBuf[row + 1][col + 1], objBuf[row + 1][col],
+            gdFaceMakeTriangle(D_801BACA0, objBuf[row + 1][col + 1], objBuf[row + 1][col],
                               objBuf[row][col]);
         }
     }

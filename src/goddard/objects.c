@@ -7,23 +7,18 @@
 #include "debug_utils.h"
 #include "draw_objects.h"
 #include "dynlist_proc.h"
+#include "gadgets.h"
 #include "gd_macros.h"
 #include "gd_main.h"
 #include "gd_math.h"
 #include "gd_types.h"
 #include "joints.h"
 #include "macros.h"
-#include "old_menu.h"
 #include "particles.h"
 #include "renderer.h"
 #include "sfx.h"
 #include "shape_helper.h"
 #include "skin.h"
-
-// structs
-struct Unk801B9E68 {
-    /* 0x00 */ s32 count;
-}; /* sizeof() = 0x18 */
 
 struct Unk8017F3CC {
     /*0x20*/ struct GdVec3f unk20;
@@ -56,7 +51,7 @@ s32 gGdObjCount;                // @ 801B9E58
 s32 gGdGroupCount;              // @ 801B9E5C
 s32 gGdPlaneCount;              // @ 801B9E60
 s32 gGdCameraCount;             // @ 801B9E64
-struct Unk801B9E68 sGdViewInfo; // @ 801B9E68
+u32 gdViewCount; // @ 801B9E68
 void *D_801B9E80;
 struct ObjJoint *gGdJointList;  // @ 801B9E84
 struct ObjBone *gGdBoneList;    // @ 801B9E88
@@ -603,7 +598,7 @@ struct ObjView *make_view(const char *name, s32 flags, s32 projectionType, s32 u
     addto_group(gGdViewsGroup, &newView->header);
 
     newView->flags = flags | VIEW_UPDATE | VIEW_LIGHT;
-    newView->id = sGdViewInfo.count++;
+    newView->id = gdViewCount++;
 
     if ((newView->components = parts) != NULL) {
         reset_nets_and_gadgets(parts);
@@ -1722,7 +1717,7 @@ void gdResetObjectLists(void) {
     gGdGroupCount = 0;
     gGdPlaneCount = 0;
     gGdCameraCount = 0;
-    sGdViewInfo.count = 0;
+    gdViewCount = 0;
 
     gGdCameraList = NULL;
     D_801B9E50 = NULL;

@@ -4,13 +4,13 @@
 #include "debug_utils.h"
 #include "draw_objects.h"
 #include "dynlist_proc.h"
+#include "gadgets.h"
 #include "gd_main.h"
 #include "gd_math.h"
 #include "gd_types.h"
 #include "joints.h"
 #include "macros.h"
 #include "objects.h"
-#include "old_menu.h"
 #include "particles.h"
 #include "renderer.h"
 #include "shape_helper.h"
@@ -792,7 +792,7 @@ void chk_shapegen(struct ObjShape *shape) {
                 //!      not prototyping the functions
                 face = make_face_with_colour(1.0, 1.0, 1.0);
                 face->mtlId = (s32) facedata->data[i][0];
-                add_3_vtx_to_face(face, vtxbuf[facedata->data[i][1]], vtxbuf[facedata->data[i][2]],
+                gdFaceMakeTriangle(face, vtxbuf[facedata->data[i][1]], vtxbuf[facedata->data[i][2]],
                                   vtxbuf[facedata->data[i][3]]);
                 vtxbuf[facedata->data[i][1]]->normal.x += face->normal.x;
                 vtxbuf[facedata->data[i][1]]->normal.y += face->normal.y;

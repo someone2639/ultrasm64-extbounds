@@ -16,7 +16,7 @@ extern struct ObjShape *gShapeSilverStar;
 // functions
 void calc_face_normal(struct ObjFace *face);
 struct ObjVertex *gd_make_vertex(f32 x, f32 y, f32 z);
-void add_3_vtx_to_face(struct ObjFace *face, struct ObjVertex *vtx1, struct ObjVertex *vtx2, struct ObjVertex *vtx3);
+void gdFaceMakeTriangle(struct ObjFace *face, struct ObjVertex *vtx1, struct ObjVertex *vtx2, struct ObjVertex *vtx3);
 struct ObjShape *make_shape(s32 flag, const char *name);
 void scale_verts_in_shape(struct ObjShape *shape, f32 x, f32 y, f32 z);
 struct ObjNet *make_netfromshape(struct ObjShape *shape);

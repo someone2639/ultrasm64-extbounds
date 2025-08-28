@@ -2588,7 +2588,6 @@ void gdInitSystem(void) {
     gdControllerInfo.unk88 = 1.0f;
     gdControllerInfo.unkA0 = -45.0f;
     gdControllerInfo.unkAC = 45.0f;
-    gdControllerInfo.unk00 = 2;
     gdControllerInfo.newStartPress = FALSE;
     gdControllerInfo.prevFrame = &gdControllerInfoPrevFrame;
     gdControllerInfo.cursorX = 160;

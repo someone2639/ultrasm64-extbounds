@@ -40,7 +40,6 @@ extern s32 gGdObjCount;
 extern s32 gGdGroupCount;
 extern s32 gGdPlaneCount;
 extern s32 gGdCameraCount;
-extern struct Unk801B9E68 sGdViewInfo;   /* count in first member? */
 extern void* D_801B9E80;
 extern struct ObjJoint* gGdJointList;
 extern struct ObjBone* gGdBoneList;

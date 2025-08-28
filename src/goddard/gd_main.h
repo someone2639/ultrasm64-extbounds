@@ -5,34 +5,24 @@
 
 #include "gd_types.h"
 
-// In various files of the Goddard subsystem, there are miscellaneous
-// unused rodata strings. These are likely byproducts of a printf macro
-// that was stubbed out as "#define printf", letting printf calls expand
-// to no-op comma expressions. (IDO doesn't support variadic macros, so
-// "#define printf(...) /* nothing */" wasn't an option.)
-// This macro is separate from the gd_printf function; one probably
-// forwarded to the other, but it is hard to tell in which direction.
-
 #define printf(...)                                       \
-    _Pragma ("GCC diagnostic push")                       \
-    _Pragma ("GCC diagnostic ignored \"-Wunused-value\"") \
-    (__VA_ARGS__);                                        \
-    _Pragma ("GCC diagnostic pop")
+    osSyncPrintf(__VA_ARGS__)
 
 // structs
 struct GdControl { // gdControllerInfo
-    s32 unk00;  // set but never used
-    s32 dleft; // Dpad-left (mask)
-    s32 dright; // Dpad-right (mask)
-    s32 dup; // Dpad-up (mask)
-    s32 ddown; // Dpad-down (mask)
-    s32 cleft; // bool C-left
-    s32 cright; // bool C-right
-    s32 cup; // bool C-up
-    s32 cdown; // bool C-down
+    u8 dleft        : 1;
+    u8 dright       : 1;
+    u8 dup          : 1;
+    u8 ddown        : 1;
+    u8 cleft        : 1;
+    u8 cright       : 1;
+    u8 cup          : 1;
+    u8 cdown        : 1;
+
     void * unk28;     // null-checked ptr? symbol not deref-ed in extant code?
     void * unk2C;     // some sort of old texture ptr? symbol not deref-ed in extant code?
     void * unk30;     // null-checked ptr? symbol not deref-ed in extant code?
+
     s32 btnA; // bool A button
     s32 btnB; // bool B button
     s32 trgL; // bool L trigger pressed
