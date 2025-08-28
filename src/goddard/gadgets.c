@@ -6,11 +6,11 @@
 #include "gd_types.h"
 #include "macros.h"
 #include "objects.h"
-#include "old_menu.h"
+#include "gadgets.h"
 #include "renderer.h"
 
 /**
- * @file old_menu.c
+ * @file gadgets.c
  *
  * This file contains remnants of code for rendering what appears to be a GUI
  * that used the IRIX Graphics Library, from when this program was a standalone demo.
