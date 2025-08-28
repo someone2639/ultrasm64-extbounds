@@ -20,15 +20,6 @@
  * them, and those functions may still work if called.
  */
 
-// bss
-UNUSED static char sDefSettingsMenuStr[0x100];
-static struct GdVec3f sStaticVec;
-UNUSED static struct GdVec3f unusedVec;
-static struct ObjGadget *sCurGadgetPtr;
-
-// forward declarations
-static void reset_gadget_default(struct ObjGadget *);
-
 /* 239EC0 -> 239F78 */
 void get_objvalue(union ObjVarVal *dst, enum ValPtrType type, void *base, size_t offset) {
     union ObjVarVal *objAddr = (void *) ((u8 *) base + offset);
@@ -43,19 +34,6 @@ void get_objvalue(union ObjVarVal *dst, enum ValPtrType type, void *base, size_t
         default:
             fatal_printf("%s: Undefined ValueType", "get_objvalue");
     }
-}
-
-/* 239F78 -> 23A00C */
-void Unknown8018B7A8(void *a0) {
-    struct GdVec3f sp1C;
-
-    set_cur_dynobj(a0);
-    dGetInitPos(&sp1C);
-
-    sp1C.x += sStaticVec.x;
-    sp1C.y += sStaticVec.y;
-    sp1C.z += sStaticVec.z;
-    dSetWorldPos(sp1C.x, sp1C.y, sp1C.z);
 }
 
 /* 23A190 -> 23A250 */
@@ -89,83 +67,8 @@ struct ObjGadget *make_gadget(UNUSED s32 a0, s32 a1) {
     return gdgt;
 }
 
-/* 23A32C -> 23A3E4 */
-void set_objvalue(union ObjVarVal *src, enum ValPtrType type, void *base, size_t offset) {
-    union ObjVarVal *dst = (void *) ((u8 *) base + offset);
-    switch (type) {
-        case OBJ_VALUE_INT:
-            dst->i = src->i;
-            break;
-        case OBJ_VALUE_FLOAT:
-            dst->f = src->f;
-            break;
-        default:
-            fatal_printf("%s: Undefined ValueType", "set_objvalue");
-    }
-}
-
-/* 23A3E4 -> 23A488; orig name: Unknown8018BD54 */
-void set_static_gdgt_value(struct ObjValPtr *vp) {
-    switch (vp->datatype) {
-        case OBJ_VALUE_FLOAT:
-            set_objvalue(&sCurGadgetPtr->varval, OBJ_VALUE_FLOAT, vp->obj, vp->offset);
-            break;
-        case OBJ_VALUE_INT:
-            set_objvalue(&sCurGadgetPtr->varval, OBJ_VALUE_INT, vp->obj, vp->offset);
-            break;
-    }
-}
-
-/* 23A488 -> 23A4D0 */
-static void reset_gadget_default(struct ObjGadget *gdgt) {
-    UNUSED u8 filler[4];
-
-    sCurGadgetPtr = gdgt;
-    apply_to_obj_types_in_group(OBJ_TYPE_VALPTRS, (applyproc_t) set_static_gdgt_value, gdgt->valueGrp);
-}
-
-/* 23A4D0 -> 23A784 */
-void adjust_gadget(struct ObjGadget *gdgt, s32 a1, s32 a2) {
-    UNUSED u8 filler[8];
-    f32 range;
-    struct ObjValPtr *vp;
-
-    if (gdgt->type == 1) {
-        gdgt->sliderPos += a2 * (-gdCurrentMoveCamera->unk40.z * 1.0E-5);
-    } else if (gdgt->type == 2) {
-        gdgt->sliderPos += a1 * (-gdCurrentMoveCamera->unk40.z * 1.0E-5);
-    }
-
-    // slider position must be between 0 and 1 (inclusive)
-    if (gdgt->sliderPos < 0.0f) {
-        gdgt->sliderPos = 0.0f;
-    } else if (gdgt->sliderPos > 1.0f) {
-        gdgt->sliderPos = 1.0f;
-    }
-
-    range = gdgt->rangeMax - gdgt->rangeMin;
-
-    if (gdgt->valueGrp != NULL) {
-        vp = (struct ObjValPtr *) gdgt->valueGrp->firstMember->obj;
-
-        switch (vp->datatype) {
-            case OBJ_VALUE_FLOAT:
-                gdgt->varval.f = gdgt->sliderPos * range + gdgt->rangeMin;
-                break;
-            case OBJ_VALUE_INT:
-                gdgt->varval.i = ((s32)(gdgt->sliderPos * range)) + gdgt->rangeMin;
-                break;
-            default:
-                fatal_printf("%s: Undefined ValueType", "adjust_gadget");
-        }
-    }
-
-    reset_gadget_default(gdgt);
-}
-
 /* 23A784 -> 23A940; orig name: Unknown8018BFB4 */
 void reset_gadget(struct ObjGadget *gdgt) {
-    UNUSED u8 filler[8];
     f32 range;
     struct ObjValPtr *vp;
 
