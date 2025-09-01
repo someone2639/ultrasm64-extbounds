@@ -331,7 +331,7 @@ void check_face_bad_vtx(struct ObjFace *face) {
         vtx = face->vertices[i];
         // These seem to be checks against bad conversions, or an outdated vertex structure..?
         if ((uintptr_t) vtx == 39) {
-            gd_printf("bad1\n");
+            gdPrintf("bad1\n");
             return;
         }
         if ((uintptr_t) vtx->gbiVerts == 0x3F800000) {
@@ -618,7 +618,7 @@ void draw_camera(struct ObjCamera *cam) {
     }
 
     if (ABS(cam->worldPos.x - sp44.x) + ABS(cam->worldPos.z - sp44.z) == 0.0f) {
-        gd_printf("Draw_Camera(): Zero view distance\n");
+        gdPrintf("Draw_Camera(): Zero view distance\n");
     } else {
         gd_dl_lookat(cam, cam->worldPos.x, cam->worldPos.y, cam->worldPos.z, sp44.x, sp44.y, sp44.z, cam->unkA4);
     }

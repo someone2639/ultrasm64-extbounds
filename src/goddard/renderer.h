@@ -111,21 +111,21 @@ extern struct GdDisplayList *sMHeadMainDls[2];
 u32 get_alloc_mem_amt(void);
 s32 gd_get_ostime(void);
 f32 get_time_scale(void);
-f64 gd_sin_d(f64 x);
-f64 gd_cos_d(f64 x);
+f64 gdSine(f64 x);
+f64 gdCosine(f64 x);
 f64 gdSqrt(f64 x);
 
 #if defined(ISVPRINT) || defined(UNF)
-#define gd_printf osSyncPrintf
+#define gdPrintf osSyncPrintf
 #else
-void gd_printf(const char *format, ...);
+void gdPrintf(const char *format, ...);
 #endif
-void gd_exit(UNUSED s32 code) NORETURN;
-void gd_free(void *ptr);
-void *gd_allocblock(u32 size);
-void *gd_malloc(u32 size, u8 perm);
-void *gd_malloc_perm(u32 size);
-void *gd_malloc_temp(u32 size);
+void gdExit(UNUSED s32 code) NORETURN;
+void gdFree(void *ptr);
+void *gdAllocateMemoryBlock(u32 size);
+void *gdMalloc(u32 size, u8 perm);
+void *gdMallocPermanent(u32 size);
+void *gdMallocTemporary(u32 size);
 void draw_indexed_dl(s32 dlNum, s32 gfxIdx);
 void gdAddMemoryToHeap(void *addr, u32 size);
 void gdInitMemory(void *blockpool, u32 size);

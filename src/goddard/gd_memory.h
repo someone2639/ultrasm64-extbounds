@@ -27,9 +27,9 @@ enum GMemBlockTypes {
 
 // functions
 extern u32 gd_free_mem(void *ptr);
-extern void *gd_request_mem(u32 size, u8 permanence);
+extern void *gdRequestMemory(u32 size, u8 permanence);
 extern struct GMemBlock *gd_add_mem_to_heap(u32 size, void *addr, u8 permanence);
 extern void init_mem_block_lists(void);
-extern void mem_stats(void);
+extern void gdPrintMemorySystemInfo(void);
 
 #endif // GD_MEMORY_H

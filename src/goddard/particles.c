@@ -224,7 +224,7 @@ struct ObjParticle *make_particle(u32 flags, s32 colourNum, f32 x, f32 y, f32 z)
 
 /* 230DCC -> 230F48 */
 struct Connection *make_connection(struct ObjVertex *vtx1, struct ObjVertex *vtx2) {
-    struct Connection *conn = gd_malloc_perm(sizeof(struct Connection));
+    struct Connection *conn = gdMallocPermanent(sizeof(struct Connection));
     struct GdVec3f sp28;
     struct GdVec3f sp1C;
 
@@ -465,7 +465,7 @@ void Unknown801835C8(struct ObjParticle *ptc) {
     f32 sp50;
     register struct ListNode *link;
 
-    gd_printf("p(%d)=", ptc->attachedObjsGrp->memberCount);
+    gdPrintf("p(%d)=", ptc->attachedObjsGrp->memberCount);
     link = ptc->attachedObjsGrp->firstMember;
     while (link != NULL) {
         // FIXME: types
@@ -475,7 +475,7 @@ void Unknown801835C8(struct ObjParticle *ptc) {
         sp54.y = sp48->pos.y - ptc->pos.y;
         sp54.z = sp48->pos.z - ptc->pos.z;
         sp50 = 150.0f - (ABS(sp54.x) + ABS(sp54.y) + ABS(sp54.z));
-        gd_printf(",%f ", sp50);
+        gdPrintf(",%f ", sp50);
         sp50 *= 0.00000005;
         ptc->pos.x += sp50 * sp54.x;
         ptc->pos.y += sp50 * sp54.y;
@@ -485,7 +485,7 @@ void Unknown801835C8(struct ObjParticle *ptc) {
         sp48->pos.z -= sp50 * sp54.z;
         link = link->next;
     }
-    gd_printf("\n");
+    gdPrintf("\n");
 }
 
 /* 2320A0 -> 2320D4; pad to 2320E0 */

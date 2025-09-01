@@ -35,7 +35,7 @@ union PrintVal {
     s64 pad;
 };
 
-/* based on fields set in gd_fopen; gd_malloc_perm(84) for size */
+/* based on fields set in gd_fopen; gdMallocPermanent(84) for size */
 struct GdFile {
     /* 0x00 */ u8  filler1[4];
     /* 0x04 */ u32 pos;

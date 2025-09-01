@@ -451,7 +451,7 @@ void func_80193848(struct ObjGroup *group) {
 
 /* 24208C -> 2422E0; not called; orig name: func_801938BC */
 void gd_print_net(struct ObjNet *net) {
-    gd_printf("Flags:%x\n", net->flags);
+    gdPrintf("Flags:%x\n", net->flags);
     gdPrintVector("World:", &net->worldPos);
     gdPrintVector("Force:", &net->unusedForce);
     gdPrintVector("Vel:", &net->velocity);
@@ -464,20 +464,20 @@ void gd_print_net(struct ObjNet *net) {
     gdPrintVector("CofG:", &net->centerOfGravity);
     gdPrintBoundingBox("BoundBox:", &net->boundingBox);
     gdPrintVector("CollDispOff:", &net->unusedCollDispOff);
-    gd_printf("CollMaxD: %f\n", net->unusedCollMaxD);
-    gd_printf("MaxRadius: %f\n", net->maxRadius);
+    gdPrintf("CollMaxD: %f\n", net->unusedCollMaxD);
+    gdPrintf("MaxRadius: %f\n", net->maxRadius);
     gdPrintMatrix("Matrix:", &net->mat128);
     if (net->shapePtr != NULL) {
-        gd_printf("ShapePtr: %x (%s)\n", (u32) (uintptr_t) net->shapePtr, net->shapePtr->name);
+        gdPrintf("ShapePtr: %x (%s)\n", (u32) (uintptr_t) net->shapePtr, net->shapePtr->name);
     } else {
-        gd_printf("ShapePtr: NULL\n");
+        gdPrintf("ShapePtr: NULL\n");
     }
     gdPrintVector("Scale:", &net->scale);
-    gd_printf("Mass: %f\n", net->unusedMass);
-    gd_printf("NumModes: %d\n", net->numModes);
-    gd_printf("NodeGroup: %x\n", (u32) (uintptr_t) net->unk1C8);
-    gd_printf("PlaneGroup: %x\n", (u32) (uintptr_t) net->unk1CC);
-    gd_printf("VertexGroup: %x\n", (u32) (uintptr_t) net->unk1D0);
+    gdPrintf("Mass: %f\n", net->unusedMass);
+    gdPrintf("NumModes: %d\n", net->numModes);
+    gdPrintf("NodeGroup: %x\n", (u32) (uintptr_t) net->unk1C8);
+    gdPrintf("PlaneGroup: %x\n", (u32) (uintptr_t) net->unk1CC);
+    gdPrintf("VertexGroup: %x\n", (u32) (uintptr_t) net->unk1D0);
 }
 
 /* 2422E0 -> 2422F8; orig name: func_80193B10 */

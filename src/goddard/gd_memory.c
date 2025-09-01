@@ -9,8 +9,8 @@
  *
  * This file contains the functions need to manage allocation in
  * goddard's heap. However, the actual, useable allocation functions
- * are `gd_malloc()`, `gd_malloc_perm()`, and `gd_malloc_temp()`, as
- * well as `gd_free()`. This file is for managing the underlying memory
+ * are `gdMalloc()`, `gdMallocPermanent()`, and `gdMallocTemporary()`, as
+ * well as `gdFree()`. This file is for managing the underlying memory
  * block lists.
  */
 
@@ -19,10 +19,8 @@ static struct GMemBlock *sFreeBlockListHead;
 static struct GMemBlock *sUsedBlockListHead;
 static struct GMemBlock *sEmptyBlockListHead;
 
-/* Forward Declarations */
-void empty_mem_block(struct GMemBlock *);
 struct GMemBlock *into_free_memblock(struct GMemBlock *);
-struct GMemBlock *make_mem_block(u32, u8);
+struct GMemBlock *gdMakeMemoryBlock(u32, u8);
 u32 print_list_stats(struct GMemBlock *, s32, s32);
 
 /**
@@ -80,7 +78,7 @@ struct GMemBlock *into_free_memblock(struct GMemBlock *block) {
     permanence = block->permFlag;
 
     empty_mem_block(block);
-    freeBlock = make_mem_block(G_MEM_BLOCK_FREE, permanence);
+    freeBlock = gdMakeMemoryBlock(G_MEM_BLOCK_FREE, permanence);
     freeBlock->ptr = ptr;
     freeBlock->size = space;
     freeBlock->permFlag = permanence;
@@ -98,11 +96,11 @@ struct GMemBlock *into_free_memblock(struct GMemBlock *block) {
  *                  four bits imply a temporary block
  * @returns a pointer to the new `GMemBlock`
  */
-struct GMemBlock *make_mem_block(u32 blockType, u8 permFlag) {
+struct GMemBlock *gdMakeMemoryBlock(u32 blockType, u8 permFlag) {
     struct GMemBlock *newMemBlock;
 
     if (sEmptyBlockListHead == NULL) {
-        sEmptyBlockListHead = (struct GMemBlock *) gd_allocblock(sizeof(struct GMemBlock));
+        sEmptyBlockListHead = (struct GMemBlock *) gdAllocateMemoryBlock(sizeof(struct GMemBlock));
 
         if (sEmptyBlockListHead == NULL) {
             fatal_printf("MakeMemBlock() unable to allocate");
@@ -173,12 +171,12 @@ u32 gd_free_mem(void *ptr) {
  * @return pointer to heap
  * @retval NULL could not fulfill the request
  */
-void *gd_request_mem(u32 size, u8 permanence) {
+void *gdRequestMemory(u32 size, u8 permanence) {
     struct GMemBlock *foundBlock = NULL;
     struct GMemBlock *curBlock;
     struct GMemBlock *newBlock;
 
-    newBlock = make_mem_block(G_MEM_BLOCK_USED, permanence);
+    newBlock = gdMakeMemoryBlock(G_MEM_BLOCK_USED, permanence);
     curBlock = sFreeBlockListHead;
 
     while (curBlock != NULL) {
@@ -231,7 +229,7 @@ struct GMemBlock *gd_add_mem_to_heap(u32 size, void *addr, u8 permanence) {
     size = (size - 8) & ~7;
     addr = (void *)(((uintptr_t) addr + 8) & ~7);
 
-    newBlock = make_mem_block(G_MEM_BLOCK_FREE, permanence);
+    newBlock = gdMakeMemoryBlock(G_MEM_BLOCK_FREE, permanence);
     newBlock->ptr = addr;
     newBlock->size = size;
 
@@ -265,7 +263,7 @@ u32 print_list_stats(struct GMemBlock *block, s32 printBlockInfo, s32 permanence
         if (block->permFlag & permanence) {
             entries++;
             if (printBlockInfo) {
-                gd_printf("     %6.2fk (%d bytes)\n",
+                gdPrintf("     %6.2fk (%d bytes)\n",
                           (f32) block->size / 1024.0, //? 1024.0f
                           block->size);
             }
@@ -274,7 +272,7 @@ u32 print_list_stats(struct GMemBlock *block, s32 printBlockInfo, s32 permanence
         block = block->next;
     }
 
-    gd_printf("Total %6.2fk (%d bytes) in %d entries\n",
+    gdPrintf("Total %6.2fk (%d bytes) in %d entries\n",
               (f32) totalSize / 1024.0, //? 1024.0f
               totalSize, entries);
 
@@ -285,30 +283,30 @@ u32 print_list_stats(struct GMemBlock *block, s32 printBlockInfo, s32 permanence
  * Print summary information about all used, free, and empty
  * `GMemBlock`s.
  */
-void mem_stats(void) {
+void gdPrintMemorySystemInfo(void) {
     struct GMemBlock *list;
 
-    gd_printf("Perm Used blocks:\n");
+    gdPrintf("Perm Used blocks:\n");
     list = sUsedBlockListHead;
     print_list_stats(list, FALSE, PERM_G_MEM_BLOCK);
-    gd_printf("\n");
+    gdPrintf("\n");
 
-    gd_printf("Perm Free blocks:\n");
+    gdPrintf("Perm Free blocks:\n");
     list = sFreeBlockListHead;
     print_list_stats(list, FALSE, PERM_G_MEM_BLOCK);
-    gd_printf("\n");
+    gdPrintf("\n");
 
-    gd_printf("Temp Used blocks:\n");
+    gdPrintf("Temp Used blocks:\n");
     list = sUsedBlockListHead;
     print_list_stats(list, FALSE, TEMP_G_MEM_BLOCK);
-    gd_printf("\n");
+    gdPrintf("\n");
 
-    gd_printf("Temp Free blocks:\n");
+    gdPrintf("Temp Free blocks:\n");
     list = sFreeBlockListHead;
     print_list_stats(list, FALSE, TEMP_G_MEM_BLOCK);
-    gd_printf("\n");
+    gdPrintf("\n");
 
-    gd_printf("Empty blocks:\n");
+    gdPrintf("Empty blocks:\n");
     list = sEmptyBlockListHead;
     print_list_stats(list, FALSE, PERM_G_MEM_BLOCK | TEMP_G_MEM_BLOCK);
 }

@@ -110,7 +110,7 @@ struct MemTracker *start_memtracker(const char *name) {
 
 /* @ 23ABE0 -> 23AC28; not called; orig name: Unknown8018C410 */
 void print_most_recent_memtracker_name(void) {
-    gd_printf("%s\n", sActiveMemTrackers[sNumActiveMemTrackers - 1]->name);
+    gdPrintf("%s\n", sActiveMemTrackers[sNumActiveMemTrackers - 1]->name);
 }
 
 /**
@@ -165,7 +165,7 @@ void print_all_memtrackers(void) {
 
     for (i = 0; i < ARRAY_COUNT(sMemTrackers); i++) {
         if (sMemTrackers[i].name != NULL) {
-            gd_printf("'%s' = %dk\n", sMemTrackers[i].name, (s32)(sMemTrackers[i].total / 1024.0f));
+            gdPrintf("'%s' = %dk\n", sMemTrackers[i].name, (s32)(sMemTrackers[i].total / 1024.0f));
         }
     }
 }
@@ -184,10 +184,10 @@ void print_all_memtrackers(void) {
 void print_all_timers(void) {
     s32 i;
 
-    gd_printf("\nTimers:\n");
+    gdPrintf("\nTimers:\n");
     for (i = 0; i < ARRAY_COUNT(sTimers); i++) {
         if (sTimers[i].name != NULL) {
-            gd_printf("'%s' = %f (%d)\n", sTimers[i].name, sTimers[i].scaledTotal,
+            gdPrintf("'%s' = %f (%d)\n", sTimers[i].name, sTimers[i].scaledTotal,
                       sTimers[i].resetCount);
         }
     }
@@ -449,7 +449,7 @@ void print_stack_trace(void) {
     s32 i;
 
     for (i = 0; i < sNumRoutinesInStack; i++) {
-        gd_printf("\tIn: '%s'\n", sRoutineNames[i]);
+        gdPrintf("\tIn: '%s'\n", sRoutineNames[i]);
     }
 }
 
@@ -476,7 +476,7 @@ void imout(void) {
     if (--sNumRoutinesInStack < 0) {
         for (i = 0; i < ARRAY_COUNT(sRoutineNames); i++) {
             if (sRoutineNames[i] != NULL) {
-                gd_printf(" - %s\n", sRoutineNames[i]);
+                gdPrintf(" - %s\n", sRoutineNames[i]);
             } else {
                 break;
             }
@@ -696,7 +696,7 @@ void ascii_to_uppercase(char *str) {
 char *gd_strdup(const char *src) {
     char *dst; // sp24
 
-    dst = gd_malloc_perm((gd_strlen(src) + 1) * sizeof(char));
+    dst = gdMallocPermanent((gd_strlen(src) + 1) * sizeof(char));
 
     if (dst == NULL) {
         fatal_printf("gd_strdup(): out of memory");

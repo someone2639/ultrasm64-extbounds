@@ -221,7 +221,7 @@ void reset_dynamic_objs(void) {
         return;
     }
 
-    gd_free(sGdDynObjList);
+    gdFree(sGdDynObjList);
     sLoadedDynObjs = 0;
     sGdDynObjList = NULL;
 }
@@ -315,7 +315,7 @@ void add_to_dynobj_list(struct GdObj *newobj, DynObjName name) {
     start_memtracker("dynlist");
 
     if (sGdDynObjList == NULL) {
-        sGdDynObjList = gd_malloc_temp(DYNOBJ_LIST_SIZE * sizeof(struct DynObjInfo));
+        sGdDynObjList = gdMallocTemporary(DYNOBJ_LIST_SIZE * sizeof(struct DynObjInfo));
         if (sGdDynObjList == NULL) {
             fatal_printf("dMakeObj(): Cant allocate dynlist memory");
         }
@@ -647,7 +647,7 @@ void alloc_animdata(struct ObjAnimator *animator) {
         animCnt++;
     }
 
-    animDst = gd_malloc_perm(animCnt * sizeof(struct AnimDataInfo)); // gd_alloc_perm
+    animDst = gdMallocPermanent(animCnt * sizeof(struct AnimDataInfo)); // gd_alloc_perm
     if ((animDataArr = animDst) == NULL) {
         fatal_printf("cant allocate animation data");
     }
@@ -683,7 +683,7 @@ void alloc_animdata(struct ObjAnimator *animator) {
                     break;
             }
 
-            allocSpace = gd_malloc_perm(curAnimSrc->count * datasize); // gd_alloc_perm
+            allocSpace = gdMallocPermanent(curAnimSrc->count * datasize); // gd_alloc_perm
             if (allocSpace == NULL) {
                 fatal_printf("cant allocate animation data");
             }
@@ -774,7 +774,7 @@ void chk_shapegen(struct ObjShape *shape) {
                 fatal_printf("shapegen() too many vertices");
             }
 
-            vtxbuf = gd_malloc_temp(VTX_BUF_SIZE * sizeof(struct ObjVertex *));
+            vtxbuf = gdMallocTemporary(VTX_BUF_SIZE * sizeof(struct ObjVertex *));
             oldObjHead = gGdObjectList;
 
             for (i = 0; i < vtxdata->count; i++) {
@@ -820,7 +820,7 @@ void chk_shapegen(struct ObjShape *shape) {
                 }
             }
 
-            gd_free(vtxbuf);
+            gdFree(vtxbuf);
             madeFaces = make_group_of_type(OBJ_TYPE_FACES, oldObjHead, NULL);
             shape->faceGroup = madeFaces;
             shape->vtxGroup = madeVtx;
@@ -2872,7 +2872,7 @@ struct GdObj *gdProcessDynList(struct DynList *dynlist_buf) {
 
 
     while (dynlist_buf->cmd != GDCMD_END_LIST) {
-        // gd_printf("DynCmd %d(%d %d {%f %f %f}\n", dynlist_buf->cmd,
+        // gdPrintf("DynCmd %d(%d %d {%f %f %f}\n", dynlist_buf->cmd,
         //     Dyn1AsName(dynlist_buf),
         //     Dyn2AsName(dynlist_buf),
         //     DynVecX(dynlist_buf), DynVecY(dynlist_buf), DynVecZ(dynlist_buf)

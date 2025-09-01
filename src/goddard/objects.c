@@ -287,7 +287,7 @@ struct GdObj *make_object(enum ObjTypeFlag objType) {
 
     // Allocate memory for the object
     start_memtracker(typeName);
-    newObj = gd_malloc(objSize, objPermanence);
+    newObj = gdMalloc(objSize, objPermanence);
     if (newObj == NULL) {
         fatal_printf("Cant allocate object '%s' memory!", typeName);
     }
@@ -353,7 +353,7 @@ struct ListNode *make_link_to_obj(struct ListNode *prevNode, struct GdObj *obj) 
 
     // Allocate link node
     start_memtracker("links");
-    newNode = gd_malloc_perm(sizeof(struct ListNode));
+    newNode = gdMallocPermanent(sizeof(struct ListNode));
     if (newNode == NULL) {
         fatal_print("Cant allocate link memory!");
     }
@@ -377,7 +377,7 @@ struct ListNode *make_link_to_obj(struct ListNode *prevNode, struct GdObj *obj) 
 struct VtxLink *make_vtx_link(struct VtxLink *prevNode, Vtx *data) {
     struct VtxLink *newNode;
 
-    newNode = gd_malloc_perm(sizeof(struct VtxLink));
+    newNode = gdMallocPermanent(sizeof(struct VtxLink));
     if (newNode == NULL) {
         fatal_print("Cant allocate link memory!");
     }

@@ -50,7 +50,7 @@ static struct GdVec3f sTextDrawPos;  // position to draw text? only set in one f
 static Mtx gdRCPIdentityMatrix;
 static Mat4f gdIdentityMatrix;
 static s8 gdCurrentVertexNormals[3];
-static s16 sAlpha;
+static s16 gdCurrentShapeTransparency;
 static s32 sNumLights;
 static struct GdColour sAmbScaleColour;
 static struct GdColour sLightScaleColours[2];
@@ -574,7 +574,7 @@ static Gfx gd_dl_sprite_start_tex_block[] = {
     gsSPEndDisplayList(),
 };
 
-static void update_render_mode(void);
+static void gdChangeRenderMode(void);
 
 // TODO: make a gddl_num_t?
 
@@ -594,8 +594,8 @@ f32 get_time_scale(void) {
 }
 
 void dump_disp_list(void) {
-    gd_printf("%d\n", sCurrentGdDl->id);
-    gd_printf("Vtx=%d/%d, Mtx=%d/%d, Light=%d/%d, Gfx=%d/%d\n", sCurrentGdDl->curVtxIdx,
+    gdPrintf("%d\n", sCurrentGdDl->id);
+    gdPrintf("Vtx=%d/%d, Mtx=%d/%d, Light=%d/%d, Gfx=%d/%d\n", sCurrentGdDl->curVtxIdx,
               sCurrentGdDl->totalVtx, sCurrentGdDl->curMtxIdx, sCurrentGdDl->totalMtx,
               sCurrentGdDl->curLightIdx, sCurrentGdDl->totalLights, sCurrentGdDl->curGfxIdx,
               sCurrentGdDl->totalGfx);
@@ -652,7 +652,7 @@ static Vtx *next_vtx(void) {
 /**
  * Increments the current display list's viewport list and returns a pointer to the next viewport element
  */
-static Vp *next_vp(void) {
+static Vp *next_viewport(void) {
     if (sCurrentGdDl->curVpIdx >= sCurrentGdDl->totalVp) {
         dump_disp_list();
         fatal_printf("Vp list overflow");
@@ -661,17 +661,14 @@ static Vp *next_vp(void) {
     return &sCurrentGdDl->vp[sCurrentGdDl->curVpIdx++];
 }
 
-/* 249AAC -> 249AEC */
-f64 gd_sin_d(f64 x) {
+f64 gdSine(f64 x) {
     return sinf(x);
 }
 
-/* 249AEC -> 249B2C */
-f64 gd_cos_d(f64 x) {
+f64 gdCosine(f64 x) {
     return cosf(x);
 }
 
-/* 249B2C -> 249BA4 */
 f64 gdSqrt(f64 x) {
     if (x < 1.0e-7) {
         return 0.0;
@@ -679,28 +676,26 @@ f64 gdSqrt(f64 x) {
     return sqrtf(x);
 }
 
-/* 24A19C -> 24A1D4 */
-void gd_exit(UNUSED s32 code) {
-    gd_printf("exit\n");
+void gdExit(UNUSED s32 code) {
+    gdPrintf("exit\n");
     while (TRUE) {
     }
 }
 
-void gd_free(void *ptr) {
+void gdFree(void *ptr) {
     sAllocMemory -= gd_free_mem(ptr);
 }
 
-/* 24A220 -> 24A318 */
-void *gd_allocblock(u32 size) {
-    void *block; // 1c
+void *gdAllocateMemoryBlock(u32 size) {
+    void *block;
 
     size = ALIGN8(size);
     if ((sMemBlockPoolUsed + size) > sMemBlockPoolSize) {
-        gd_printf("gd_allocblock(): Failed request: %dk (%d bytes)\n", size / 1024, size);
-        gd_printf("gd_allocblock(): Heap usage: %dk (%d bytes) \n", sMemBlockPoolUsed / 1024,
+        gdPrintf("gdAllocateMemoryBlock(): Failed request: %dk (%d bytes)\n", size / 1024, size);
+        gdPrintf("gdAllocateMemoryBlock(): Heap usage: %dk (%d bytes) \n", sMemBlockPoolUsed / 1024,
                   sMemBlockPoolUsed);
         print_all_memtrackers();
-        mem_stats();
+        gdPrintMemorySystemInfo();
         fatal_printf("exit");
     }
 
@@ -710,30 +705,29 @@ void *gd_allocblock(u32 size) {
 }
 
 /* 24A318 -> 24A3E8 */
-void *gd_malloc(u32 size, u8 perm) {
-    void *ptr; // 1c
+void *gdMalloc(u32 size, u8 perm) {
     size = ALIGN8(size);
-    ptr = gd_request_mem(size, perm);
+    void *allocatedMemory = gdRequestMemory(size, perm);
 
-    if (ptr == NULL) {
-        gd_printf("gd_malloc(): Failed request: %dk (%d bytes)\n", size / 1024, size);
-        gd_printf("gd_malloc(): Heap usage: %dk (%d bytes) \n", sAllocMemory / 1024, sAllocMemory);
+    if (allocatedMemory == NULL) {
+        gdPrintf("gdMalloc(): Failed request: %dk (%d bytes)\n", size / 1024, size);
+        gdPrintf("gdMalloc(): Heap usage: %dk (%d bytes) \n", sAllocMemory / 1024, sAllocMemory);
         print_all_memtrackers();
-        mem_stats();
+        gdPrintMemorySystemInfo();
         return NULL;
     }
 
     sAllocMemory += size;
 
-    return ptr;
+    return allocatedMemory;
 }
 
-void *gd_malloc_perm(u32 size) {
-    return gd_malloc(size, PERM_G_MEM_BLOCK);
+void *gdMallocPermanent(u32 size) {
+    return gdMalloc(size, PERM_G_MEM_BLOCK);
 }
 
-void *gd_malloc_temp(u32 size) {
-    return gd_malloc(size, TEMP_G_MEM_BLOCK);
+void *gdMallocTemporary(u32 size) {
+    return gdMalloc(size, TEMP_G_MEM_BLOCK);
 }
 
 /* 24A4DC -> 24A598 */
@@ -748,17 +742,14 @@ void draw_indexed_dl(s32 dlNum, s32 gfxIdx) {
     gSPDisplayList(next_gfx(), GD_VIRTUAL_TO_PHYSICAL(dl));
 }
 
-void branch_cur_dl_to_num(s32 dlNum) {
-    Gfx *dl;
-
-    dl = sGdDLArray[dlNum]->gfx;
-    gSPDisplayList(next_gfx(), GD_VIRTUAL_TO_PHYSICAL(dl));
+void gdLinkDisplayList(s32 dlNum) {
+    gSPDisplayList(next_gfx(), GD_VIRTUAL_TO_PHYSICAL(sGdDLArray[dlNum]->gfx));
 }
 
 /**
  * Creates `ObjShape`s for the stars and sparkles
  */
-void setup_stars(void) {
+void gdSetupStarShapes(void) {
     gShapeRedStar = make_shape(0, "redstar");
     gShapeRedStar->dlNums[0] = new_gddl_from(NULL, 0);
     gShapeRedStar->dlNums[1] = gShapeRedStar->dlNums[0];
@@ -784,14 +775,6 @@ void setup_stars(void) {
     gShapeSilverSpark->dlNums[1] = gShapeSilverSpark->dlNums[0];
     sGdDLArray[gShapeSilverSpark->dlNums[0]]->dlptr = gd_silver_sparkle_dl_array;
     sGdDLArray[gShapeSilverSpark->dlNums[1]]->dlptr = gd_silver_sparkle_dl_array;
-}
-
-/* 24AA58 -> 24AAA8 */
-void Unknown8019C288(s32 stickX, s32 stickY) {
-    struct GdControl *ctrl = &gdControllerInfo; // 4
-
-    ctrl->stickXf = (f32) stickX;
-    ctrl->stickYf = (f32)(stickY / 2);
 }
 
 void gdAddMemoryToHeap(void *addr, u32 size) {
@@ -826,15 +809,15 @@ void gdSetupFace(void) {
     gdInitSystem();
     gdResetDynListAndShapeProcessors();
     reset_cur_dl_indices();
-    setup_stars();
+    gdSetupStarShapes();
     imout();
 }
 
 void print_gdm_stats(void) {
     stop_memtracker("total");
-    gd_printf("\ngdm stats:\n");
+    gdPrintf("\ngdm stats:\n");
     print_all_memtrackers();
-    mem_stats();
+    gdPrintMemorySystemInfo();
     start_memtracker("total");
 }
 
@@ -888,7 +871,7 @@ void set_time_scale(f32 factor) {
 
 /* 24AED0 -> 24AF04 */
 void Unknown8019C840(void) {
-    gd_printf("\n");
+    gdPrintf("\n");
     print_all_timers();
 }
 
@@ -940,7 +923,7 @@ void fatal_no_dl_mem(void) {
 struct GdDisplayList *alloc_displaylist(u32 id) {
     struct GdDisplayList *gdDl;
 
-    gdDl = gd_malloc_perm(sizeof(struct GdDisplayList));
+    gdDl = gdMallocPermanent(sizeof(struct GdDisplayList));
     if (gdDl == NULL) {
         fatal_no_dl_mem();
     }
@@ -983,7 +966,7 @@ struct GdDisplayList *create_child_gdl(s32 id, struct GdDisplayList *srcDl) {
     return newDl;
 }
 
-struct GdDisplayList *new_gd_dl(s32 id, s32 gfxs, s32 verts, s32 mtxs, s32 lights, s32 vps) {
+struct GdDisplayList *gdCreateDisplayList(s32 id, s32 gfxs, s32 verts, s32 mtxs, s32 lights, s32 vps) {
     struct GdDisplayList *dl; // 24
 
     dl = alloc_displaylist(id);
@@ -993,7 +976,7 @@ struct GdDisplayList *new_gd_dl(s32 id, s32 gfxs, s32 verts, s32 mtxs, s32 light
     }
     dl->curVtxIdx = 0;
     dl->totalVtx = verts;
-    if ((dl->vtx = gd_malloc_perm(verts * sizeof(Vtx))) == NULL) {
+    if ((dl->vtx = gdMallocPermanent(verts * sizeof(Vtx))) == NULL) {
         fatal_no_dl_mem();
     }
 
@@ -1002,7 +985,7 @@ struct GdDisplayList *new_gd_dl(s32 id, s32 gfxs, s32 verts, s32 mtxs, s32 light
     }
     dl->curMtxIdx = 0;
     dl->totalMtx = mtxs;
-    if ((dl->mtx = gd_malloc_perm(mtxs * sizeof(Mtx))) == NULL) {
+    if ((dl->mtx = gdMallocPermanent(mtxs * sizeof(Mtx))) == NULL) {
         fatal_no_dl_mem();
     }
 
@@ -1011,7 +994,7 @@ struct GdDisplayList *new_gd_dl(s32 id, s32 gfxs, s32 verts, s32 mtxs, s32 light
     }
     dl->curLightIdx = 0;
     dl->totalLights = lights;
-    if ((dl->light = gd_malloc_perm(lights * sizeof(Lights4))) == NULL) {
+    if ((dl->light = gdMallocPermanent(lights * sizeof(Lights4))) == NULL) {
         fatal_no_dl_mem();
     }
 
@@ -1020,7 +1003,7 @@ struct GdDisplayList *new_gd_dl(s32 id, s32 gfxs, s32 verts, s32 mtxs, s32 light
     }
     dl->curGfxIdx = 0;
     dl->totalGfx = gfxs;
-    if ((dl->gfx = gd_malloc_perm(gfxs * sizeof(Gfx))) == NULL) {
+    if ((dl->gfx = gdMallocPermanent(gfxs * sizeof(Gfx))) == NULL) {
         fatal_no_dl_mem();
     }
 
@@ -1029,7 +1012,7 @@ struct GdDisplayList *new_gd_dl(s32 id, s32 gfxs, s32 verts, s32 mtxs, s32 light
     }
     dl->curVpIdx = 0;
     dl->totalVp = vps;
-    if ((dl->vp = gd_malloc_perm(vps * sizeof(Vp))) == NULL) {
+    if ((dl->vp = gdMallocPermanent(vps * sizeof(Vp))) == NULL) {
         fatal_no_dl_mem();
     }
 
@@ -1186,29 +1169,15 @@ s32 gd_enddlsplist_parent(void) {
     return curDlIdx;
 }
 
-/* 24D39C -> 24D3D8 */
-void Unknown8019EBCC(s32 num, uintptr_t gfxptr) {
-    sGdDLArray[num]->gfx = (Gfx *) (GD_LOWER_24(gfxptr) + D_801BAF28);
-}
-
 u32 new_gddl_from(Gfx *dl, UNUSED s32 arg1) {
     struct GdDisplayList *gddl;
 
-    gddl = new_gd_dl(0, 0, 0, 0, 0, 0);
+    gddl = gdCreateDisplayList(0, 0, 0, 0, 0, 0);
     gddl->gfx = (Gfx *) (GD_LOWER_24((uintptr_t) dl) + D_801BAF28);
     return gddl->number;
 }
 
-/* 24D458 -> 24D4C4 */
-u32 Unknown8019EC88(Gfx *dl, UNUSED s32 arg1) {
-    struct GdDisplayList *gddl;
-
-    gddl = new_gd_dl(0, 0, 0, 0, 0, 0);
-    gddl->gfx = dl;
-    return gddl->number;
-}
-
-void mat4_to_mtx(Mat4f *src, Mtx *dst) {
+void gdMtxF2L(Mat4f *src, Mtx *dst) {
 #ifndef GBI_FLOATS
     s32 i; // 14
     s32 j; // 10
@@ -1235,8 +1204,8 @@ void mat4_to_mtx(Mat4f *src, Mtx *dst) {
 /**
  * Adds a display list operation that multiplies the current matrix with `mtx`.
  */
-void gdMultMatrix(Mat4f *mtx) {
-    mat4_to_mtx(mtx, &DL_CURRENT_MTX(sCurrentGdDl));
+void gdMultiplyMatrix(Mat4f *mtx) {
+    gdMtxF2L(mtx, &DL_CURRENT_MTX(sCurrentGdDl));
     gSPMatrix(next_gfx(), osVirtualToPhysical(&DL_CURRENT_MTX(sCurrentGdDl)), sMtxParamType | G_MTX_MUL | G_MTX_NOPUSH);
     next_mtx();
 }
@@ -1245,7 +1214,7 @@ void gdMultMatrix(Mat4f *mtx) {
  * Adds a display list operation that replaces the current matrix with `mtx`.
  */
 void gdLoadMatrix(Mat4f *mtx) {
-    mat4_to_mtx(mtx, &DL_CURRENT_MTX(sCurrentGdDl));
+    gdMtxF2L(mtx, &DL_CURRENT_MTX(sCurrentGdDl));
     gSPMatrix(next_gfx(), osVirtualToPhysical(&DL_CURRENT_MTX(sCurrentGdDl)),
               sMtxParamType | G_MTX_LOAD | G_MTX_NOPUSH);
     next_mtx();
@@ -1305,7 +1274,7 @@ void gd_dl_scale(f32 x, f32 y, f32 z) {
     vec.z = z;
     gdMakeIdentityMatrixF(&mtx);
     gdVectorScaleF(&mtx, &vec);
-    gdMultMatrix(&mtx);
+    gdMultiplyMatrix(&mtx);
 }
 
 /* 24DA94 -> 24DAE8 */
@@ -1314,7 +1283,7 @@ void func_8019F2C4(f32 arg0, s8 arg1) {
 
     gdMakeIdentityMatrixF(&mtx);
     gdMatrixAxisRotateF(&mtx, arg1 - 120, -arg0);
-    gdMultMatrix(&mtx);
+    gdMultiplyMatrix(&mtx);
 }
 
 /* 24DAE8 -> 24E1A8 */
@@ -1330,10 +1299,10 @@ void gd_dl_lookat(struct ObjCamera *cam,
     gdMatrixLookAtF(&cam->unkE8,
                     posX, posY, posZ,
                     lookX, lookY, lookZ,
-                    gd_sin_d(angleDegrees), gd_cos_d(angleDegrees), 0.0f
+                    gdSine(angleDegrees), gdCosine(angleDegrees), 0.0f
                    );
 
-    mat4_to_mtx(&cam->unkE8, &DL_CURRENT_MTX(sCurrentGdDl));
+    gdMtxF2L(&cam->unkE8, &DL_CURRENT_MTX(sCurrentGdDl));
     gSPMatrix(next_gfx(), osVirtualToPhysical(&DL_CURRENT_MTX(sCurrentGdDl)),
             G_MTX_PROJECTION | G_MTX_MUL | G_MTX_NOPUSH);
 
@@ -1483,25 +1452,10 @@ void gdDrawVtxTriBuffers(void) {
     gdFlushVtxBuffer();
 }
 
-/**
- * Unused - called by func_801A520C
- */
-UNUSED static void func_801A01EC(void) {
-
-}
-
-/**
- * Unused - called by func_801A520C
- */
-UNUSED static void func_801A025C(void) {
-    gGdFrameBufNum ^= 1;
-    osViSwapBuffer(sScreenView->parent->colourBufs[gGdFrameBufNum]);
-}
-
 /* 24EA88 -> 24EAF4 */
 void set_render_alpha(f32 alpha) {
-    sAlpha = alpha * 255.0f;
-    update_render_mode();
+    gdCurrentShapeTransparency = alpha * 255.0f;
+    gdChangeRenderMode();
 }
 
 /* 24EAF4 -> 24EB0C */
@@ -1534,7 +1488,7 @@ s32 create_mtl_gddl(UNUSED s32 mtlType) {
 }
 
 void branch_to_gddl(s32 dlNum) {
-    branch_cur_dl_to_num(dlNum);
+    gdLinkDisplayList(dlNum);
 }
 
 /* 24EC48 -> 24F03C */
@@ -1713,7 +1667,7 @@ void set_gd_mtx_parameters(s32 params) {
 /**
  * Adds a viewport to the current display list based on the current active view
  */
-static void gd_dl_viewport(void) {
+static void gdViewport(void) {
     Vp *vp;
 
     vp = &DL_CURRENT_VP(sCurrentGdDl);
@@ -1729,19 +1683,18 @@ static void gd_dl_viewport(void) {
     vp->vp.vtrans[3] = 0x000;
 
     gSPViewport(next_gfx(), osVirtualToPhysical(vp));
-    next_vp();
+    next_viewport();
 }
 
-/* 2501D0 -> 250300 */
-static void update_render_mode(void) {
+static void gdChangeRenderMode(void) {
     if ((sActiveView->flags & VIEW_ALLOC_ZBUF) != 0) {
-        if (sAlpha != 0xff) {
+        if (gdCurrentShapeTransparency != 0xff) {
             gDPSetRenderMode(next_gfx(), G_RM_AA_ZB_XLU_SURF, G_RM_AA_ZB_XLU_SURF2);
         } else {
             gDPSetRenderMode(next_gfx(), G_RM_AA_ZB_OPA_INTER, G_RM_NOOP2);
         }
     } else {
-        if (sAlpha != 0xff) {
+        if (gdCurrentShapeTransparency != 0xff) {
             gDPSetRenderMode(next_gfx(), G_RM_AA_XLU_SURF, G_RM_AA_XLU_SURF2);
         } else {
             gDPSetRenderMode(next_gfx(), G_RM_AA_ZB_OPA_INTER, G_RM_NOOP2);
@@ -1749,18 +1702,6 @@ static void update_render_mode(void) {
     }
 }
 
-/* 250300 -> 250640 */
-void Unknown801A1B30(void) {
-    gDPPipeSync(next_gfx());
-    gdSetFrameBuffer();
-    gdDisplayListSetFillColor(&sActiveView->colour);
-    gDPFillRectangle(next_gfx(), (u32)(sActiveView->upperLeft.x), (u32)(sActiveView->upperLeft.y),
-                     (u32)(sActiveView->upperLeft.x + sActiveView->lowerRight.x - 1.0f),
-                     (u32)(sActiveView->upperLeft.y + sActiveView->lowerRight.y - 1.0f));
-    gDPPipeSync(next_gfx());
-}
-
-/* 250640 -> 250AE0 */
 void gdClearZBuffer(void) {
     gDPPipeSync(next_gfx());
     gDPSetCycleType(next_gfx(), G_CYC_FILL);
@@ -1778,10 +1719,9 @@ void gdClearZBuffer(void) {
 
 void gd_set_one_cycle(void) {
     gDPSetCycleType(next_gfx(), G_CYC_1CYCLE);
-    update_render_mode();
+    gdChangeRenderMode();
 }
 
-/* 250B58 -> 250C18 */
 void gdSetSpecular(s32 dlLoad) {
     if (dlLoad) {
         gSPDisplayList(next_gfx(), osVirtualToPhysical(&gd_dl_mario_face_shine));
@@ -1836,8 +1776,8 @@ void start_view_dl(struct ObjView *view) {
     if (view->flags & VIEW_ALLOC_ZBUF) {
         gSPSetGeometryMode(next_gfx(), G_ZBUFFER);
     }
-    gd_dl_viewport();
-    update_render_mode();
+    gdViewport();
+    gdChangeRenderMode();
     gDPPipeSync(next_gfx());
 }
 
@@ -2148,11 +2088,11 @@ s32 setup_view_buffers(const char *name, struct ObjView *view, UNUSED s32 ulx, U
             sprintf(memtrackerName, "%s CBuf", name);
             start_memtracker(memtrackerName);
             view->colourBufs[0] =
-                gd_malloc((u32)(2.0f * view->lowerRight.x * view->lowerRight.y + 64.0f), 0x20);
+                gdMalloc((u32)(2.0f * view->lowerRight.x * view->lowerRight.y + 64.0f), 0x20);
 
             if (view->flags & VIEW_2_COL_BUF) {
                 view->colourBufs[1] =
-                    gd_malloc((u32)(2.0f * view->lowerRight.x * view->lowerRight.y + 64.0f), 0x20);
+                    gdMalloc((u32)(2.0f * view->lowerRight.x * view->lowerRight.y + 64.0f), 0x20);
             } else {
                 view->colourBufs[1] = view->colourBufs[0];
             }
@@ -2174,7 +2114,7 @@ s32 setup_view_buffers(const char *name, struct ObjView *view, UNUSED s32 ulx, U
             start_memtracker(memtrackerName);
             if (view->flags & VIEW_ALLOC_ZBUF) {
                 view->zbuf =
-                    gd_malloc((u32)(2.0f * view->lowerRight.x * view->lowerRight.y + 64.0f), 0x40);
+                    gdMalloc((u32)(2.0f * view->lowerRight.x * view->lowerRight.y + 64.0f), 0x40);
                 if (view->zbuf == NULL) {
                     fatal_printf("Not enough DRAM for Z buffer\n");
                 }
@@ -2263,13 +2203,13 @@ void func_801A4848(s32 linkDl) {
 
     curDl = sCurrentGdDl;
     sCurrentGdDl = sMHeadMainDls[gGdFrameBufNum];
-    branch_cur_dl_to_num(linkDl);
+    gdLinkDisplayList(linkDl);
     sCurrentGdDl = curDl;
 }
 
 /* 2530A8 -> 2530C0 */
 void stub_draw_label_text(char *s) {
-    gd_printf("stub_draw_label_text: '%s'\n", s);
+    gdPrintf("stub_draw_label_text: '%s'\n", s);
 }
 
 void gdSetActiveView(struct ObjView *v) {
@@ -2400,9 +2340,9 @@ void gdInitSystem(void) {
 
     imin();
     i = (u32)(sMemBlockPoolSize - DOUBLE_SIZE_ON_64_BIT(0x3E800));
-    data = gd_allocblock(i);
+    data = gdAllocateMemoryBlock(i);
     gd_add_mem_to_heap(i, data, 0x10);
-    sAlpha = (u16) 0xff;
+    gdCurrentShapeTransparency = (u16) 0xff;
     D_801A867C = 0;
     D_801A8680 = 0;
     sTextureCount = 0;
@@ -2429,23 +2369,23 @@ void gdInitSystem(void) {
 
     sNumLights = NUMLIGHTS_2;
     gdMakeIdentityMatrixF(&gdIdentityMatrix);
-    mat4_to_mtx(&gdIdentityMatrix, &gdRCPIdentityMatrix);
+    gdMtxF2L(&gdIdentityMatrix, &gdRCPIdentityMatrix);
     remove_all_memtrackers();
     gdResetObjectLists();
     start_memtracker("total");
     remove_all_timers();
 
     start_memtracker("Static DL");
-    sStaticDl = new_gd_dl(0, GODDARD_STATIC_DL_CMD_COUNT, 8000, 1, 300, 8);
+    sStaticDl = gdCreateDisplayList(0, GODDARD_STATIC_DL_CMD_COUNT, 8000, 1, 300, 8);
     stop_memtracker("Static DL");
 
     start_memtracker("Dynamic DLs");
-    sDynamicMainDls[0] = new_gd_dl(1, GODDARD_DYNAMIC_DL_CMD_COUNT, 10, 200, 10, 3);
-    sDynamicMainDls[1] = new_gd_dl(1, GODDARD_DYNAMIC_DL_CMD_COUNT, 10, 200, 10, 3);
+    sDynamicMainDls[0] = gdCreateDisplayList(1, GODDARD_DYNAMIC_DL_CMD_COUNT, 10, 200, 10, 3);
+    sDynamicMainDls[1] = gdCreateDisplayList(1, GODDARD_DYNAMIC_DL_CMD_COUNT, 10, 200, 10, 3);
     stop_memtracker("Dynamic DLs");
 
-    sMHeadMainDls[0] = new_gd_dl(1, GODDARD_FACE_DL_CMD_COUNT, 0, 0, 0, 0);
-    sMHeadMainDls[1] = new_gd_dl(1, GODDARD_FACE_DL_CMD_COUNT, 0, 0, 0, 0);
+    sMHeadMainDls[0] = gdCreateDisplayList(1, GODDARD_FACE_DL_CMD_COUNT, 0, 0, 0, 0);
+    sMHeadMainDls[1] = gdCreateDisplayList(1, GODDARD_FACE_DL_CMD_COUNT, 0, 0, 0, 0);
 
     for (i = 0; i < ARRAY_COUNT(sViewDls); i++) {
         sViewDls[i][0] = create_child_gdl(1, sDynamicMainDls[0]);
@@ -2518,7 +2458,7 @@ void *Unknown801A5AB8(s32 texnum) {
 void Unknown801A5AE0(s32 arg0) {
     D_801BB018 = arg0;
     if (D_801BB01C != D_801BB018) {
-        branch_cur_dl_to_num(sTextureDisplayLists[arg0]);
+        gdLinkDisplayList(sTextureDisplayLists[arg0]);
         D_801BB01C = D_801BB018;
     }
 }
@@ -2775,7 +2715,7 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
     }
 
     segSize = dynlistSegEnd - dynlistSegStart;
-    allocSegSpace = gd_malloc_temp(segSize + PAGE_SIZE);
+    allocSegSpace = gdMallocTemporary(segSize + PAGE_SIZE);
 
     if ((allocPtr = (void *) allocSegSpace) == NULL) {
         fatal_printf("Not enough DRAM for DATA segment \n");
@@ -2805,7 +2745,7 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
     // process the dynlist
     loadedList = gdProcessDynList(dynlist);
 
-    gd_free(allocPtr);
+    gdFree(allocPtr);
     osUnmapTLBAll();
 
     return loadedList;

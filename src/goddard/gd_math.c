@@ -172,8 +172,8 @@ void gdLookAtFromOriginF(Mat4f *mtx, struct GdVec3f *look, f32 roll) {
     hMag = gdSqrtF(SQ(unit.x) + SQ(unit.z));
 
     roll *= radPerDeg; // convert roll from degrees to radians
-    s = gd_sin_d(roll);
-    c = gd_cos_d(roll);
+    s = gdSine(roll);
+    c = gdCosine(roll);
 
     gdMakeIdentityMatrixF(mtx);
     if (hMag != 0.0f) {
@@ -265,8 +265,8 @@ void gd_rot_2d_vec(f32 deg, f32 *x, f32 *y) {
     f32 rad;
 
     rad = deg / DEG_PER_RAD;
-    xP = (*x * gd_cos_d(rad)) - (*y * gd_sin_d(rad));
-    yP = (*x * gd_sin_d(rad)) + (*y * gd_cos_d(rad));
+    xP = (*x * gdCosine(rad)) - (*y * gdSine(rad));
+    yP = (*x * gdSine(rad)) + (*y * gdCosine(rad));
     *x = xP;
     *y = yP;
 }
@@ -654,8 +654,8 @@ void gd_create_rot_mat_angular(Mat4f *mtx, struct GdVec3f *vec, f32 ang) {
     f32 s;
     f32 c;
 
-    s = gd_sin_d(ang / (DEG_PER_RAD / 2.0));
-    c = gd_cos_d(ang / (DEG_PER_RAD / 2.0));
+    s = gdSine(ang / (DEG_PER_RAD / 2.0));
+    c = gdCosine(ang / (DEG_PER_RAD / 2.0));
 
     gd_create_rot_matrix(mtx, vec, s, c);
 }
@@ -775,8 +775,12 @@ void gdMultiplyMatrixF(const Mat4f *mA, const Mat4f *mB, Mat4f *dst) {
  * Printed the prefix at some point, as shown by how the function is used.
  */
 void gdPrintVector(UNUSED const char *prefix, const struct GdVec3f *vec) {
+#ifdef printf
     printf("%f,%f,%f\n", vec->x, vec->y, vec->z);
     printf("\n");
+#else // printf
+    (void)vec;
+#endif // printf
 }
 
 /**
@@ -804,9 +808,9 @@ void gdPrintMatrix(UNUSED const char *prefix, const Mat4f *mtx) {
 
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
-            gd_printf("%f ", (*mtx)[i][j]);
+            gdPrintf("%f ", (*mtx)[i][j]);
         }
-        gd_printf("\n");
+        gdPrintf("\n");
     }
 }
 
@@ -816,9 +820,9 @@ void gdPrintMatrix(UNUSED const char *prefix, const Mat4f *mtx) {
 void UNUSED gdPrintQuaternion(const char *prefix, const f32 f[4]) {
     s32 i;
 
-    gd_printf(prefix);
+    gdPrintf(prefix);
     for (i = 0; i < 4; i++) {
-        gd_printf("%f ", f[i]);
+        gdPrintf("%f ", f[i]);
     }
-    gd_printf("\n");
+    gdPrintf("\n");
 }
