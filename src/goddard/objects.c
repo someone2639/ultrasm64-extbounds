@@ -423,7 +423,7 @@ void reset_plane(struct ObjPlane *plane) {
 
     sp4C = plane->unk40;
     calc_face_normal(sp4C);
-    plane->unk1C = gd_dot_vec3f(&sp4C->vertices[0]->pos, &sp4C->normal);
+    plane->unk1C = gdVectorDotF(&sp4C->vertices[0]->pos, &sp4C->normal);
     sp48 = 0.0f;
 
     sp28 = sp4C->normal.x < 0.0f ? -sp4C->normal.x : sp4C->normal.x;
@@ -984,7 +984,7 @@ void func_8017E584(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
         sp7C.z = -sp70.z;
     }
 
-    gd_cross_vec3f(&sp70, a1, &sp94);
+    gdVectorCrossF(&sp70, a1, &sp94);
     sp2C = (f32) gdSqrt((sp94.x * sp94.x) + (sp94.z * sp94.z));
 
     if (sp2C > 1000.0) { //? 1000.0f
@@ -1027,7 +1027,7 @@ void func_8017E838(struct ObjNet *a0, struct GdVec3f *a1, struct GdVec3f *a2) {
     sp64.y *= 0.01; //? 0.01f;
     sp64.z *= 0.01; //? 0.01f;
 
-    gd_cross_vec3f(a2, &sp64, &sp70);
+    gdVectorCrossF(a2, &sp64, &sp70);
     gd_clamp_vec3f(&sp70, 5.0f);
 
     a0->collTorque.x += sp70.x;
@@ -1049,58 +1049,6 @@ void func_8017E9EC(struct ObjNet *net) {
     sp18 = gdVectorLength(&net->torque);
     gd_create_rot_mat_angular(&sp1C, &sp5C, -sp18);
     gdMultiplyMatrixF(&D_801B9DC8, &sp1C, &D_801B9DC8);
-}
-
-/**
- * Unused (called by func_801A71CC) - returns TRUE if any of the four corners of
- * box1's X-Z plane lie within box2's X-Z plane
- */
-s32 gd_plane_point_within(struct GdBoundingBox *box1, struct GdBoundingBox *box2) {
-    // test if min x and min z of box1 are within box2
-    if (box1->minX >= box2->minX) {
-        if (box1->minX <= box2->maxX) {
-            if (box1->minZ >= box2->minZ) {
-                if (box1->minZ <= box2->maxZ) {
-                    return TRUE;
-                }
-            }
-        }
-    }
-
-    // test if max x and min z of box1 are within box2
-    if (box1->maxX >= box2->minX) {
-        if (box1->maxX <= box2->maxX) {
-            if (box1->minZ >= box2->minZ) {
-                if (box1->minZ <= box2->maxZ) {
-                    return TRUE;
-                }
-            }
-        }
-    }
-
-    // test if max x and max z of box1 are within box2
-    if (box1->maxX >= box2->minX) {
-        if (box1->maxX <= box2->maxX) {
-            if (box1->maxZ >= box2->minZ) {
-                if (box1->maxZ <= box2->maxZ) {
-                    return TRUE;
-                }
-            }
-        }
-    }
-
-    // test if min x and max z of box1 are within box2
-    if (box1->minX >= box2->minX) {
-        if (box1->minX <= box2->maxX) {
-            if (box1->maxZ >= box2->minZ) {
-                if (box1->maxZ <= box2->maxZ) {
-                    return TRUE;
-                }
-            }
-        }
-    }
-
-    return FALSE;
 }
 
 /* @ 22D824 for 0x1BC */
@@ -1491,7 +1439,7 @@ void drag_picked_object(struct GdObj *inputObj) {
     displacement.y = ((f32) - (ctrl->cursorY - ctrl->dragStartY)) * dispMag;
     displacement.z = 0.0f;
 
-    gd_inverse_mat4f(&gViewUpdateCamera->unkE8, &sp40);
+    gdMatrixInvertF(&gViewUpdateCamera->unkE8, &sp40);
     gdRotateVector(&displacement, &sp40);
 
     obj = inputObj;
@@ -1511,7 +1459,7 @@ void drag_picked_object(struct GdObj *inputObj) {
             case OBJ_TYPE_GADGETS:
                 break;
             case OBJ_TYPE_NETS:
-                gd_inverse_mat4f(&((struct ObjNet *) obj)->mat128, &sp80);
+                gdMatrixInvertF(&((struct ObjNet *) obj)->mat128, &sp80);
                 spC4.x = displacement.x;
                 spC4.y = displacement.y;
                 spC4.z = displacement.z;

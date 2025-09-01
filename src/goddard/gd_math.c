@@ -121,13 +121,13 @@ void gdVectorScaleF(Mat4f *mtx, struct GdVec3f *vec) {
  */
 void gd_rot_mat_about_vec(Mat4f *mtx, struct GdVec3f *vec) {
     if (vec->x != 0.0f) {
-        gd_absrot_mat4(mtx, GD_X_AXIS, vec->x);
+        gdMatrixAxisRotateF(mtx, GD_X_AXIS, vec->x);
     }
     if (vec->y != 0.0f) {
-        gd_absrot_mat4(mtx, GD_Y_AXIS, vec->y);
+        gdMatrixAxisRotateF(mtx, GD_Y_AXIS, vec->y);
     }
     if (vec->z != 0.0f) {
-        gd_absrot_mat4(mtx, GD_Z_AXIS, vec->z);
+        gdMatrixAxisRotateF(mtx, GD_Z_AXIS, vec->z);
     }
 }
 
@@ -156,7 +156,7 @@ void gdMatrixTranslateF(Mat4f *mtx, struct GdVec3f *vec) {
  *                   |     -x      -y     -z      0 |
  *                   |      0       0      0      1 |
  */
-void gd_create_origin_lookat(Mat4f *mtx, struct GdVec3f *vec, f32 roll) {
+void gdLookAtFromOriginF(Mat4f *mtx, struct GdVec3f *look, f32 roll) {
     f32 invertedHMag;
     f32 hMag;
     f32 c;
@@ -164,9 +164,9 @@ void gd_create_origin_lookat(Mat4f *mtx, struct GdVec3f *vec, f32 roll) {
     f32 radPerDeg = GD_DTOR;
     struct GdVec3f unit;
 
-    unit.x = vec->x;
-    unit.y = vec->y;
-    unit.z = vec->z;
+    unit.x = look->x;
+    unit.y = look->y;
+    unit.z = look->z;
 
     gdVectorNormalize(&unit);
     hMag = gdSqrtF(SQ(unit.x) + SQ(unit.z));
@@ -275,7 +275,7 @@ void gd_rot_2d_vec(f32 deg, f32 *x, f32 *y) {
  * Rotates a mat4f matrix about a given axis
  * by a set angle in degrees.
  */
-void gd_absrot_mat4(Mat4f *mtx, s32 axisnum, f32 ang) {
+void gdMatrixAxisRotateF(Mat4f *mtx, s32 axisnum, f32 ang) {
     Mat4f rMat;
     struct GdVec3f rot;
 
@@ -296,7 +296,7 @@ void gd_absrot_mat4(Mat4f *mtx, s32 axisnum, f32 ang) {
             rot.z = 1.0f;
             break;
         default:
-            fatal_printf("absrot_matrix4(): Bad axis num");
+            fatal_printf("gdMatrixAxisRotateF(): Bad axis num");
     }
 
     gd_create_rot_mat_angular(&rMat, &rot, ang / 2.0); //? 2.0f
@@ -336,7 +336,7 @@ s32 gdVectorNormalize(struct GdVec3f *vec) {
 /**
  * Stores the cross product of 'a' x 'b' in 'dst'.
  */
-void gd_cross_vec3f(struct GdVec3f *a, struct GdVec3f *b, struct GdVec3f *dst) {
+void gdVectorCrossF(struct GdVec3f *a, struct GdVec3f *b, struct GdVec3f *dst) {
     struct GdVec3f result;
 
     result.x = (a->y * b->z) - (a->z * b->y);
@@ -351,7 +351,7 @@ void gd_cross_vec3f(struct GdVec3f *a, struct GdVec3f *b, struct GdVec3f *dst) {
 /**
  * Returns the dot product of 'a' and 'b'.
  */
-f32 gd_dot_vec3f(struct GdVec3f *a, struct GdVec3f *b) {
+f32 gdVectorDotF(struct GdVec3f *a, struct GdVec3f *b) {
     return (a->x * b->x) + (a->y * b->y) + (a->z * b->z);
 }
 
@@ -359,13 +359,13 @@ f32 gd_dot_vec3f(struct GdVec3f *a, struct GdVec3f *b) {
  * Inverts a matrix from src and stores it into dst.
  * Reaches a fatal_print if the determinant is 0.
  */
-void gd_inverse_mat4f(Mat4f *src, Mat4f *dst) {
+void gdMatrixInvertF(Mat4f *src, Mat4f *dst) {
     s32 i;
     s32 j;
     f32 determinant;
 
-    gd_adjunct_mat4f(src, dst);
-    determinant = gd_mat4f_det(dst);
+    gdMatrixAdjunctF(src, dst);
+    determinant = gdMatrixDeterminantF(dst);
 
     if (ABS(determinant) < 1e-5) { //? 1e-5f
         fatal_print("Non-singular matrix, no inverse!\n");
@@ -381,7 +381,7 @@ void gd_inverse_mat4f(Mat4f *src, Mat4f *dst) {
 /**
  * Takes a matrix from src and converts it into its adjunct in dst.
  */
-void gd_adjunct_mat4f(Mat4f *src, Mat4f *dst) {
+void gdMatrixAdjunctF(Mat4f *src, Mat4f *dst) {
     struct InvMat4 inv;
 
     inv.r3.c3 = (*src)[0][0];
@@ -401,44 +401,44 @@ void gd_adjunct_mat4f(Mat4f *src, Mat4f *dst) {
     inv.r1.c0 = (*src)[3][2];
     inv.r0.c0 = (*src)[3][3];
 
-    (*dst)[0][0] = gd_3x3_det(inv.r2.c2, inv.r2.c1, inv.r2.c0, inv.r1.c2, inv.r1.c1, inv.r1.c0,
+    (*dst)[0][0] = gdDeterminant3x3(inv.r2.c2, inv.r2.c1, inv.r2.c0, inv.r1.c2, inv.r1.c1, inv.r1.c0,
                                  inv.r0.c2, inv.r0.c1, inv.r0.c0);
-    (*dst)[1][0] = -gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r1.c2, inv.r1.c1, inv.r1.c0,
+    (*dst)[1][0] = -gdDeterminant3x3(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r1.c2, inv.r1.c1, inv.r1.c0,
                                   inv.r0.c2, inv.r0.c1, inv.r0.c0);
-    (*dst)[2][0] = gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r2.c2, inv.r2.c1, inv.r2.c0,
+    (*dst)[2][0] = gdDeterminant3x3(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r2.c2, inv.r2.c1, inv.r2.c0,
                                  inv.r0.c2, inv.r0.c1, inv.r0.c0);
-    (*dst)[3][0] = -gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r2.c2, inv.r2.c1, inv.r2.c0,
+    (*dst)[3][0] = -gdDeterminant3x3(inv.r3.c2, inv.r3.c1, inv.r3.c0, inv.r2.c2, inv.r2.c1, inv.r2.c0,
                                   inv.r1.c2, inv.r1.c1, inv.r1.c0);
-    (*dst)[0][1] = -gd_3x3_det(inv.r2.c3, inv.r2.c1, inv.r2.c0, inv.r1.c3, inv.r1.c1, inv.r1.c0,
+    (*dst)[0][1] = -gdDeterminant3x3(inv.r2.c3, inv.r2.c1, inv.r2.c0, inv.r1.c3, inv.r1.c1, inv.r1.c0,
                                   inv.r0.c3, inv.r0.c1, inv.r0.c0);
-    (*dst)[1][1] = gd_3x3_det(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r1.c3, inv.r1.c1, inv.r1.c0,
+    (*dst)[1][1] = gdDeterminant3x3(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r1.c3, inv.r1.c1, inv.r1.c0,
                                  inv.r0.c3, inv.r0.c1, inv.r0.c0);
-    (*dst)[2][1] = -gd_3x3_det(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r2.c3, inv.r2.c1, inv.r2.c0,
+    (*dst)[2][1] = -gdDeterminant3x3(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r2.c3, inv.r2.c1, inv.r2.c0,
                                   inv.r0.c3, inv.r0.c1, inv.r0.c0);
-    (*dst)[3][1] = gd_3x3_det(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r2.c3, inv.r2.c1, inv.r2.c0,
+    (*dst)[3][1] = gdDeterminant3x3(inv.r3.c3, inv.r3.c1, inv.r3.c0, inv.r2.c3, inv.r2.c1, inv.r2.c0,
                                  inv.r1.c3, inv.r1.c1, inv.r1.c0);
-    (*dst)[0][2] = gd_3x3_det(inv.r2.c3, inv.r2.c2, inv.r2.c0, inv.r1.c3, inv.r1.c2, inv.r1.c0,
+    (*dst)[0][2] = gdDeterminant3x3(inv.r2.c3, inv.r2.c2, inv.r2.c0, inv.r1.c3, inv.r1.c2, inv.r1.c0,
                                  inv.r0.c3, inv.r0.c2, inv.r0.c0);
-    (*dst)[1][2] = -gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r1.c3, inv.r1.c2, inv.r1.c0,
+    (*dst)[1][2] = -gdDeterminant3x3(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r1.c3, inv.r1.c2, inv.r1.c0,
                                   inv.r0.c3, inv.r0.c2, inv.r0.c0);
-    (*dst)[2][2] = gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r2.c3, inv.r2.c2, inv.r2.c0,
+    (*dst)[2][2] = gdDeterminant3x3(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r2.c3, inv.r2.c2, inv.r2.c0,
                                  inv.r0.c3, inv.r0.c2, inv.r0.c0);
-    (*dst)[3][2] = -gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r2.c3, inv.r2.c2, inv.r2.c0,
+    (*dst)[3][2] = -gdDeterminant3x3(inv.r3.c3, inv.r3.c2, inv.r3.c0, inv.r2.c3, inv.r2.c2, inv.r2.c0,
                                   inv.r1.c3, inv.r1.c2, inv.r1.c0);
-    (*dst)[0][3] = -gd_3x3_det(inv.r2.c3, inv.r2.c2, inv.r2.c1, inv.r1.c3, inv.r1.c2, inv.r1.c1,
+    (*dst)[0][3] = -gdDeterminant3x3(inv.r2.c3, inv.r2.c2, inv.r2.c1, inv.r1.c3, inv.r1.c2, inv.r1.c1,
                                   inv.r0.c3, inv.r0.c2, inv.r0.c1);
-    (*dst)[1][3] = gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r1.c3, inv.r1.c2, inv.r1.c1,
+    (*dst)[1][3] = gdDeterminant3x3(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r1.c3, inv.r1.c2, inv.r1.c1,
                                  inv.r0.c3, inv.r0.c2, inv.r0.c1);
-    (*dst)[2][3] = -gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r2.c3, inv.r2.c2, inv.r2.c1,
+    (*dst)[2][3] = -gdDeterminant3x3(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r2.c3, inv.r2.c2, inv.r2.c1,
                                   inv.r0.c3, inv.r0.c2, inv.r0.c1);
-    (*dst)[3][3] = gd_3x3_det(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r2.c3, inv.r2.c2, inv.r2.c1,
+    (*dst)[3][3] = gdDeterminant3x3(inv.r3.c3, inv.r3.c2, inv.r3.c1, inv.r2.c3, inv.r2.c2, inv.r2.c1,
                                  inv.r1.c3, inv.r1.c2, inv.r1.c1);
 }
 
 /**
  * Returns the determinant of a mat4f matrix.
  */
-f32 gd_mat4f_det(Mat4f *mtx) {
+f32 gdMatrixDeterminantF(Mat4f *mtx) {
     f32 det;
     struct InvMat4 inv;
 
@@ -460,19 +460,19 @@ f32 gd_mat4f_det(Mat4f *mtx) {
     inv.r0.c0 = (*mtx)[3][3];
 
     det = (inv.r3.c3
-                * gd_3x3_det(inv.r2.c2, inv.r2.c1, inv.r2.c0,
+                * gdDeterminant3x3(inv.r2.c2, inv.r2.c1, inv.r2.c0,
                              inv.r1.c2, inv.r1.c1, inv.r1.c0,
                              inv.r0.c2, inv.r0.c1, inv.r0.c0)
            - inv.r2.c3
-                * gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0,
+                * gdDeterminant3x3(inv.r3.c2, inv.r3.c1, inv.r3.c0,
                              inv.r1.c2, inv.r1.c1, inv.r1.c0,
                              inv.r0.c2, inv.r0.c1, inv.r0.c0))
           + inv.r1.c3
-                * gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0,
+                * gdDeterminant3x3(inv.r3.c2, inv.r3.c1, inv.r3.c0,
                              inv.r2.c2, inv.r2.c1, inv.r2.c0,
                              inv.r0.c2, inv.r0.c1, inv.r0.c0)
           - inv.r0.c3
-                * gd_3x3_det(inv.r3.c2, inv.r3.c1, inv.r3.c0,
+                * gdDeterminant3x3(inv.r3.c2, inv.r3.c1, inv.r3.c0,
                              inv.r2.c2, inv.r2.c1, inv.r2.c0,
                              inv.r1.c2, inv.r1.c1, inv.r1.c0);
 
@@ -483,7 +483,7 @@ f32 gd_mat4f_det(Mat4f *mtx) {
  * Takes the individual values of a 2 by 2 matrix and
  * returns the determinant.
  */
-f32 gd_2x2_det(f32 a, f32 b, f32 c, f32 d) {
+f32 gdDeterminant2x2(f32 a, f32 b, f32 c, f32 d) {
     f32 det = a * d - b * c;
 
     return det;
@@ -493,62 +493,22 @@ f32 gd_2x2_det(f32 a, f32 b, f32 c, f32 d) {
  * Takes the individual values of a 3 by 3 matrix and
  * returns the determinant.
  */
-f32 gd_3x3_det(f32 r0c0, f32 r0c1, f32 r0c2,
+f32 gdDeterminant3x3(f32 r0c0, f32 r0c1, f32 r0c2,
                f32 r1c0, f32 r1c1, f32 r1c2, 
                f32 r2c0, f32 r2c1, f32 r2c2) {
     f32 det;
 
-    det = r0c0 * gd_2x2_det(r1c1, r1c2, r2c1, r2c2) - r1c0 * gd_2x2_det(r0c1, r0c2, r2c1, r2c2)
-          + r2c0 * gd_2x2_det(r0c1, r0c2, r1c1, r1c2);
+    det = r0c0 * gdDeterminant2x2(r1c1, r1c2, r2c1, r2c2) - r1c0 * gdDeterminant2x2(r0c1, r0c2, r2c1, r2c2)
+          + r2c0 * gdDeterminant2x2(r0c1, r0c2, r1c1, r1c2);
 
     return det;
-}
-
-/**
- * This function quite literally does nothing.
- * Seems to have been meant to create a vector from a quaternion?
- */
-void UNUSED gd_broken_quat_to_vec3f(f32 quat[4], struct GdVec3f *vec, f32 zHalf, s32 i, s32 run) {
-    s32 j;
-    s32 k;
-    UNUSED f32 jVal;
-    UNUSED f32 kVal;
-    UNUSED struct GdVec3f uVec;
-    struct GdVec3f tVec;
-
-    tVec.x = vec->x;
-    tVec.y = vec->y;
-    tVec.z = vec->z;
-
-    if (run < 0) {
-        goto end;
-    }
-
-    if ((j = i + 1) >= 4) {
-        j = 1;
-    }
-
-    if ((k = j + 1) >= 4) {
-        k = 1;
-    }
-
-    jVal = quat[j];
-    kVal = quat[k];
-    uVec.x = quat[0];
-    uVec.y = quat[i];
-    uVec.z = zHalf + zHalf;
-
-end:
-    vec->x = tVec.x;
-    vec->y = tVec.y;
-    vec->z = tVec.z;
 }
 
 /**
  * This function is a pitch rotation of a quaternion, with the sign allowing both regular
  * and inverse multiplication.
  */
-void UNUSED gd_quat_rotation(f32 quat[4], UNUSED s32 unused, f32 c, f32 s, s32 i, s32 sign) {
+void UNUSED gdRotateQuaternion(f32 quat[4], UNUSED s32 unused, f32 c, f32 s, s32 i, s32 sign) {
     s32 j;
     s32 k;
     f32 quatVal;
@@ -607,7 +567,7 @@ void gd_shift_mat_up(Mat4f *mtx) {
  * 
  * Potentially broken if 'mtx' is not an identity matrix/zero'ed.
  */
-void UNUSED gd_create_quat_rot_mat(f32 quat[4], UNUSED s32 unused, Mat4f *mtx) {
+void UNUSED gdQuaternionToMatrixF(f32 quat[4], UNUSED s32 unused, Mat4f *mtx) {
     f32 twoIJ;
     f32 two0K;
     f32 sqQuat[4];
@@ -815,10 +775,8 @@ void gdMultiplyMatrixF(const Mat4f *mA, const Mat4f *mB, Mat4f *dst) {
  * Printed the prefix at some point, as shown by how the function is used.
  */
 void gdPrintVector(UNUSED const char *prefix, const struct GdVec3f *vec) {
-#ifdef printf
     printf("%f,%f,%f\n", vec->x, vec->y, vec->z);
     printf("\n");
-#endif // printf
 }
 
 /**

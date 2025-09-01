@@ -142,7 +142,7 @@ void reset_weight(struct ObjWeight *weight) {
 void reset_joint_weights(struct ObjJoint *joint) {
     struct ObjGroup *group = joint->weightGrp;
 
-    gd_inverse_mat4f(&joint->matE8, &D_801B9EA8);
+    gdMatrixInvertF(&joint->matE8, &D_801B9EA8);
     if (group != NULL) {
         apply_to_obj_types_in_group(OBJ_TYPE_WEIGHTS, (applyproc_t) reset_weight, group);
     }

@@ -123,8 +123,8 @@ void Unknown801781DC(struct ObjZone *zone) {
         lightPos.y = light->position.y;
         lightPos.z = light->position.z;
         unk = (struct ObjUnk200000 *) obj;
-        sp34 = gd_dot_vec3f(&unk->unk34->normal, &unk->unk30->pos);
-        sp30 = gd_dot_vec3f(&unk->unk34->normal, &lightPos);
+        sp34 = gdVectorDotF(&unk->unk34->normal, &unk->unk30->pos);
+        sp30 = gdVectorDotF(&unk->unk34->normal, &lightPos);
         lightPos.x -= unk->unk34->normal.x * (sp30 - sp34);
         lightPos.y -= unk->unk34->normal.y * (sp30 - sp34);
         lightPos.z -= unk->unk34->normal.z * (sp30 - sp34);
@@ -268,7 +268,7 @@ void draw_light(struct ObjLight *light) {
         sp94.x = -light->unk80.x;
         sp94.y = -light->unk80.y;
         sp94.z = -light->unk80.z;
-        gd_create_origin_lookat(&sp54, &sp94, 0.0f);
+        gdLookAtFromOriginF(&sp54, &sp94, 0.0f);
         uMultiplier = light->unk38 / 45.0;
         shape = gSpotShape;
         uMatPtr = &sp54;
@@ -975,7 +975,7 @@ void Proc8017A980(struct ObjLight *light) {
     }
     sp24 = light->unk30;
     if (light->flags & LIGHT_UNK02) {
-        sp20 = -gd_dot_vec3f(&sLightPositionCache[light->id], &light->unk80);
+        sp20 = -gdVectorDotF(&sLightPositionCache[light->id], &light->unk80);
         sp1C = 1.0 - light->unk38 / 90.0;
         if (sp20 > sp1C) {
             sp20 = (sp20 - sp1C) * (1.0 / (1.0 - sp1C));
@@ -1358,7 +1358,7 @@ void update_view(struct ObjView *view) {
     }
 
     sUpdateViewState.view = view;
-    set_active_view(view);
+    gdSetActiveView(view);
     view->gdDlNum = gdInitDisplayList(8);
     start_view_dl(sUpdateViewState.view);
     gd_shading(9);

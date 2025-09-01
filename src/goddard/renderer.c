@@ -1313,7 +1313,7 @@ void func_8019F2C4(f32 arg0, s8 arg1) {
     Mat4f mtx; // 18
 
     gdMakeIdentityMatrixF(&mtx);
-    gd_absrot_mat4(&mtx, arg1 - 120, -arg0);
+    gdMatrixAxisRotateF(&mtx, arg1 - 120, -arg0);
     gdMultMatrix(&mtx);
 }
 
@@ -2257,61 +2257,6 @@ s32 gd_gentexture(void *texture, s32 fmt, s32 size, UNUSED u32 arg3, UNUSED u32 
     return dl;
 }
 
-/**
- * Unused (not called)
- */
-void *load_texture_from_file(const char *file, s32 fmt, s32 size, u32 arg3, u32 arg4) {
-    struct GdFile *txFile; // 3c
-    void *texture;         // 38
-    u32 txSize;            // 34
-    u32 i;                 // 30
-    u16 *txHalf;           // 2C
-    u8 buf[3];             // 28
-    u8 alpha;              // 27
-    s32 dl;                // 20
-
-    txFile = gd_fopen(file, "r");
-    if (txFile == NULL) {
-        fatal_print("Cant load texture");
-    }
-    txSize = gd_get_file_size(txFile);
-    texture = gd_malloc_perm(txSize / 3 * 2);
-    if (texture == NULL) {
-        fatal_printf("Cant allocate memory for texture");
-    }
-    txHalf = (u16 *) texture;
-    for (i = 0; i < txSize / 3; i++) {
-        gd_fread((s8 *) buf, 3, 1, txFile);
-        alpha = 0xFF;
-        *txHalf = ((buf[2] >> 3) << 11) | ((buf[1] >> 3) << 6) | ((buf[0] >> 3) << 1) | (alpha >> 7);
-        txHalf++;
-    }
-    gd_printf("Loaded texture '%s' (%d bytes)\n", file, txSize);
-    gd_fclose(txFile);
-    dl = gd_gentexture(texture, fmt, size, arg3, arg4);
-    gd_printf("Generated '%s' (%d) display list ok.\n", file, dl);
-
-    return texture;
-}
-
-/* 252F88 -> 252FAC */
-void Unknown801A47B8(struct ObjView *v) {
-    if (v->flags & VIEW_SAVE_TO_GLOBAL) {
-        D_801BE994 = v;
-    }
-}
-
-/**
- * Unused - called by func_801A520C and Unknown801A5344
- */
-void func_801A4808(void) {
-    while (D_801A8674 != 0) {
-        ;
-    }
-
-    return;
-}
-
 /* 253018 -> 253084 */
 void func_801A4848(s32 linkDl) {
     struct GdDisplayList *curDl;
@@ -2327,7 +2272,7 @@ void stub_draw_label_text(char *s) {
     gd_printf("stub_draw_label_text: '%s'\n", s);
 }
 
-void set_active_view(struct ObjView *v) {
+void gdSetActiveView(struct ObjView *v) {
     sActiveView = v;
 }
 

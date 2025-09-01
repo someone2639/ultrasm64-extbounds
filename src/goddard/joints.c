@@ -174,7 +174,7 @@ void func_8018F328(struct ObjBone *b) {
     b->unk58.z = joint2->worldPos.z - joint1->worldPos.z;
 
     gdVectorNormalize(&b->unk58);
-    gd_create_origin_lookat(&b->matB0, &b->unk58, 0); //? 0.0f
+    gdLookAtFromOriginF(&b->matB0, &b->unk58, 0); //? 0.0f
 }
 
 /* 23DC9C -> 23DCF0 */
@@ -234,7 +234,7 @@ void func_8018F520(struct ObjBone *b) {
     sp90.y *= sp68;
     sp90.z *= sp68;
 
-    gd_cross_vec3f(&sp90, &sp6C, &sp78);
+    gdVectorCrossF(&sp90, &sp6C, &sp78);
     sp84.x = sp78.x;
     sp84.y = sp78.y;
     sp84.z = sp78.z;
@@ -685,7 +685,7 @@ void func_80190B54(struct ObjJoint *a0, struct ObjJoint *a1, struct GdVec3f *a2)
         spA4.y *= sp78;
         spA4.z *= sp78;
 
-        gd_cross_vec3f(&spA4, &D_801BAAD0, &sp80);
+        gdVectorCrossF(&spA4, &D_801BAAD0, &sp80);
         sp78 = gdVectorLength(&sp80);
         gdVectorNormalize(&sp80);
         gd_create_rot_mat_angular(&sp38, &sp80, sp78);
@@ -923,7 +923,7 @@ void func_80191A1C(struct ObjBone *a0) {
     if (gGdTempBone == NULL) {
         gGdTempBone = a0;
     }
-    sp3C = gd_dot_vec3f(&gGdTempBone->unk40, &a0->unk40);
+    sp3C = gdVectorDotF(&gGdTempBone->unk40, &a0->unk40);
     a0->unk118 = sp3C;
 
     if ((sp3C -= sp38) < 0.0f) {
