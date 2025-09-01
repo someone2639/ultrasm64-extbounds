@@ -75,7 +75,6 @@ static OSMesgQueue sGdDMAQueue;
 static OSMesg sGdMesgBuf[1];
 static OSMesg sGdDMACompleteMsg; // msg buf for D_801BE8B0 queue
 static OSIoMesg sGdDMAReqMesg;
-static struct ObjView *D_801BE994; // store if View flag 0x40 set
 
 // data
 static s32 D_801A8674 = 0;
@@ -103,6 +102,8 @@ static s32 sDebugViewsCount = 0;               // number of elements in the sDeb
 static s32 sCurrDebugViewIndex = 0;             // timing activate cool down counter?
 struct GdDisplayList *sCurrentGdDl = NULL;
 static u32 sGdDlCount = 0;
+
+
 static struct DynListBankInfo sDynLists[] = {
     { STD_LIST_BANK, GODDARD_MAIN_FACE_SCENE },
     { TABLE_END, NULL }
@@ -800,7 +801,7 @@ void gdAddMemoryToHeap(void *addr, u32 size) {
 
 /* 24AAE0 -> 24AB7C */
 void gdInitMemory(void *blockpool, u32 size) {
-    imin_impl("gdInitMemory");
+    imin();
     // Align downwards?
     size = (size - 8) & ~7;
     // Align to next double word boundry?
@@ -818,8 +819,7 @@ void gdInitMemory(void *blockpool, u32 size) {
  * Initializes the Mario head demo
  */
 void gdSetupFace(void) {
-
-    imin_impl("gdSetupFace");
+    imin();
     sMarioSceneGrp = NULL;
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF);
     osCreateMesgQueue(&sGdDMAQueue, sGdMesgBuf, ARRAY_COUNT(sGdMesgBuf));
@@ -857,7 +857,7 @@ struct ObjView *make_view_withgrp(char *name, struct ObjGroup *grp) {
 
 /* 24AD14 -> 24AEB8 */
 void gdLoadScene(s32 id) {
-    imin_impl("gdLoadScene");
+    imin();
     switch (id) {
         case GD_SCENE_REGULAR_MARIO: // normal Mario head
             if (sMarioSceneGrp == NULL) {
@@ -2398,7 +2398,7 @@ void gdInitSystem(void) {
     s32 i; // 34
     s8 *data; // 2c
 
-    imin_impl("gdInitSystem");
+    imin();
     i = (u32)(sMemBlockPoolSize - DOUBLE_SIZE_ON_64_BIT(0x3E800));
     data = gd_allocblock(i);
     gd_add_mem_to_heap(i, data, 0x10);

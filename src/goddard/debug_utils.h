@@ -58,6 +58,11 @@ print_stack_trace(); \
 while (1); \
 }
 
+extern void imin_impl(const char *);
+#define imin() do {imin_impl(__FUNCTION__);} while (0)
+
+extern void imout(void);
+
 // functions
 extern struct MemTracker *start_memtracker(const char *);
 extern u32 stop_memtracker(const char *);
@@ -75,8 +80,6 @@ extern void restart_timer(const char *);
 extern void split_timer(const char *);
 extern void stop_timer(const char *);
 extern f32 get_scaled_timer_total(const char *);
-extern void imin_impl(const char *);
-extern void imout(void);
 extern f32 gd_rand_float(void);
 extern s32 gd_atoi(const char *);
 extern f64 gd_lazy_atof(const char *, u32 *);

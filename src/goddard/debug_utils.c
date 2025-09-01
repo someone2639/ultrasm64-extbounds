@@ -443,7 +443,7 @@ void setup_timers(void) {
 }
 
 /**
- * Prints the stack trace registered by callng imin_impl()/imout()
+ * Prints the stack trace registered by callng imin()/imout()
  */
 void print_stack_trace(void) {
     s32 i;
