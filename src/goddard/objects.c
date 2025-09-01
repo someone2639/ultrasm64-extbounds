@@ -194,7 +194,7 @@ struct GdObj *make_object(enum ObjTypeFlag objType) {
     u8 *newObjBytes;
     s32 objPermanence = 0x10;
 
-    imin("make_object");
+    imin_impl("make_object");
 
     switch (objType) {
         case OBJ_TYPE_JOINTS:
@@ -419,7 +419,7 @@ void reset_plane(struct ObjPlane *plane) {
     s32 sp30;
     register f32 sp28;
 
-    imin("reset_plane");
+    imin_impl("reset_plane");
 
     sp4C = plane->unk40;
     calc_face_normal(sp4C);
@@ -786,7 +786,7 @@ struct ObjGroup *make_group(s32 count, ...) {
 void addto_group(struct ObjGroup *group, struct GdObj *obj) {
     char strbuf[0x20];
 
-    imin("addto_group");
+    imin_impl("addto_group");
 
     // Add object to the end of group's member list
     if (group->firstMember == NULL) {
@@ -814,7 +814,7 @@ void addto_group(struct ObjGroup *group, struct GdObj *obj) {
  * Adds the object as a member of the group, placing it at the beginning of the group's list.
  */
 void addto_groupfirst(struct ObjGroup *group, struct GdObj *obj) {
-    imin("addto_groupfirst");
+    imin_impl("addto_groupfirst");
 
     // Add object to the beginning of group's member list
     if (group->firstMember == NULL) {
@@ -1642,7 +1642,7 @@ void gdMoveCurrentGroup(void) {
 }
 
 void proc_view_movement(struct ObjView *view) {
-    imin("movement");
+    imin_impl("movement");
     gdCurrentMoveCamera = view->activeCam;
     sCurrentMoveView = view;
     if ((sCurrentMoveGrp = view->components) != NULL) {

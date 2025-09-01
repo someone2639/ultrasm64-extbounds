@@ -443,7 +443,7 @@ void setup_timers(void) {
 }
 
 /**
- * Prints the stack trace registered by callng imin()/imout()
+ * Prints the stack trace registered by callng imin_impl()/imout()
  */
 void print_stack_trace(void) {
     s32 i;
@@ -457,7 +457,7 @@ void print_stack_trace(void) {
  * "I'm in"
  * Adds the function name to the stack trace
  */
-void imin(const char *routine) {
+void imin_impl(const char *routine) {
     sRoutineNames[sNumRoutinesInStack++] = routine;
     sRoutineNames[sNumRoutinesInStack] = NULL;  //! array bounds is checked after writing this.
 

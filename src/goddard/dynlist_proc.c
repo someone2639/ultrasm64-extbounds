@@ -752,7 +752,7 @@ void chk_shapegen(struct ObjShape *shape) {
     struct GdObj *oldObjHead;    // sp2C
 
     start_memtracker("chk_shapegen");
-    imin("chk_shapegen");
+    imin_impl("chk_shapegen");
     shapeMtls = shape->mtlGroup;
     shapeFaces = shape->faceGroup;
     shapeVtx = shape->vtxGroup;
@@ -2111,7 +2111,7 @@ void dLinkWithPointer(void *ptr) {
     }
 
     dynobj = sDynListCurObj;
-    imin("dLinkWithPtr");
+    imin_impl("dLinkWithPtr");
     switch (sDynListCurObj->type) {
         case OBJ_TYPE_CAMERAS:
             ((struct ObjCamera *) dynobj)->unk30 = ptr;

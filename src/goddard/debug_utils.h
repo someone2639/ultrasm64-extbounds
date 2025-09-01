@@ -75,7 +75,7 @@ extern void restart_timer(const char *);
 extern void split_timer(const char *);
 extern void stop_timer(const char *);
 extern f32 get_scaled_timer_total(const char *);
-extern void imin(const char *);
+extern void imin_impl(const char *);
 extern void imout(void);
 extern f32 gd_rand_float(void);
 extern s32 gd_atoi(const char *);

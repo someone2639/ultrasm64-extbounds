@@ -63,7 +63,7 @@ void calc_face_normal(struct ObjFace *face) {
     struct ObjVertex *vtx3;
     f32 mul = 1000.0f;
 
-    imin("calc_facenormal");
+    imin_impl("calc_facenormal");
 
     if (face->vtxCount >= 3) {  // need at least three points to compute a normal
         vtx1 = face->vertices[0];
@@ -124,7 +124,7 @@ struct ObjVertex *gd_make_vertex(f32 x, f32 y, f32 z) {
 struct ObjFace *make_face_with_colour(f32 r, f32 g, f32 b) {
     struct ObjFace *newFace;
 
-    imin("make_face");
+    imin_impl("make_face");
     newFace = (struct ObjFace *) make_object(OBJ_TYPE_FACES);
 
     newFace->colour.r = r;
@@ -600,7 +600,7 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
 }
 
 void gdResetDynListAndShapeProcessors(void) {
-    imin("gdResetDynListAndShapeProcessors()");
+    imin_impl("gdResetDynListAndShapeProcessors()");
     gdResetDynListProcessor();
     gdResetShapeHelper();
     imout();

@@ -47,7 +47,7 @@ s32 gd_sfx_to_play(void) {
 
 // Singular entrypoint to the Goddard system
 void gdInit(s16 sceneID) {
-    imin(__FUNCTION__);
+    imin_impl(__FUNCTION__);
 
     void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(GODDARD_TOTAL_HEAP_SIZE), MEMORY_POOL_LEFT);
     if (addr != NULL) {

@@ -195,7 +195,7 @@ void collision_something_801926A4(struct ObjNet *net) {
 void move_bonesnet(struct ObjNet *net) {
     struct ObjGroup *sp24;
 
-    imin("move_bonesnet");
+    imin_impl("move_bonesnet");
     gdMakeIdentityMatrixF(&D_801B9DC8);
     if ((sp24 = net->unk1C8) != NULL) {
         apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_801913C0, sp24);
@@ -413,7 +413,7 @@ void move_net(struct ObjNet *net) {
 
 /* 241E94 -> 241F0C; orig name: func_801936C4 */
 void move_nets(struct ObjGroup *group) {
-    imin("move_nets");
+    imin_impl("move_nets");
     restart_timer("move_nets");
     apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) func_80192294, group);
     apply_to_obj_types_in_group(OBJ_TYPE_NETS, (applyproc_t) move_net, group);

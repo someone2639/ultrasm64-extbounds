@@ -800,7 +800,7 @@ void gdAddMemoryToHeap(void *addr, u32 size) {
 
 /* 24AAE0 -> 24AB7C */
 void gdInitMemory(void *blockpool, u32 size) {
-    imin("gdInitMemory");
+    imin_impl("gdInitMemory");
     // Align downwards?
     size = (size - 8) & ~7;
     // Align to next double word boundry?
@@ -819,7 +819,7 @@ void gdInitMemory(void *blockpool, u32 size) {
  */
 void gdSetupFace(void) {
 
-    imin("gdSetupFace");
+    imin_impl("gdSetupFace");
     sMarioSceneGrp = NULL;
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF);
     osCreateMesgQueue(&sGdDMAQueue, sGdMesgBuf, ARRAY_COUNT(sGdMesgBuf));
@@ -857,7 +857,7 @@ struct ObjView *make_view_withgrp(char *name, struct ObjGroup *grp) {
 
 /* 24AD14 -> 24AEB8 */
 void gdLoadScene(s32 id) {
-    imin("gdLoadScene");
+    imin_impl("gdLoadScene");
     switch (id) {
         case GD_SCENE_REGULAR_MARIO: // normal Mario head
             if (sMarioSceneGrp == NULL) {
@@ -2398,7 +2398,7 @@ void gdInitSystem(void) {
     s32 i; // 34
     s8 *data; // 2c
 
-    imin("gdInitSystem");
+    imin_impl("gdInitSystem");
     i = (u32)(sMemBlockPoolSize - DOUBLE_SIZE_ON_64_BIT(0x3E800));
     data = gd_allocblock(i);
     gd_add_mem_to_heap(i, data, 0x10);
