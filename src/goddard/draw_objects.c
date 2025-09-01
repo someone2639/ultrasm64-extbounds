@@ -421,7 +421,7 @@ void draw_face(struct ObjFace *face) {
     s32 useVtxTextureCoords = FALSE;
     Vtx *gbiVtx;
 
-    imin_impl("draw_face");
+    imin();
     if (sUseSelectedColor == FALSE && face->mtlId >= 0) { // -1 == colored face
         if (face->mtl != NULL) {
             if ((i = face->mtl->gddlNumber) != 0) {
@@ -723,7 +723,7 @@ void check_grabbable_click(struct GdObj *input) {
 void gdDrawView(enum SceneType process, struct ObjGroup *interactables, struct ObjGroup *lightgrp) {
 
     restart_timer("gdDrawView");
-    imin_impl("gdDrawView()");
+    imin();
     sUnreadShapeFlag = 0;
     sUpdateViewState.unreadCounter = 0;
     restart_timer("draw1");
@@ -765,7 +765,7 @@ void gdDrawView(enum SceneType process, struct ObjGroup *interactables, struct O
     apply_to_obj_types_in_group(OBJ_TYPE_LIGHTS, (applyproc_t) register_light, gGdLightGroup);
     split_timer("draw1");
     restart_timer("drawobj");
-    imin_impl("process_group");
+    imin();
     if (sSceneProcessType == FIND_PICKS) {
         apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) check_grabbable_click, interactables);
     } else {
@@ -1216,7 +1216,7 @@ void map_vertices(struct ObjGroup *facegrp, struct ObjGroup *vtxgrp) {
     register struct ListNode *vtxNode;
     struct ObjVertex *vtx;
 
-    imin_impl("map_vertices");
+    imin();
 
     // resolve vertex indices to actual vertices
     faceNode = facegrp->firstMember;
@@ -1323,7 +1323,7 @@ void update_view(struct ObjView *view) {
         return;
     }
 
-    imin_impl("UpdateView()");
+    imin();
     if (view->proc != NULL) {
         view->proc(view);
     }
