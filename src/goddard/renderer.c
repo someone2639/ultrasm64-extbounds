@@ -57,8 +57,6 @@ static struct GdColour sLightScaleColours[2];
 static struct LightDirVec sLightDirections[2];
 static s32 sLightId;
 static Hilite sHilites[600];
-static struct GdVec3f D_801BD758;
-static struct GdVec3f D_801BD768; // had to migrate earlier
 static struct ObjView *sDebugViews[2];  // Seems to be a list of ObjViews for displaying debug info
 static struct GdDisplayList *sStaticDl;
 static struct GdDisplayList *sDynamicMainDls[2];
@@ -1158,12 +1156,11 @@ s32 gd_enddlsplist_parent(void) {
     gDPPipeSync(next_gfx());
     gSPEndDisplayList(next_gfx());
     if (sCurrentGdDl->parent != NULL) {
-        sCurrentGdDl->parent->curVtxIdx = (sCurrentGdDl->parent->curVtxIdx + sCurrentGdDl->curVtxIdx);
-        sCurrentGdDl->parent->curMtxIdx = (sCurrentGdDl->parent->curMtxIdx + sCurrentGdDl->curMtxIdx);
-        sCurrentGdDl->parent->curLightIdx =
-            (sCurrentGdDl->parent->curLightIdx + sCurrentGdDl->curLightIdx);
-        sCurrentGdDl->parent->curGfxIdx = (sCurrentGdDl->parent->curGfxIdx + sCurrentGdDl->curGfxIdx);
-        sCurrentGdDl->parent->curVpIdx = (sCurrentGdDl->parent->curVpIdx + sCurrentGdDl->curVpIdx);
+        sCurrentGdDl->parent->curVtxIdx += sCurrentGdDl->curVtxIdx;
+        sCurrentGdDl->parent->curMtxIdx += sCurrentGdDl->curMtxIdx;
+        sCurrentGdDl->parent->curLightIdx += sCurrentGdDl->curLightIdx;
+        sCurrentGdDl->parent->curGfxIdx += sCurrentGdDl->curGfxIdx;
+        sCurrentGdDl->parent->curVpIdx += sCurrentGdDl->curVpIdx;
     }
     curDlIdx = sCurrentGdDl->curGfxIdx;
     return curDlIdx;
@@ -1265,7 +1262,7 @@ void gdDisplayListTranslate(f32 x, f32 y, f32 z) {
 /**
  * Adds a display list operation that scales the current matrix by `x`, `y`, and `z`.
  */
-void gd_dl_scale(f32 x, f32 y, f32 z) {
+void gdDisplayListMatrixScale(f32 x, f32 y, f32 z) {
     Mat4f mtx;
     struct GdVec3f vec;
 
@@ -1667,7 +1664,7 @@ void set_gd_mtx_parameters(s32 params) {
 /**
  * Adds a viewport to the current display list based on the current active view
  */
-static void gdViewport(void) {
+static void gdMakeViewportFromCurrentView(void) {
     Vp *vp;
 
     vp = &DL_CURRENT_VP(sCurrentGdDl);
@@ -1776,7 +1773,7 @@ void start_view_dl(struct ObjView *view) {
     if (view->flags & VIEW_ALLOC_ZBUF) {
         gSPSetGeometryMode(next_gfx(), G_ZBUFFER);
     }
-    gdViewport();
+    gdMakeViewportFromCurrentView();
     gdChangeRenderMode();
     gDPPipeSync(next_gfx());
 }
@@ -1899,22 +1896,8 @@ void parse_p1_controller(void) {
     }
 }
 
-/* 251AF4 -> 251B40 */
-void func_801A3324(f32 x, f32 y, f32 z) {
-    D_801BD768.x = x;
-    D_801BD768.y = y;
-    D_801BD768.z = z;
-    D_801BD758.x = x;
-    D_801BD758.y = y;
-    D_801BD758.z = z;
-}
-
-/* 251B40 -> 251BC8 */
 void func_801A3370(f32 x, f32 y, f32 z) {
     gdDisplayListDisplacement(x, y, z);
-    D_801BD768.x += x;
-    D_801BD768.y += y;
-    D_801BD768.z += z;
 }
 
 void border_active_view(void) {
@@ -2051,7 +2034,6 @@ void gd_create_ortho_matrix(f32 l, f32 r, f32 b, f32 t, f32 n, f32 f) {
     rotMtx = GD_LOWER_29(&DL_CURRENT_MTX(sCurrentGdDl));
     gSPMatrix(next_gfx(), rotMtx, G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
 
-    func_801A3324(0.0f, 0.0f, 0.0f);
     next_mtx();
 }
 
@@ -2074,7 +2056,6 @@ void gd_create_perspective_matrix(f32 fovy, f32 aspect, f32 near, f32 far) {
     guRotate(&DL_CURRENT_MTX(sCurrentGdDl), 0.0f, 0.0f, 0.0f, 1.0f);
     rotMtx = GD_LOWER_29(&DL_CURRENT_MTX(sCurrentGdDl));
     gSPMatrix(next_gfx(), rotMtx, G_MTX_MODELVIEW | G_MTX_LOAD | G_MTX_NOPUSH);
-    func_801A3324(0.0f, 0.0f, 0.0f);
     next_mtx();
 }
 
@@ -2501,8 +2482,8 @@ void gd_put_sprite(u16 *sprite, s32 x, s32 y, s32 wx, s32 wy) {
 }
 
 void gdInitMouse(struct ObjGroup *parentgrp) {
-    struct ObjView *mouseview; // 34
-    struct ObjGroup *mousegrp; // 30
+    struct ObjView *mouseview;
+    struct ObjGroup *mousegrp;
 
     sHandShape = make_shape(0, "mouse");
     sHandShape->dlNums[0] = gdInitDisplayList(7);

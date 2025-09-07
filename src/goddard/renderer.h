@@ -144,7 +144,7 @@ void gdDisplayListPushMatrix(void);
 void gdDisplayListPopMatrix(void);
 void gdDisplayListDisplacement(f32 x, f32 y, f32 z);
 void gdDisplayListTranslate(f32 x, f32 y, f32 z);
-void gd_dl_scale(f32 x, f32 y, f32 z);
+void gdDisplayListMatrixScale(f32 x, f32 y, f32 z);
 void func_8019F2C4(f32 arg0, s8 arg1);
 void gd_dl_lookat(struct ObjCamera *cam, f32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6, f32 arg7);
 void gdVerifyTriangle(s32 vtxcount);

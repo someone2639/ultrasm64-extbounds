@@ -215,7 +215,7 @@ void draw_shape(struct ObjShape *shape, s32 flag,
     }
 
     if (flag & 1) {
-        gd_dl_scale(c, d, e);
+        gdDisplayListMatrixScale(c, d, e);
     }
 
     draw_shape_faces(shape);
