@@ -1,3 +1,9 @@
+#include <PR/ultratypes.h>
+
+#include "macros.h"
+#include "animdata.h"
+#include "src/goddard/gd_types.h"
+
 static s16 animdata_silver_star_1[][6] = {
     { 0, 0, 0, -1300, 1500, 2600 },  { 0, 0, 0, -1300, 1500, 2600 },  { 0, 0, 0, -1300, 1500, 2600 },
     { 0, 0, 0, -1300, 1500, 2600 },  { 0, 0, 0, -1300, 1500, 2600 },  { 0, 0, 0, -1300, 1500, 2600 },
