@@ -125,12 +125,10 @@ extern u8 sPPDebugPage;
 #endif
 extern u8 gPuppyFont;
 extern ColorRGBA gCurrEnvCol;
-extern s32 ramsizeSegment[33];
 extern const s8 nameTable;
 extern s32 mempool;
 extern f32 textSize;
 extern u32 gPoolMem;
-extern u32 gMiscMem;
 extern u8 gPuppyWarp;
 extern u8 gPuppyWarpArea;
 extern u8 gLastWarpID;
