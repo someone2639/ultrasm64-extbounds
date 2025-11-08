@@ -2,7 +2,7 @@
 #include <PR/gs2dex.h>
 #include "s2d_config.h"
 #include "init.h"
-#include "debug.h"
+#include "debugger/assert.h"
 #include "s2d_error.h"
 
 void s2d_init(void) {

@@ -1,7 +1,7 @@
 #include <PR/ultratypes.h>
 
 #include "behavior_data.h"
-#include "debug.h"
+#include "debugger/assert.h"
 #include "engine/behavior_script.h"
 #include "engine/surface_collision.h"
 #include "engine/math_util.h"
@@ -14,8 +14,6 @@
 #include "print.h"
 #include "sm64.h"
 #include "types.h"
-
-char gAssertionStr[0x200];
 
 #ifdef VANILLA_DEBUG
 

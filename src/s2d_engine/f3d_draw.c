@@ -2,7 +2,7 @@
 
 #include <ultra64.h>
 #include "mtx.h"
-#include "debug.h"
+#include "debugger/assert.h"
 
 #include "s2d_draw.h"
 

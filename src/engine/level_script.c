@@ -59,8 +59,6 @@ enum ScriptStatus {
 
 static uintptr_t sStack[NUM_TLB_SEGMENTS];
 
-static struct AllocOnlyPool *sLevelPool = NULL;
-
 static u16 sDelayFrames = 0;
 static u16 sDelayFrames2 = 0;
 
@@ -108,7 +106,7 @@ static s32 eval_script_op(s8 op, s32 arg) {
 
 static void level_cmd_load_and_execute(void) {
     main_pool_push_state();
-    load_segment(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8), MEMORY_POOL_LEFT, CMD_GET(void *, 16), CMD_GET(void *, 20));
+    load_segment(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8), CMD_GET(void *, 16), CMD_GET(void *, 20));
 
     *sStackTop++ = (uintptr_t) NEXT_CMD;
     *sStackTop++ = (uintptr_t) sStackBase;
@@ -123,8 +121,7 @@ static void level_cmd_exit_and_execute(void) {
     main_pool_pop_state();
     main_pool_push_state();
 
-    load_segment(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8),
-            MEMORY_POOL_LEFT, CMD_GET(void *, 16), CMD_GET(void *, 20));
+    load_segment(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8), CMD_GET(void *, 16), CMD_GET(void *, 20));
 
     sStackTop = sStackBase;
     sCurrentCmd = segmented_to_virtual(targetAddr);
@@ -288,8 +285,7 @@ static void level_cmd_load_to_fixed_address(void) {
 }
 
 static void level_cmd_load_raw(void) {
-    load_segment(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8),
-            MEMORY_POOL_LEFT, CMD_GET(void *, 12), CMD_GET(void *, 16));
+    load_segment(CMD_GET(s16, 2), CMD_GET(void *, 4), CMD_GET(void *, 8), CMD_GET(void *, 12), CMD_GET(void *, 16));
     sCurrentCmd = CMD_NEXT;
 }
 
@@ -301,7 +297,7 @@ static void level_cmd_load_yay0(void) {
 static void level_cmd_load_mario_head(void) {
 #ifdef KEEP_MARIO_HEAD
     // HACKERSM64_DO: Fix these hardcoded sizes
-    void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(0xE1000), MEMORY_POOL_LEFT);
+    void *addr = main_pool_alloc(DOUBLE_SIZE_ON_64_BIT(0xE1000));
     if (addr != NULL) {
         gdm_init(addr, DOUBLE_SIZE_ON_64_BIT(0xE1000));
         gd_add_to_heap(gZBuffer, sizeof(gZBuffer)); // 0x25800
@@ -330,7 +326,7 @@ static void level_cmd_init_level(void) {
     gInitLevelTime = osGetTime();
 #endif
 
-    init_graph_node_start(NULL, (struct GraphNodeStart *) &gObjParentGraphNode);
+    init_graph_node_start((struct GraphNodeStart *) &gObjParentGraphNode);
     clear_objects();
     clear_areas();
     main_pool_push_state();
@@ -381,19 +377,11 @@ static void level_cmd_clear_level(void) {
 }
 
 static void level_cmd_alloc_level_pool(void) {
-    if (sLevelPool == NULL) {
-        sLevelPool = alloc_only_pool_init(main_pool_available() - sizeof(struct AllocOnlyPool),
-                                          MEMORY_POOL_LEFT);
-    }
-
     sCurrentCmd = CMD_NEXT;
 }
 
 static void level_cmd_free_level_pool(void) {
     s32 i;
-
-    alloc_only_pool_resize(sLevelPool, sLevelPool->usedSpace);
-    sLevelPool = NULL;
 
     for (i = 0; i < AREA_COUNT; i++) {
         if (gAreaData[i].terrainData != NULL) {
@@ -412,7 +400,7 @@ static void level_cmd_begin_area(void) {
 
     if (areaIndex < AREA_COUNT) {
         struct GraphNodeRoot *screenArea =
-            (struct GraphNodeRoot *) process_geo_layout(sLevelPool, geoLayoutAddr);
+            (struct GraphNodeRoot *) process_geo_layout(geoLayoutAddr);
         struct GraphNodeCamera *node = (struct GraphNodeCamera *) screenArea->views[0];
 
         sCurrAreaIndex = areaIndex;
@@ -442,7 +430,7 @@ static void level_cmd_load_model_from_dl(void) {
     assertf(model < MODEL_ID_COUNT, "Tried to load an invalid model ID: 0x%04X", model);
     if (model < MODEL_ID_COUNT) {
         gLoadedGraphNodes[model] =
-            (struct GraphNode *) init_graph_node_display_list(sLevelPool, 0, layer, dl_ptr);
+            (struct GraphNode *) init_graph_node_display_list(0, layer, dl_ptr);
     }
 
     sCurrentCmd = CMD_NEXT;
@@ -454,7 +442,7 @@ static void level_cmd_load_model_from_geo(void) {
 
     assertf(model < MODEL_ID_COUNT, "Tried to load an invalid model ID: 0x%04X", model);
     if (model < MODEL_ID_COUNT) {
-        gLoadedGraphNodes[model] = process_geo_layout(sLevelPool, geo);
+        gLoadedGraphNodes[model] = process_geo_layout(geo);
     }
 
     sCurrentCmd = CMD_NEXT;
@@ -471,7 +459,7 @@ static void level_cmd_23(void) {
         // GraphNodeScale has a GraphNode at the top. This
         // is being stored to the array, so cast the pointer.
         gLoadedGraphNodes[model] =
-            (struct GraphNode *) init_graph_node_scale(sLevelPool, 0, layer, dl, scale);
+            (struct GraphNode *) init_graph_node_scale(0, layer, dl, scale);
     }
 
     sCurrentCmd = CMD_NEXT;
@@ -498,7 +486,7 @@ static void level_cmd_place_object(void) {
         && (CMD_GET(u8, 2) & (1 << (gCurrActNum - 1)))
     ) {
         ModelID16 model = CMD_GET(u32, 0x18);
-        struct SpawnInfo *spawnInfo = alloc_only_pool_alloc(sLevelPool, sizeof(struct SpawnInfo));
+        struct SpawnInfo *spawnInfo = main_pool_alloc(sizeof(struct SpawnInfo));
 
         vec3s_set(spawnInfo->startPos, CMD_GET(s16, 4),
                                        CMD_GET(s16, 6),
@@ -526,7 +514,7 @@ static void level_cmd_place_object(void) {
 static void level_cmd_create_warp_node(void) {
     if (sCurrAreaIndex != -1) {
         struct ObjectWarpNode *warpNode =
-            alloc_only_pool_alloc(sLevelPool, sizeof(struct ObjectWarpNode));
+            main_pool_alloc(sizeof(struct ObjectWarpNode));
 
         warpNode->node.id = CMD_GET(u8, 2);
         warpNode->node.destLevel = CMD_GET(u8, 3) + CMD_GET(u8, 6);
@@ -547,7 +535,7 @@ static void level_cmd_create_instant_warp(void) {
     if (sCurrAreaIndex != -1) {
         if (gAreas[sCurrAreaIndex].instantWarps == NULL) {
             gAreas[sCurrAreaIndex].instantWarps =
-                alloc_only_pool_alloc(sLevelPool, INSTANT_WARP_INDEX_STOP * sizeof(struct InstantWarp));
+                main_pool_alloc(INSTANT_WARP_INDEX_STOP * sizeof(struct InstantWarp));
 
             for (i = INSTANT_WARP_INDEX_START; i < INSTANT_WARP_INDEX_STOP; i++) {
                 gAreas[sCurrAreaIndex].instantWarps[i].id = 0;
@@ -582,7 +570,7 @@ static void level_cmd_create_painting_warp_node(void) {
     if (sCurrAreaIndex != -1) {
         if (gAreas[sCurrAreaIndex].paintingWarpNodes == NULL) {
             gAreas[sCurrAreaIndex].paintingWarpNodes =
-                alloc_only_pool_alloc(sLevelPool, NUM_PAINTINGS * sizeof(struct WarpNode));
+                main_pool_alloc(NUM_PAINTINGS * sizeof(struct WarpNode));
 
             for (i = 0; i < NUM_PAINTINGS; i++) {
                 gAreas[sCurrAreaIndex].paintingWarpNodes[i].id = 0;
@@ -606,7 +594,7 @@ static void level_cmd_3A(void) {
     if (sCurrAreaIndex != -1) {
         if ((val4 = gAreas[sCurrAreaIndex].unused) == NULL) {
             val4 = gAreas[sCurrAreaIndex].unused =
-                alloc_only_pool_alloc(sLevelPool, sizeof(struct UnusedArea28));
+                main_pool_alloc(sizeof(struct UnusedArea28));
         }
 
         val4->unk00 = CMD_GET(s16, 2);
@@ -629,7 +617,7 @@ static void level_cmd_create_whirlpool(void) {
         && (CMD_GET(u8, 3) & (1 << (gCurrActNum - 1)))
     ) {
         if ((whirlpool = gAreas[sCurrAreaIndex].whirlpools[index]) == NULL) {
-            whirlpool = alloc_only_pool_alloc(sLevelPool, sizeof(struct Whirlpool));
+            whirlpool = main_pool_alloc(sizeof(struct Whirlpool));
             gAreas[sCurrAreaIndex].whirlpools[index] = whirlpool;
         }
 
@@ -658,7 +646,7 @@ static void level_cmd_set_terrain_data(void) {
         // The game modifies the terrain data and must be reset upon level reload.
         Collision *data = segmented_to_virtual(CMD_GET(void *, 4));
         u32 size = get_area_terrain_size(data) * sizeof(Collision);
-        gAreas[sCurrAreaIndex].terrainData = alloc_only_pool_alloc(sLevelPool, size);
+        gAreas[sCurrAreaIndex].terrainData = main_pool_alloc(size);
         memcpy(gAreas[sCurrAreaIndex].terrainData, data, size);
 #endif
     }

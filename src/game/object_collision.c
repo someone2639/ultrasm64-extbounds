@@ -2,6 +2,7 @@
 
 #include "sm64.h"
 #include "debug.h"
+#include "debugger/assert.h"
 #include "interaction.h"
 #include "mario.h"
 #include "object_list_processor.h"

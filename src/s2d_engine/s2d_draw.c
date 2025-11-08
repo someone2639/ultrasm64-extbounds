@@ -1,7 +1,7 @@
 #include "s2d_config.h"
 #include <ultra64.h>
 #include "mtx.h"
-#include "debug.h"
+#include "debugger/assert.h"
 
 float myScale = 1.0f;
 int myDegrees = 0;

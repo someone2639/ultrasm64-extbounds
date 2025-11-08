@@ -9,7 +9,7 @@ extern char *__n64Assert_Filename;
 extern u32   __n64Assert_LineNum;
 extern char *__n64Assert_Condition;
 extern char __n64Assert_MessageBuf[ASSERT_MESGBUF_SIZE + 1];
-extern void __n64Assert(char *fileName, u32 lineNum, char *cond);
+extern void __n64Assert(char *fileName, u32 lineNum, char *cond) __attribute__((noreturn));
 
 /**
  * Will always halt with your message of choice

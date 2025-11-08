@@ -47,7 +47,6 @@ GeoLayoutCommandProc GeoLayoutJumpTable[] = {
 };
 
 struct GraphNode gObjParentGraphNode;
-struct AllocOnlyPool *gGraphNodePool;
 struct GraphNode *gCurRootGraphNode;
 
 /* The gGeoViews array is a mysterious one. Some background:
@@ -210,10 +209,10 @@ void geo_layout_cmd_node_root(void) {
     // cmd+0x02 = 0x00: Mario face, 0x0A: all other levels
     gGeoNumViews = cur_geo_cmd_s16(0x02) + 2;
 
-    graphNode = init_graph_node_root(gGraphNodePool, NULL, 0, x, y, width, height);
+    graphNode = init_graph_node_root(NULL, 0, x, y, width, height);
 
     // HACKERSM64_DO: check type
-    gGeoViews = alloc_only_pool_alloc(gGraphNodePool, gGeoNumViews * sizeof(struct GraphNode *));
+    gGeoViews = main_pool_alloc(gGeoNumViews * sizeof(struct GraphNode *));
 
     graphNode->views = gGeoViews;
     graphNode->numViews = gGeoNumViews;
@@ -235,7 +234,7 @@ void geo_layout_cmd_node_ortho_projection(void) {
     struct GraphNodeOrthoProjection *graphNode;
     f32 scale = (f32) cur_geo_cmd_s16(0x02) / 100.0f;
 
-    graphNode = init_graph_node_ortho_projection(gGraphNodePool, NULL, scale);
+    graphNode = init_graph_node_ortho_projection(NULL, scale);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -263,7 +262,7 @@ void geo_layout_cmd_node_perspective(void) {
         gGeoLayoutCommand += 4 << CMD_SIZE_SHIFT;
     }
 
-    graphNode = init_graph_node_perspective(gGraphNodePool, NULL, (f32) fov, near, far, frustumFunc);
+    graphNode = init_graph_node_perspective(NULL, (f32) fov, near, far, frustumFunc);
 
     register_scene_graph_node(&graphNode->fnNode.node);
 
@@ -275,7 +274,7 @@ void geo_layout_cmd_node_perspective(void) {
   additional functionality
 */
 void geo_layout_cmd_node_start(void) {
-    struct GraphNodeStart *graphNode = init_graph_node_start(gGraphNodePool, NULL);
+    struct GraphNodeStart *graphNode = init_graph_node_start(NULL);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -292,7 +291,7 @@ void geo_layout_cmd_nop3(void) {
    cmd+0x01: u8 enableZBuffer (1 = on, 0 = off)
 */
 void geo_layout_cmd_node_master_list(void) {
-    struct GraphNodeMasterList *graphNode = init_graph_node_master_list(gGraphNodePool, NULL, cur_geo_cmd_u8(0x01));
+    struct GraphNodeMasterList *graphNode = init_graph_node_master_list(NULL, cur_geo_cmd_u8(0x01));
 
     register_scene_graph_node(&graphNode->node);
 
@@ -310,7 +309,7 @@ void geo_layout_cmd_node_level_of_detail(void) {
     s16 maxDistance = cur_geo_cmd_s16(0x06);
 
     struct GraphNodeLevelOfDetail *graphNode =
-        init_graph_node_render_range(gGraphNodePool, NULL, minDistance, maxDistance);
+        init_graph_node_render_range(NULL, minDistance, maxDistance);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -327,7 +326,7 @@ void geo_layout_cmd_node_level_of_detail(void) {
 */
 void geo_layout_cmd_node_switch_case(void) {
     struct GraphNodeSwitchCase *graphNode =
-        init_graph_node_switch_case(gGraphNodePool, NULL,
+        init_graph_node_switch_case(NULL,
                                     cur_geo_cmd_s16(0x02), // case which is initially selected
                                     0,
                                     (GraphNodeFunc) cur_geo_cmd_ptr(0x04), // case update function
@@ -358,7 +357,7 @@ void geo_layout_cmd_node_camera(void) {
     cmdPos = read_vec3s_to_vec3f(pos, cmdPos);
     cmdPos = read_vec3s_to_vec3f(focus, cmdPos);
 
-    graphNode = init_graph_node_camera(gGraphNodePool, NULL, pos, focus,
+    graphNode = init_graph_node_camera(NULL, pos, focus,
                                        (GraphNodeFunc) cur_geo_cmd_ptr(0x10), cur_geo_cmd_s16(0x02));
 
     register_scene_graph_node(&graphNode->fnNode.node);
@@ -439,7 +438,7 @@ void geo_layout_cmd_node_translation_rotation(void) {
         cmdPos += 2 << CMD_SIZE_SHIFT;
     }
 
-    graphNode = init_graph_node_translation_rotation(gGraphNodePool, NULL, drawingLayer, displayList,
+    graphNode = init_graph_node_translation_rotation(NULL, drawingLayer, displayList,
                                                      translation, rotation);
     register_scene_graph_node(&graphNode->node);
 
@@ -475,7 +474,7 @@ void geo_layout_cmd_node_translation(void) {
     }
 
     graphNode =
-        init_graph_node_translation(gGraphNodePool, NULL, drawingLayer, displayList, translation);
+        init_graph_node_translation(NULL, drawingLayer, displayList, translation);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -510,7 +509,7 @@ void geo_layout_cmd_node_rotation(void) {
         cmdPos += 2 << CMD_SIZE_SHIFT;
     }
 
-    graphNode = init_graph_node_rotation(gGraphNodePool, NULL, drawingLayer, displayList, angle);
+    graphNode = init_graph_node_rotation(NULL, drawingLayer, displayList, angle);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -539,7 +538,7 @@ void geo_layout_cmd_node_scale(void) {
         gGeoLayoutCommand += 4 << CMD_SIZE_SHIFT;
     }
 
-    graphNode = init_graph_node_scale(gGraphNodePool, NULL, drawingLayer, displayList, scale);
+    graphNode = init_graph_node_scale(NULL, drawingLayer, displayList, scale);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -569,7 +568,7 @@ void geo_layout_cmd_node_animated_part(void) {
     read_vec3s(translation, &cmdPos[1]);
 
     graphNode =
-        init_graph_node_animated_part(gGraphNodePool, NULL, drawingLayer, displayList, translation);
+        init_graph_node_animated_part(NULL, drawingLayer, displayList, translation);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -614,7 +613,7 @@ void geo_layout_cmd_node_billboard(void) {
         cmdPos += 2 << CMD_SIZE_SHIFT;
     }
 
-    graphNode = init_graph_node_billboard(gGraphNodePool, NULL, drawingLayer, displayList, translation, axis, isCylindrical);
+    graphNode = init_graph_node_billboard(NULL, drawingLayer, displayList, translation, axis, isCylindrical);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -631,7 +630,7 @@ void geo_layout_cmd_node_display_list(void) {
     s32 drawingLayer = cur_geo_cmd_u8(0x01);
     void *displayList = cur_geo_cmd_ptr(0x04);
 
-    graphNode = init_graph_node_display_list(gGraphNodePool, NULL, drawingLayer, displayList);
+    graphNode = init_graph_node_display_list(NULL, drawingLayer, displayList);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -650,7 +649,7 @@ void geo_layout_cmd_node_shadow(void) {
     u8 shadowSolidity = cur_geo_cmd_s16(0x04);
     s16 shadowScale = cur_geo_cmd_s16(0x06);
 
-    graphNode = init_graph_node_shadow(gGraphNodePool, NULL, shadowScale, shadowSolidity, shadowType);
+    graphNode = init_graph_node_shadow(NULL, shadowScale, shadowSolidity, shadowType);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -659,7 +658,7 @@ void geo_layout_cmd_node_shadow(void) {
 
 // 0x17: Create scene graph node that manages the group of all object nodes
 void geo_layout_cmd_node_object_parent(void) {
-    struct GraphNodeObjectParent *graphNode = init_graph_node_object_parent(gGraphNodePool, NULL, &gObjParentGraphNode);
+    struct GraphNodeObjectParent *graphNode = init_graph_node_object_parent(NULL, &gObjParentGraphNode);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -673,7 +672,7 @@ void geo_layout_cmd_node_object_parent(void) {
 */
 void geo_layout_cmd_node_generated(void) {
     struct GraphNodeGenerated *graphNode =
-        init_graph_node_generated(gGraphNodePool, NULL,
+        init_graph_node_generated(NULL,
                                   (GraphNodeFunc) cur_geo_cmd_ptr(0x04), // asm function
                                   cur_geo_cmd_s16(0x02));                // parameter
 
@@ -689,7 +688,7 @@ void geo_layout_cmd_node_generated(void) {
 */
 void geo_layout_cmd_node_background(void) {
     struct GraphNodeBackground *graphNode = init_graph_node_background(
-        gGraphNodePool, NULL,
+        NULL,
         cur_geo_cmd_s16(0x02), // background ID, or RGBA5551 color if asm function is null
         (GraphNodeFunc) cur_geo_cmd_ptr(0x04), // asm function
         0);
@@ -724,7 +723,7 @@ void geo_layout_cmd_copy_view(void) {
         }
     }
 
-    graphNode = init_graph_node_object_parent(gGraphNodePool, NULL, node);
+    graphNode = init_graph_node_object_parent(NULL, node);
 
     register_scene_graph_node(&graphNode->node);
 
@@ -746,7 +745,7 @@ void geo_layout_cmd_node_held_obj(void) {
     read_vec3s(offset, (s16 *) &gGeoLayoutCommand[0x02]);
 
     graphNode = init_graph_node_held_object(
-        gGraphNodePool, NULL, NULL, offset, (GraphNodeFunc) cur_geo_cmd_ptr(0x08), cur_geo_cmd_u8(0x01));
+        NULL, NULL, offset, (GraphNodeFunc) cur_geo_cmd_ptr(0x08), cur_geo_cmd_u8(0x01));
 
     register_scene_graph_node(&graphNode->fnNode.node);
 
@@ -759,12 +758,12 @@ void geo_layout_cmd_node_held_obj(void) {
    cmd+0x02: s16 cullingRadius
 */
 void geo_layout_cmd_node_culling_radius(void) {
-    struct GraphNodeCullingRadius *graphNode = init_graph_node_culling_radius(gGraphNodePool, NULL, cur_geo_cmd_s16(0x02));
+    struct GraphNodeCullingRadius *graphNode = init_graph_node_culling_radius(NULL, cur_geo_cmd_s16(0x02));
     register_scene_graph_node(&graphNode->node);
     gGeoLayoutCommand += 0x04 << CMD_SIZE_SHIFT;
 }
 
-struct GraphNode *process_geo_layout(struct AllocOnlyPool *pool, void *segptr) {
+struct GraphNode *process_geo_layout(void *segptr) {
     // set by register_scene_graph_node when gCurGraphNodeIndex is 0
     // and gCurRootGraphNode is NULL
     gCurRootGraphNode = NULL;
@@ -778,8 +777,6 @@ struct GraphNode *process_geo_layout(struct AllocOnlyPool *pool, void *segptr) {
     gGeoLayoutReturnIndex = 2; // stack index is often copied here?
 
     gGeoLayoutCommand = segmented_to_virtual(segptr);
-
-    gGraphNodePool = pool;
 
     gGeoLayoutStack[0] = 0;
     gGeoLayoutStack[1] = 0;

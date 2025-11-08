@@ -41,9 +41,9 @@
 
 // HackerSM64 patch
 #define FREESTANDING
-extern void* main_pool_alloc(size_t size, int side);
+extern void* main_pool_alloc_aligned_freeable(size_t size, int side);
 static inline void* libdeflate_default_malloc_func(size_t size) {
-  return main_pool_alloc(size, 1);
+  return main_pool_alloc_aligned_freeable(size, 0);
 }
 
 extern void main_pool_free(void*);

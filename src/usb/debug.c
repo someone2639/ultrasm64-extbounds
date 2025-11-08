@@ -6,7 +6,7 @@ flashcarts.
 https://github.com/buu342/N64-UNFLoader
 ***************************************************************/
 
-#include "debug.h"
+#include "debugger/assert.h"
 #ifndef LIBDRAGON
     #include <ultra64.h>
     #include <PR/os_internal.h> // Needed for Crash's Linux toolchain
