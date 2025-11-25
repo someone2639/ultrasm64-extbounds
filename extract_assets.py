@@ -109,6 +109,11 @@ def main():
         langs = None
         inCI = True
 
+    romLUT = get_rom_candidates(inCI)
+
+    if not langs:
+        langs = romLUT.keys()
+
     asset_map = read_asset_map()
     all_assets = []
     any_missing_assets = False
@@ -126,11 +131,6 @@ def main():
         # Nothing to do, no need to read a ROM. For efficiency we don't check
         # the list of old assets either.
         return
-
-    romLUT = get_rom_candidates(inCI)
-
-    if not langs:
-        langs = romLUT.keys()
 
     # verify the correct rom
     for lang in langs:
