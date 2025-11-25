@@ -5,10 +5,8 @@ on:
     branches: [ master, main, hackerCI ]
 
 jobs:
-  build:
-
+  build_default:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout reposistory
       uses: actions/checkout@v2
@@ -17,4 +15,26 @@ jobs:
     - name: Install Dependencies
       run: sudo apt update && sudo apt install -y binutils-mips-linux-gnu gcc git gcc-mips-linux-gnu
     - name: Build HackerSM64 from scratch
-      run: make -j$(nproc) VERBOSE=0
+      run: make -j$(nproc) VERBOSE=0 CI=1
+  # build_debug:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Checkout reposistory
+  #     uses: actions/checkout@v2
+  #     with:
+  #       submodules: recursive
+  #   - name: Install Dependencies
+  #     run: sudo apt update && sudo apt install -y binutils-mips-linux-gnu gcc git gcc-mips-linux-gnu
+  #   - name: Build HackerSM64 from scratch
+  #     run: make -j$(nproc) VERBOSE=0
+  # build_release:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Checkout reposistory
+  #     uses: actions/checkout@v2
+  #     with:
+  #       submodules: recursive
+  #   - name: Install Dependencies
+  #     run: sudo apt update && sudo apt install -y binutils-mips-linux-gnu gcc git gcc-mips-linux-gnu
+  #   - name: Build HackerSM64 from scratch
+  #     run: make -j$(nproc) VERBOSE=0
