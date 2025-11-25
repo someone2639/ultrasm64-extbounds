@@ -106,6 +106,7 @@ def main():
         usage()
         sys.exit(0)
     elif langs == ["--ci"]:
+        langs = None
         inCI = True
 
     asset_map = read_asset_map()
