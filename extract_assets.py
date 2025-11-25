@@ -88,6 +88,8 @@ def main():
     # revision ID in the local asset file.
     new_version = 8
 
+    inCI: bool = False
+
     try:
         local_asset_file = open(".assets-local.txt")
         local_asset_file.readline()
@@ -103,6 +105,8 @@ def main():
     elif langs == ["--help"] or langs == ["-h"]:
         usage()
         sys.exit(0)
+    elif langs == ["--ci"]:
+        inCI = True
 
     asset_map = read_asset_map()
     all_assets = []
@@ -122,7 +126,7 @@ def main():
         # the list of old assets either.
         return
 
-    romLUT = get_rom_candidates()
+    romLUT = get_rom_candidates(inCI)
 
     if not langs:
         langs = romLUT.keys()

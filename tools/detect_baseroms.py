@@ -28,7 +28,7 @@ def usage() -> None:
     print(f"Usage: {sys.argv[0]} version (us jp eu sh list)")
 
 
-def get_rom_candidates() -> dict[str, str]:
+def get_rom_candidates(inCI = False) -> dict[str, str]:
     """
     Search the working directory and the global baserom directory for files,
      then compare hashes of those files with known SHA1's. If a file matches a
@@ -37,6 +37,17 @@ def get_rom_candidates() -> dict[str, str]:
     Returns a dictionary where the key is a version string,
       and the value is the ROM found for that version
     """
+    foundVersions: dict[str, str] = {}
+
+    if inCI:
+        os.system("dd if=/dev/zero of=blank.us.z64 bs=8M count=1")
+        os.system("dd if=/dev/zero of=blank.jp.z64 bs=8M count=1")
+        os.system("dd if=/dev/zero of=blank.eu.z64 bs=8M count=1")
+        foundVersions['us'] = "blank.us.z64"
+        foundVersions['jp'] = "blank.jp.z64"
+        foundVersions['eu'] = "blank.eu.z64"
+        return foundVersions
+
     fileArray: list[str] = [f for f in os.listdir(os.getcwd()) if os.path.isfile(f)]
     if os.path.exists(ROMS_DIR):
         fileArray += [
@@ -45,7 +56,6 @@ def get_rom_candidates() -> dict[str, str]:
             if os.path.isfile(os.path.join(ROMS_DIR, f))
         ]
 
-    foundVersions: dict[str, str] = {}
 
     baseromCandidate: str
     for baseromCandidate in fileArray:
@@ -82,7 +92,7 @@ def get_rom_candidates() -> dict[str, str]:
     return foundVersions
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2:
         usage()
         sys.exit(1)
     gamelist = get_rom_candidates()
