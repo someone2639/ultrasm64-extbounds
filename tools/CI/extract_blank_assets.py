@@ -87,7 +87,10 @@ with open("assets.json") as assets:
     for (asset, pos, size, meta) in todo:
         if ".png" in asset:
             if len(meta) == 0:
-                meta = [320, 224]
+                if "_eu" in asset:
+                    meta = [320, 224]
+                else:
+                    meta = [316, 228]
             im = Image.new("RGB", meta, 0xFF)
 
             os.makedirs(os.path.dirname(asset), exist_ok = True)
