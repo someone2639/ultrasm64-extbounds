@@ -13,10 +13,10 @@ jobs:
       with:
         submodules: recursive
     - name: Install Dependencies
-      run:
-        - sudo apt update
-        - sudo apt install -y binutils-mips-linux-gnu gcc git gcc-mips-linux-gnu
-        - sudo apt install -y python3 python-is-python3
+      run: |
+        sudo apt update
+        sudo apt install -y binutils-mips-linux-gnu gcc git gcc-mips-linux-gnu
+        sudo apt install -y python3 python-is-python3
     - name: Install python deps
       run: pip3 install pillow
     - name: Build HackerSM64 from scratch
