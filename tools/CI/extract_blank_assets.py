@@ -96,7 +96,10 @@ with open("assets.json") as assets:
             create_blank_aiff(asset)
         elif ".m64" in asset:
             with open(asset, "wb+") as f:
-                f.write(bytes([0xfd, 0x4e, 0x20, 0xfb, 0, 0]));
+                f.write(bytes([0xfd, 0x4e, 0x20, 0xfb, 0, 0]))
+        elif ".bin" in asset:
+            with open(asset, "wb+") as f:
+                f.write(bytes([0, 0, 0, 0, 0, 0, 0, 0]))
 
 
 
