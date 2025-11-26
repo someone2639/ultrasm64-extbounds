@@ -88,6 +88,8 @@ with open("assets.json") as assets:
             if len(meta) == 0:
                 if "_eu" in asset:
                     meta = [320, 224]
+                elif "/skybox" in asset:
+                    meta = [248, 248]
                 else:
                     meta = [316, 228]
             im = Image.new("RGB", meta, 0xFF)
