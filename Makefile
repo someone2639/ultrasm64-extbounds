@@ -309,8 +309,10 @@ TOOLS_DIR := tools
 
 PYTHON := python3
 
+EXTRACT_ASSETS_PROGRAM := extract_assets.py
+
 ifeq ($(CI),1)
-  CI_FLAG += --ci
+  EXTRACT_ASSETS_PROGRAM = tools/CI/extract_blank_assets.py
 endif
 
 ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
@@ -318,7 +320,7 @@ ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
   # Extract assets if necessary
   NOEXTRACT ?= 0
   ifeq ($(NOEXTRACT),0)
-    DUMMY != $(PYTHON) extract_assets.py $(CI_FLAG) >&2 || echo FAIL
+    DUMMY != $(PYTHON) $(EXTRACT_ASSETS_PROGRAM) >&2 || echo FAIL
     ifeq ($(DUMMY),FAIL)
       $(error Failed to extract assets from found baseroms)
     endif
