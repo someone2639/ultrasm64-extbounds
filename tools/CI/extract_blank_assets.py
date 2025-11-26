@@ -57,8 +57,6 @@ def create_blank_aiff(filename, duration_seconds=0.1, sample_rate=44100, channel
     # Close the file to write the header and finalize the file
     output.close()
 
-    print(f"Created blank AIFF file: {filename} ({duration_seconds} seconds)")
-
 
 with open("assets.json") as assets:
     j = json.loads(assets.read())
@@ -85,6 +83,7 @@ with open("assets.json") as assets:
             todo.append((asset, pos, size, meta))
 
     for (asset, pos, size, meta) in todo:
+        os.makedirs(os.path.dirname(asset), exist_ok = True)
         if ".png" in asset:
             if len(meta) == 0:
                 if "_eu" in asset:
@@ -92,12 +91,12 @@ with open("assets.json") as assets:
                 else:
                     meta = [316, 228]
             im = Image.new("RGB", meta, 0xFF)
-
-            os.makedirs(os.path.dirname(asset), exist_ok = True)
             im.save(asset)
         elif ".aiff" in asset:
-            os.makedirs(os.path.dirname(asset), exist_ok = True)
             create_blank_aiff(asset)
+        elif ".m64" in asset:
+            with open(asset, "wb+") as f:
+                f.write(bytes([0xfd, 0x4e, 0x20, 0xfb, 0, 0]));
 
 
 
