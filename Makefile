@@ -315,6 +315,14 @@ ifeq ($(CI),1)
   EXTRACT_ASSETS_PROGRAM = tools/CI/extract_blank_assets.py
 endif
 
+ifeq ($(CI_DEBUG),1)
+  CFLAGS += -DDEBUG_ALL
+endif
+
+ifeq ($(CI_RELEASE),1)
+  CFLAGS += -DDISABLE_ALL
+endif
+
 ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
 
   # Extract assets if necessary
