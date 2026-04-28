@@ -1,4 +1,5 @@
 #pragma once
+#include "config/internal.h"
 
 /*******************
  * CAMERA SETTINGS *

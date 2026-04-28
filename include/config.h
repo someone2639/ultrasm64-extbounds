@@ -5,6 +5,7 @@
  * A catch-all file for configuring various bugfixes and other settings in SM64
  */
 
+#include "config/internal.h"
 #include "config/config_audio.h"
 #include "config/config_benchmark.h"
 #include "config/config_camera.h"
