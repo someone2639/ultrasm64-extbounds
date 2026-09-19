@@ -662,6 +662,7 @@ void update_camera(struct Camera *c);
 void reset_camera(struct Camera *c);
 void init_camera(struct Camera *c);
 void select_mario_cam_mode(void);
+
 void object_pos_to_vec3f(Vec3f dst, struct Object *obj);
 void vec3f_to_object_pos(struct Object *obj, Vec3f src);
 s32 cam_select_alt_mode(s32 angle);
@@ -671,6 +672,7 @@ s32 update_camera_hud_status(struct Camera *c);
 s32 collide_with_walls(Vec3f pos, f32 offsetY, f32 radius);
 void clamp_pitch(Vec3f from, Vec3f to, s16 maxPitch, s16 minPitch);
 s32 is_within_100_units_of_mario(f32 posX, f32 posY, f32 posZ);
+
 void set_camera_shake_from_hit(s16 shake);
 void set_environmental_camera_shake(s16 shake);
 void set_camera_shake_from_point(s16 shake, f32 posX, f32 posY, f32 posZ);
@@ -683,7 +685,9 @@ void set_pitch_shake_from_point(s16 mag, s16 decay, s16 inc, f32 maxDist, f32 po
 void shake_camera_pitch(Vec3f pos, Vec3f focus);
 void shake_camera_yaw(Vec3f pos, Vec3f focus);
 void shake_camera_roll(s16 *roll);
+
 s32 offset_yaw_outward_radial(struct Camera *c, s16 areaYaw);
+
 void play_camera_buzz_if_cdown(void);
 void play_camera_buzz_if_cbutton(void);
 void play_camera_buzz_if_c_sideways(void);
@@ -693,6 +697,7 @@ void play_sound_cbutton_side(void);
 void play_sound_button_change_blocked(void);
 void play_sound_rbutton_changed(void);
 void play_sound_if_cam_switched_to_lakitu_or_mario(void);
+
 void pan_camera(struct Camera *c, s16 incPitch, s16 incYaw);
 void warp_camera(f32 displacementX, f32 displacementY, f32 displacementZ);
 void approach_camera_height(struct Camera *c, f32 goal, f32 inc);
@@ -703,16 +708,19 @@ s16 camera_course_processing(struct Camera *c);
 void find_mario_floor_and_ceil(struct PlayerGeometry *pg);
 s32 snap_to_45_degrees(s16 angle);
 void set_camera_mode(struct Camera *c, s16 mode, s16 frames);
+
 s32 set_camera_mode_fixed(struct Camera *c, s16 x, s16 y, s16 z);
 void set_camera_mode_8_directions(struct Camera *c);
 void set_camera_mode_boss_fight(struct Camera *c);
 void set_camera_mode_close_cam(u8 *mode);
 void set_camera_mode_radial(struct Camera *c, s16 transitionTime);
+
 void transition_to_camera_mode(struct Camera *c, s16 newMode, s16 numFrames);
 void set_fov_shake_from_point_preset(u8 preset, f32 posX, f32 posY, f32 posZ);
 void obj_rotate_towards_point(struct Object *obj, Vec3f point, s16 pitchOff, s16 yawOff, s16 pitchDiv, s16 yawDiv);
 void set_mode_c_up(struct Camera *c);
 
+// HACKERSM64_DO: Abstract behind a Camera Mode structure
 s16 update_slide_camera(struct Camera *c);
 s32 update_radial_camera(struct Camera *c, Vec3f focus, Vec3f pos);
 s32 update_outward_radial_camera(struct Camera *c, Vec3f focus, Vec3f pos);
