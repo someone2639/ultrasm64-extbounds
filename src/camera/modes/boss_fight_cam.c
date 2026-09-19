@@ -87,14 +87,14 @@ s32 update_boss_fight_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
             case AREA_WF:
                 pos[1] += 125.f;
         }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
     }
 #ifdef ENABLE_VANILLA_CAM_PROCESSING
     // Prevent the camera from going to the ground in the outside boss fight
     if (gCurrLevelNum == LEVEL_BBH) {
         pos[1] = 2047.f;
     }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
     // Rotate from C-Button input
     if (sCSideButtonYaw < 0) {
         sModeOffsetYaw += 0x200;

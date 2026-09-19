@@ -104,9 +104,9 @@ void mode_fixed_camera(struct Camera *c) {
     } else {
         set_fov_function(CAM_FOV_APP_45);
     }
-#else
+#else // ENABLE_VANILLA_CAM_PROCESSING
     set_fov_function(CAM_FOV_APP_45);
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
     c->nextYaw = update_fixed_camera(c, c->focus, c->pos);
     c->yaw = c->nextYaw;
     pan_ahead_of_player(c);

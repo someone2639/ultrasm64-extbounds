@@ -530,7 +530,7 @@ void cutscene_goto_cvar_pos(struct Camera *c, f32 goalDist, s16 goalPitch, s16 r
             nextYaw = atan2s(sCutsceneVars[3].point[2] - c->areaCenZ,
                              sCutsceneVars[3].point[0] - c->areaCenX);
         }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
     } else {
         if (c->cutscene == CUTSCENE_PREPARE_CANNON) {
             vec3f_get_dist_and_angle(c->pos, sCutsceneVars[0].point, &curDist, &curPitch, &curYaw);

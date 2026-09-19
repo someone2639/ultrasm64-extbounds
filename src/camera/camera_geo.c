@@ -214,7 +214,7 @@ static void zoom_out_if_paused_and_outside(struct GraphNodeCamera *camera) {
                 if (gCurrLevelNum != LEVEL_THI) {
                     find_in_bounds_yaw_wdw_bob_thi(camera->pos, camera->focus, 0);
                 }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
             }
         } else {
             sFramesPaused++;

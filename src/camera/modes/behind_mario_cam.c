@@ -183,7 +183,7 @@ s32 update_behind_mario_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     if (gCurrLevelArea == AREA_THI_TINY) {
         yaw = clamp_positions_and_find_yaw(pos, focus, 2458.f, -2458.f, 2458.f, -2458.f);
     }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
 
     return yaw;
 }

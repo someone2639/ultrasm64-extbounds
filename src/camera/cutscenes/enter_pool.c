@@ -17,7 +17,7 @@ void cutscene_enter_pool_start(struct Camera *c) {
     if (gCurrLevelNum == LEVEL_HMC) { // entering CotMC
         vec3f_set(sCutsceneVars[3].point, 3350.f, -4589.f, 4800.f);
     }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
 
     vec3f_copy(sCutsceneVars[0].point, c->focus);
 }

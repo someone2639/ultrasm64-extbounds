@@ -23,7 +23,7 @@ void cutscene_dance_closeup_start(struct Camera *c) {
     if ((gLastCompletedStarNum == 5) && (gCurrCourseNum == COURSE_WDW)) {
         star_dance_bound_yaw(c, 0x8000, 0x800);
     }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
 
     vec3f_copy(sCutsceneVars[9].point, c->focus);
     //! cvar8 is unused in the closeup cutscene
@@ -53,7 +53,7 @@ void cutscene_dance_closeup_fly_above(struct Camera *c) {
         (gLastCompletedStarNum == 4 && gCurrCourseNum == COURSE_TTC)) {
         goalPitch = 0x800;
     }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
     vec3f_get_dist_and_angle(sMarioCamState->pos, c->pos, &dist, &pitch, &yaw);
     approach_f32_asymptotic_bool(&dist, 800.f, 0.05f);
     approach_s16_asymptotic_bool(&pitch, goalPitch, 16);

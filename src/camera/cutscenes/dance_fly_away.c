@@ -37,7 +37,7 @@ void cutscene_dance_fly_away_start(struct Camera *c) {
     if ((gLastCompletedStarNum == 3) && (gCurrCourseNum == COURSE_RR)) {
         star_dance_bound_yaw(c, 0x0,    0x800);
     }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
 }
 
 void cutscene_dance_fly_away_approach_mario(struct Camera *c) {

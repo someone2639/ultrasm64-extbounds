@@ -308,7 +308,7 @@ s16 update_default_camera(struct Camera *c) {
         if (gCurrLevelArea == AREA_SSL_PYRAMID || gCurrLevelNum == LEVEL_CASTLE) {
             posHeight /= 2;
         }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
     }
 
     // Make Lakitu fly above the gas
@@ -368,7 +368,7 @@ s16 update_default_camera(struct Camera *c) {
     if (gCurrLevelArea == AREA_WDW_TOWN) {
         yaw = clamp_positions_and_find_yaw(c->pos, c->focus, 2254.f, -3789.f, 3790.f, -2253.f);
     }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
     return yaw;
 }
 
