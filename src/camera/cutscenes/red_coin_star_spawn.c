@@ -15,7 +15,7 @@ void cutscene_red_coin_star_start(struct Camera *c) {
     object_pos_to_vec3f(sCutsceneVars[1].point, gCutsceneFocus);
     store_info_star(c);
     // Store the default fov for after the cutscene
-    sCutsceneVars[2].point[2] = sFOVState.fov;
+    sCutsceneVars[2].point[2] = get_camera_fov();
 }
 
 /**
@@ -67,7 +67,7 @@ void cutscene_red_coin_star_warp(struct Camera *c) {
  * Zoom out while looking at the star.
  */
 void cutscene_red_coin_star_set_fov(UNUSED struct Camera *c) {
-    sFOVState.fov = 60.f;
+    set_camera_fov(60.f);
 }
 
 void cutscene_red_coin_star(struct Camera *c) {
@@ -93,7 +93,7 @@ void cutscene_red_coin_star_end(struct Camera *c) {
     gCutsceneTimer = CUTSCENE_STOP;
     c->cutscene = 0;
     // Restore the default fov
-    sFOVState.fov = sCutsceneVars[2].point[2];
+    set_camera_fov(sCutsceneVars[2].point[2]);
 }
 
 struct Cutscene sCutsceneRedCoinStarSpawn[] = {

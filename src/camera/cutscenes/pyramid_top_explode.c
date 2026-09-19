@@ -1,4 +1,5 @@
 #include "camera/cutscene_helpers.h"
+#include "camera/camera_geo.h"
 #include "camera/camera_math.h"
 #include "engine/math_util.h"
 #include "game/camera.h"
@@ -42,7 +43,7 @@ void cutscene_pyramid_top_explode_warp(struct Camera *c) {
     f32 dist;
 
     set_fov_function(CAM_FOV_DEFAULT);
-    sFOVState.fov = 45.f;
+    set_camera_fov(45.f);
 
     vec3f_copy(sCutsceneVars[4].point, c->pos);
     vec3f_copy(sCutsceneVars[5].point, c->focus);
@@ -66,7 +67,7 @@ void cutscene_pyramid_top_explode_closeup(struct Camera *c) {
 
     c->focus[1] += 4.f;
     c->pos[1] -= 5.f;
-    sFOVState.fov = 45.f;
+    set_camera_fov(45.f);
     set_handheld_shake(HAND_CAM_SHAKE_CUTSCENE);
 }
 

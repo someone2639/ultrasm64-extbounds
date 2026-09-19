@@ -60,7 +60,6 @@ u8 sFramesPaused;
  * @see LakituState
  */
 struct LakituState gLakituState;
-struct CameraFOVStatus sFOVState;
 struct TransitionInfo sModeTransition;
 struct PlayerGeometry sMarioGeometry;
 struct Camera *gCamera;
@@ -765,11 +764,7 @@ void reset_camera(struct Camera *c) {
     gLakituState.shakeMagnitude[2] = 0;
     gLakituState.lastFrameAction = 0;
     set_fov_function(CAM_FOV_DEFAULT);
-    sFOVState.fov = 45.f;
-    sFOVState.fovOffset = 0.f;
-    sFOVState.unusedIsSleeping = 0;
-    sFOVState.shakeAmplitude = 0.f;
-    sFOVState.shakePhase = 0;
+    initialize_camera_fov();
 }
 
 void init_camera(struct Camera *c) {
@@ -1649,20 +1644,6 @@ static UNUSED void unused_start_bowser_bounce_shake(UNUSED struct Camera *c) {
 }
 
 /**
- * Start shaking the camera's field of view.
- *
- * @param shakeSpeed How fast the shake should progress through its period. The shake offset is
- *                   calculated from coss(), so this parameter can be thought of as an angular velocity.
- */
-void set_fov_shake(s16 amplitude, s16 decay, s16 shakeSpeed) {
-    if (amplitude > sFOVState.shakeAmplitude) {
-        sFOVState.shakeAmplitude = amplitude;
-        sFOVState.decay = decay;
-        sFOVState.shakeSpeed = shakeSpeed;
-    }
-}
-
-/**
  * Start shaking the camera's field of view, but reduce `amplitude` by distance from camera
  */
 void set_fov_shake_from_point(s16 amplitude, s16 decay, s16 shakeSpeed, f32 maxDist, f32 posX, f32 posY, f32 posZ) {
@@ -1675,15 +1656,6 @@ void set_fov_shake_from_point(s16 amplitude, s16 decay, s16 shakeSpeed, f32 maxD
 
 static UNUSED void unused_deactivate_sleeping_camera(UNUSED struct MarioState *m) {
     sStatusFlags &= ~CAM_FLAG_SLEEPING;
-}
-
-/**
- * Change the camera's FOV mode.
- *
- * @see geo_camera_fov
- */
-void set_fov_function(u8 func) {
-    sFOVState.fovFunc = func;
 }
 
 /**

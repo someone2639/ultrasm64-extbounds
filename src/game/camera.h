@@ -335,25 +335,6 @@ enum CameraDoor {
     DOOR_ENTER_LOBBY
 };
 
-// Might rename these to reflect what they are used for instead "SET_45" etc.
-// TODO: to camera_geo
-enum CameraFov {
-    CAM_FOV_NONE,
-    CAM_FOV_SET_45,
-    CAM_FOV_DEFAULT,
-    CAM_FOV_UNUSED_3,
-    CAM_FOV_APP_45,
-    CAM_FOV_SET_30,
-    CAM_FOV_APP_20,
-    CAM_FOV_BBH,
-    CAM_FOV_UNUSED_8,
-    CAM_FOV_APP_80,
-    CAM_FOV_APP_30,
-    CAM_FOV_APP_60,
-    CAM_FOV_ZOOM_30,
-    CAM_FOV_SET_29
-};
-
 enum CameraEvent {
     CAM_EVENT_NONE,
     CAM_EVENT_CANNON,
@@ -462,32 +443,6 @@ struct CameraTrigger {
  * Terminates a list of CameraTriggers.
  */
 #define NULL_TRIGGER { 0, NULL, 0, 0, 0, 0, 0, 0, 0 }
-
-/**
- * Info for the camera's field of view and the FOV shake effect.
- * TODO: to camera_geo
- */
-struct CameraFOVStatus {
-    /// The current function being used to set the camera's field of view (before any fov shake is applied).
-    /*0x00*/ u8 fovFunc;
-    /// The current field of view in degrees
-    /*0x04*/ f32 fov;
-
-    // Fields used by shake_camera_fov()
-
-    /// The amount to change the current fov by in the fov shake effect.
-    /*0x08*/ f32 fovOffset;
-    /// A bool set in fov_default() but unused otherwise
-    /*0x0C*/ u32 unusedIsSleeping;
-    /// The range in degrees to shake fov
-    /*0x10*/ f32 shakeAmplitude;
-    /// Used to calculate fovOffset, the phase through the shake's period.
-    /*0x14*/ s16 shakePhase;
-    /// How much to progress through the shake period
-    /*0x16*/ s16 shakeSpeed;
-    /// How much to decrease shakeAmplitude each frame.
-    /*0x18*/ s16 decay;
-};
 
 /**
  * Information for a control point in a spline segment.
@@ -746,7 +701,6 @@ s16 next_lakitu_state(Vec3f newPos, Vec3f newFoc, Vec3f curPos, Vec3f curFoc, Ve
 void set_fixed_cam_axis_sa_lobby(UNUSED s16 preset);
 s16 camera_course_processing(struct Camera *c);
 void find_mario_floor_and_ceil(struct PlayerGeometry *pg);
-void set_fov_shake(s16 amplitude, s16 decay, s16 shakeSpeed);
 s32 snap_to_45_degrees(s16 angle);
 void set_camera_mode(struct Camera *c, s16 mode, s16 frames);
 s32 set_camera_mode_fixed(struct Camera *c, s16 x, s16 y, s16 z);
@@ -755,7 +709,6 @@ void set_camera_mode_boss_fight(struct Camera *c);
 void set_camera_mode_close_cam(u8 *mode);
 void set_camera_mode_radial(struct Camera *c, s16 transitionTime);
 void transition_to_camera_mode(struct Camera *c, s16 newMode, s16 numFrames);
-void set_fov_function(u8 func);
 void set_fov_shake_from_point_preset(u8 preset, f32 posX, f32 posY, f32 posZ);
 void obj_rotate_towards_point(struct Object *obj, Vec3f point, s16 pitchOff, s16 yawOff, s16 pitchDiv, s16 yawDiv);
 void set_mode_c_up(struct Camera *c);
@@ -783,7 +736,6 @@ s16 find_in_bounds_yaw_wdw_bob_thi(Vec3f pos, Vec3f origin, s16 yaw);
 
 extern s16 sYawSpeed;
 extern struct PlayerCameraState *sMarioCamState;
-extern struct CameraFOVStatus sFOVState;
 extern struct TransitionInfo sModeTransition;
 extern struct PlayerGeometry sMarioGeometry;
 extern s16 sAvoidYawVel;

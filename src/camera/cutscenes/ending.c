@@ -290,7 +290,7 @@ void cutscene_ending_look_at_sky(struct Camera *c) {
  * called, it will stay at about 37.26f
  */
 void cutscene_ending_zoom_fov(UNUSED struct Camera *c) {
-    sFOVState.fov = 37.f;
+    set_camera_fov(37.0f);
 }
 
 /**

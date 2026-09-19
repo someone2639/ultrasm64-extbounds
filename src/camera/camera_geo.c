@@ -6,6 +6,8 @@
 #include "game/level_update.h"
 #include "game/rendering_graph_node.h"
 
+struct CameraFOVStatus sFOVState;
+
 /**
  * Add a cyclic offset to the camera's field of view based on a cosine wave
  */
@@ -99,6 +101,45 @@ static void set_fov_bbh(struct MarioState *m) {
     }
 
     sFOVState.fov = approach_f32(sFOVState.fov, targetFoV, 2.f, 2.f);
+}
+
+void initialize_camera_fov(void) {
+    sFOVState.fov = 45.f;
+    sFOVState.fovOffset = 0.f;
+    sFOVState.unusedIsSleeping = 0;
+    sFOVState.shakeAmplitude = 0.f;
+    sFOVState.shakePhase = 0;
+}
+
+void set_camera_fov(f32 fov) {
+    sFOVState.fov = fov;
+}
+
+f32 get_camera_fov(void) {
+    return sFOVState.fov;
+}
+
+/**
+ * Start shaking the camera's field of view.
+ *
+ * @param shakeSpeed How fast the shake should progress through its period. The shake offset is
+ *                   calculated from coss(), so this parameter can be thought of as an angular velocity.
+ */
+void set_fov_shake(s16 amplitude, s16 decay, s16 shakeSpeed) {
+    if (amplitude > sFOVState.shakeAmplitude) {
+        sFOVState.shakeAmplitude = amplitude;
+        sFOVState.decay = decay;
+        sFOVState.shakeSpeed = shakeSpeed;
+    }
+}
+
+/**
+ * Change the camera's FOV mode.
+ *
+ * @see geo_camera_fov
+ */
+void set_fov_function(u8 func) {
+    sFOVState.fovFunc = func;
 }
 
 /**

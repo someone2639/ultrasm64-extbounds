@@ -1,6 +1,7 @@
 #include "seq_ids.h"
 #include "audio/external.h"
 #include "camera/cutscene_helpers.h"
+#include "camera/camera_geo.h"
 #include "camera/camera_math.h"
 #include "engine/math_util.h"
 #include "game/camera.h"
@@ -187,7 +188,7 @@ void cutscene_intro_peach_clear_cutscene_status(UNUSED struct Camera *c) {
  * Set fov to 8 degrees, then zoom out to 30.
  */
 void cutscene_intro_peach_zoom_fov(UNUSED struct Camera *c) {
-    sFOVState.fov = 8.f;
+    set_camera_fov(8.0f);
     set_fov_function(CAM_FOV_ZOOM_30);
 }
 
