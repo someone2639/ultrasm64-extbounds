@@ -234,7 +234,7 @@ static void update_graph_node_camera(struct GraphNodeCamera *gc) {
     zoom_out_if_paused_and_outside(gc);
 }
 
-Gfx *geo_camera_main(s32 callContext, struct GraphNode *g, void *context) {
+Gfx *geo_camera_main(s32 callContext, struct GraphNode *g, UNUSED void *context) {
     struct GraphNodeCamera *gc = (struct GraphNodeCamera *) g;
     switch (callContext) {
         case GEO_CONTEXT_CREATE:
