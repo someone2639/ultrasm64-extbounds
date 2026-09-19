@@ -1877,7 +1877,7 @@ static UNUSED void unused_start_bowser_bounce_shake(UNUSED struct Camera *c) {
     set_environmental_camera_shake(SHAKE_ENV_BOWSER_THROW_BOUNCE);
 }
 
-/* TODO:
+/* HACKERSM64_DO:
  * The next two arrays are both related to levels, and they look generated.
  * These should be split into their own file.
  */
@@ -2251,11 +2251,9 @@ void update_camera(struct Camera *c) {
     c->nextYaw = gLakituState.nextYaw;
     c->mode = gLakituState.mode;
     c->defMode = gLakituState.defMode;
-#ifdef ENABLE_VANILLA_CAM_PROCESSING
+
     camera_course_processing(c);
-#else
-    if (gCurrDemoInput != NULL) camera_course_processing(c);
-#endif
+
     sCButtonsPressed = find_c_buttons_pressed(sCButtonsPressed, gPlayer1Controller->buttonPressed, gPlayer1Controller->buttonDown);
 
     if (c->cutscene != CUTSCENE_NONE) {
@@ -2366,9 +2364,9 @@ void update_camera(struct Camera *c) {
 #ifdef PUPPYCAM
     if (!gPuppyCam.enabled || c->cutscene != 0 || gCurrentArea->camera->mode == CAMERA_MODE_INSIDE_CANNON) {
 #endif
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
     if (gCurrLevelNum != LEVEL_CASTLE) {
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
         // If fixed camera is selected as the alternate mode, then fix the camera as long as the right
         // trigger is held
         if ((c->cutscene == CUTSCENE_NONE &&
@@ -2398,13 +2396,13 @@ void update_camera(struct Camera *c) {
                 sCameraSoundFlags &= ~CAM_SOUND_FIXED_ACTIVE;
             }
         }
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
     } else {
         if ((gPlayer1Controller->buttonPressed & R_TRIG) && (cam_select_alt_mode(0) == CAM_SELECTION_FIXED)) {
             play_sound_button_change_blocked();
         }
     }
-#endif
+#endif // ENABLE_VANILLA_CAM_PROCESSING
 
     update_lakitu(c);
 #ifdef PUPPYCAM
