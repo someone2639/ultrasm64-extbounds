@@ -1567,9 +1567,6 @@ void surface_type_modes_thi(struct Camera *c) {
 /**
  * Extern all camera triggers that we split out into separate files
  **/
-struct CameraTrigger sCamNull[] = {
-    NULL_TRIGGER,
-};
 #define _ sCamNull
 #define STUB_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, cameratable) extern struct CameraTrigger cameratable[];
 #define DEFINE_LEVEL(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, cameratable) extern struct CameraTrigger cameratable[];
