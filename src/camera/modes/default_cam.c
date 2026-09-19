@@ -304,7 +304,7 @@ s16 update_default_camera(struct Camera *c) {
     }
     if ((gCameraMovementFlags & CAM_MOVE_ZOOMED_OUT) && (sSelectionFlags & CAM_MODE_MARIO_ACTIVE)) {
         posHeight = 610.f;
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
         if (gCurrLevelArea == AREA_SSL_PYRAMID || gCurrLevelNum == LEVEL_CASTLE) {
             posHeight /= 2;
         }
@@ -364,7 +364,7 @@ s16 update_default_camera(struct Camera *c) {
             c->pos[1] = ceilHeight;
         }
     }
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
     if (gCurrLevelArea == AREA_WDW_TOWN) {
         yaw = clamp_positions_and_find_yaw(c->pos, c->focus, 2254.f, -3789.f, 3790.f, -2253.f);
     }

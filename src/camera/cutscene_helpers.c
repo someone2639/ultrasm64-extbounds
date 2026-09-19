@@ -525,7 +525,7 @@ void cutscene_goto_cvar_pos(struct Camera *c, f32 goalDist, s16 goalPitch, s16 r
         nextPitch = goalPitch;
         vec3f_copy(sCutsceneVars[0].point, sCutsceneVars[3].point);
         sStatusFlags &= ~CAM_FLAG_SMOOTH_MOVEMENT;
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
         if (gCurrLevelNum == LEVEL_TTM) {
             nextYaw = atan2s(sCutsceneVars[3].point[2] - c->areaCenZ,
                              sCutsceneVars[3].point[0] - c->areaCenX);

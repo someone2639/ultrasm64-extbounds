@@ -10,7 +10,7 @@
 void cutscene_enter_pool_start(struct Camera *c) {
     vec3f_copy(sCutsceneVars[3].point, sMarioCamState->pos);
 
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
     if (gCurrLevelNum == LEVEL_CASTLE) { // entering HMC
         vec3f_set(sCutsceneVars[3].point, 2485.f, -1589.f, -2659.f);
     }

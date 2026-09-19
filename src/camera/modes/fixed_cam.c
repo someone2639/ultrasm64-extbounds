@@ -98,7 +98,7 @@ s32 update_fixed_camera(struct Camera *c, Vec3f focus, UNUSED Vec3f pos) {
  * Fixed camera mode, the camera rotates around a point and looks and zooms toward Mario.
  */
 void mode_fixed_camera(struct Camera *c) {
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
     if (gCurrLevelNum == LEVEL_BBH) {
         set_fov_function(CAM_FOV_BBH);
     } else {

@@ -120,7 +120,7 @@ s32 update_radial_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
     sAreaYaw = camYaw - sModeOffsetYaw;
     calc_y_to_curr_floor(&posY, 1.f, 200.f, &focusY, 0.9f, 200.f);
     focus_on_mario(focus, pos, posY + yOff, focusY + yOff, sLakituDist + baseDist, pitch, camYaw);
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
     camYaw = find_in_bounds_yaw_wdw_bob_thi(pos, focus, camYaw);
 #endif
     return camYaw;

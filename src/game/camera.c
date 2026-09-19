@@ -2014,6 +2014,190 @@ void obj_rotate_towards_point(struct Object *obj, Vec3f point, s16 pitchOff, s16
 }
 
 /**
+ * Activates any CameraTriggers that Mario is inside.
+ * Then, applies area-specific processing to the camera, such as setting the default mode, or changing
+ * the mode based on the terrain type Mario is standing on.
+ *
+ * @return the camera's mode after processing, although this is unused in the code
+ */
+s16 camera_course_processing(struct Camera *c) {
+    s16 level = gCurrLevelNum;
+    s8 area = gCurrentArea->index;
+    // Bounds iterator
+    u32 b;
+    // Camera trigger's bounding box
+    Vec3f center, bounds;
+    u32 insideBounds = FALSE;
+    u8 oldMode = c->mode;
+
+    if (c->mode == CAMERA_MODE_C_UP) {
+        c->mode = sModeInfo.lastMode;
+    }
+    check_blocking_area_processing(&c->mode);
+    if (level > LEVEL_COUNT + 1) {
+        level = LEVEL_COUNT + 1;
+    }
+
+    if (sCameraTriggers[level] != NULL) {
+        b = 0;
+
+        // Process positional triggers.
+        // All triggered events are called, not just the first one.
+        while (sCameraTriggers[level][b].event != NULL) {
+
+            // Check only the current area's triggers
+            if (sCameraTriggers[level][b].area == area) {
+                // Copy the bounding box into center and bounds
+                vec3f_set(center, sCameraTriggers[level][b].centerX,
+                                  sCameraTriggers[level][b].centerY,
+                                  sCameraTriggers[level][b].centerZ);
+                vec3f_set(bounds, sCameraTriggers[level][b].boundsX,
+                                  sCameraTriggers[level][b].boundsY,
+                                  sCameraTriggers[level][b].boundsZ);
+
+                // Check if Mario is inside the bounds
+                if (is_pos_in_bounds(sMarioCamState->pos, center, bounds,
+                                                   sCameraTriggers[level][b].boundsYaw) == TRUE) {
+                    //! This should be checked before calling is_pos_in_bounds. (It doesn't belong
+                    //! outside the while loop because some events disable area processing)
+                    if (!(sStatusFlags & CAM_FLAG_BLOCK_AREA_PROCESSING)) {
+                        sCameraTriggers[level][b].event(c);
+                        insideBounds = TRUE;
+                    }
+                }
+            }
+
+            if ((sCameraTriggers[level])[b].area == -1) {
+                // Default triggers are only active if Mario is not already inside another trigger
+                if (!insideBounds) {
+                    if (!(sStatusFlags & CAM_FLAG_BLOCK_AREA_PROCESSING)) {
+                        sCameraTriggers[level][b].event(c);
+                    }
+                }
+            }
+
+            b++;
+        }
+    }
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
+    // Area-specific camera processing
+    if (!(sStatusFlags & CAM_FLAG_BLOCK_AREA_PROCESSING)) {
+        switch (gCurrLevelArea) {
+            case AREA_WF:
+                if (sMarioCamState->action == ACT_RIDING_HOOT) {
+                    transition_to_camera_mode(c, CAMERA_MODE_SLIDE_HOOT, 60);
+                } else {
+                    switch (sMarioGeometry.currFloorType) {
+                        case SURFACE_CAMERA_8_DIR:
+                            transition_to_camera_mode(c, CAMERA_MODE_8_DIRECTIONS, 90);
+                            s8DirModeBaseYaw = DEGREES(90);
+                            break;
+
+                        case SURFACE_BOSS_FIGHT_CAMERA:
+                            if (gCurrActNum == 1) {
+                                set_camera_mode_boss_fight(c);
+                            } else {
+                                set_camera_mode_radial(c, 60);
+                            }
+                            break;
+                        default:
+                            set_camera_mode_radial(c, 60);
+                    }
+                }
+                break;
+
+            case AREA_BBH:
+                // if camera is fixed at bbh_room_13_balcony_camera (but as floats)
+                if (vec3f_compare(sFixedModeBasePosition, 210.f, 420.f, 3109.f) == TRUE) {
+                    if (sMarioCamState->pos[1] < 1800.f) {
+                        transition_to_camera_mode(c, CAMERA_MODE_CLOSE, 30);
+                    }
+                }
+                break;
+
+            case AREA_SSL_PYRAMID:
+                set_mode_if_not_set_by_surface(c, CAMERA_MODE_OUTWARD_RADIAL);
+                break;
+
+            case AREA_SSL_OUTSIDE:
+                set_mode_if_not_set_by_surface(c, CAMERA_MODE_RADIAL);
+                break;
+
+            case AREA_THI_HUGE:
+                break;
+
+            case AREA_THI_TINY:
+                surface_type_modes_thi(c);
+                break;
+
+            case AREA_TTC:
+                set_mode_if_not_set_by_surface(c, CAMERA_MODE_OUTWARD_RADIAL);
+                break;
+
+            case AREA_BOB:
+                if (set_mode_if_not_set_by_surface(c, CAMERA_MODE_NONE) == 0) {
+                    if (sMarioGeometry.currFloorType == SURFACE_BOSS_FIGHT_CAMERA) {
+                        set_camera_mode_boss_fight(c);
+                    } else {
+                        if (c->mode == CAMERA_MODE_CLOSE) {
+                            transition_to_camera_mode(c, CAMERA_MODE_RADIAL, 60);
+                        } else {
+                            set_camera_mode_radial(c, 60);
+                        }
+                    }
+                }
+                break;
+
+            case AREA_WDW_MAIN:
+                switch (sMarioGeometry.currFloorType) {
+                    case SURFACE_INSTANT_WARP_1B:
+                        c->defMode = CAMERA_MODE_RADIAL;
+                        break;
+                }
+                break;
+
+            case AREA_WDW_TOWN:
+                switch (sMarioGeometry.currFloorType) {
+                    case SURFACE_INSTANT_WARP_1C:
+                        c->defMode = CAMERA_MODE_CLOSE;
+                        break;
+                }
+                break;
+
+            case AREA_DDD_WHIRLPOOL:
+                //! @bug this does nothing
+                gLakituState.defMode = CAMERA_MODE_OUTWARD_RADIAL;
+                break;
+
+            case AREA_DDD_SUB:
+                if ((c->mode != CAMERA_MODE_BEHIND_MARIO)
+                    && (c->mode != CAMERA_MODE_WATER_SURFACE)) {
+                    if (((sMarioCamState->action & ACT_FLAG_ON_POLE) != 0)
+                        || (sMarioGeometry.currFloorHeight > 800.f)) {
+                        transition_to_camera_mode(c, CAMERA_MODE_8_DIRECTIONS, 60);
+
+                    } else {
+                        if (sMarioCamState->pos[1] < 800.f) {
+                            transition_to_camera_mode(c, CAMERA_MODE_FREE_ROAM, 60);
+                        }
+                    }
+                }
+                //! @bug this does nothing
+                gLakituState.defMode = CAMERA_MODE_FREE_ROAM;
+                break;
+        }
+    }
+#endif // ENABLE_VANILLA_CAM_PROCESSING
+
+    sStatusFlags &= ~CAM_FLAG_BLOCK_AREA_PROCESSING;
+    if (oldMode == CAMERA_MODE_C_UP) {
+        sModeInfo.lastMode = c->mode;
+        c->mode = oldMode;
+    }
+    return c->mode;
+}
+
+/**
  * The main camera update function.
  * Gets controller input, checks for cutscenes, handles mode changes, and moves the camera
  */

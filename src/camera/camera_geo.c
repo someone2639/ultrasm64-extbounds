@@ -158,12 +158,12 @@ Gfx *geo_camera_fov(s32 callContext, struct GraphNode *g, UNUSED void *context) 
 /**
  * Allocate the GraphNodeCamera's config.camera, and copy `c`'s focus to the Camera's area center point.
  */
-static void create_camera(struct GraphNodeCamera *gc, struct AllocOnlyPool *pool) {
+static void create_camera(struct GraphNodeCamera *gc) {
 #ifdef FORCED_CAMERA_MODE
     gc->config.mode = FORCED_CAMERA_MODE;
 #endif
     s16 mode = gc->config.mode;
-    struct Camera *c = alloc_only_pool_alloc(pool, sizeof(struct Camera));
+    struct Camera *c = main_pool_alloc(sizeof(struct Camera));
 
     gc->config.camera = c;
     c->mode = mode;
@@ -210,7 +210,7 @@ static void zoom_out_if_paused_and_outside(struct GraphNodeCamera *camera) {
                 camera->focus[2] = gCamera->areaCenZ;
                 vec3f_get_yaw(camera->focus, sMarioCamState->pos, &yaw);
                 vec3f_set_dist_and_angle(sMarioCamState->pos, camera->pos, 6000.f, 0x1000, yaw);
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
                 if (gCurrLevelNum != LEVEL_THI) {
                     find_in_bounds_yaw_wdw_bob_thi(camera->pos, camera->focus, 0);
                 }
@@ -238,7 +238,7 @@ Gfx *geo_camera_main(s32 callContext, struct GraphNode *g, void *context) {
     struct GraphNodeCamera *gc = (struct GraphNodeCamera *) g;
     switch (callContext) {
         case GEO_CONTEXT_CREATE:
-            create_camera(gc, context);
+            create_camera(gc);
             break;
         case GEO_CONTEXT_RENDER:
             update_graph_node_camera(gc);

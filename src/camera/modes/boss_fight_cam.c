@@ -78,7 +78,7 @@ s32 update_boss_fight_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
         nz = floor->normal.z;
         oo = floor->originOffset;
         pos[1] = 300.f - (nx * pos[0] + nz * pos[2] + oo) / ny;
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
         switch (gCurrLevelArea) {
             case AREA_BOB:
                 pos[1] += 125.f;
@@ -89,7 +89,7 @@ s32 update_boss_fight_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
         }
 #endif
     }
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
     // Prevent the camera from going to the ground in the outside boss fight
     if (gCurrLevelNum == LEVEL_BBH) {
         pos[1] = 2047.f;

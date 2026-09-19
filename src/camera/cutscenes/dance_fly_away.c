@@ -23,7 +23,7 @@ void cutscene_dance_fly_away_start(struct Camera *c) {
         c->nextYaw = c->yaw;
     }
 
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
     // Restrict the camera yaw in tight spaces
     if ((gLastCompletedStarNum == 6) && (gCurrCourseNum == COURSE_CCM)) {
         star_dance_bound_yaw(c, 0x5600, 0x800);

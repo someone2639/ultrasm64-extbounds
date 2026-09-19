@@ -173,7 +173,7 @@ s32 update_behind_mario_camera(struct Camera *c, Vec3f focus, Vec3f pos) {
         dist = 300.f;
     }
     vec3f_set_dist_and_angle(focus, pos, dist, pitch, yaw);
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
     if (gCurrLevelArea == AREA_WDW_MAIN) {
         yaw = clamp_positions_and_find_yaw(pos, focus, 4508.f, -3739.f, 4508.f, -3739.f);
     }

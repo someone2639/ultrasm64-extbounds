@@ -13,7 +13,7 @@
  * Store the camera's focus in cvar9.
  */
 void cutscene_dance_closeup_start(struct Camera *c) {
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
     if ((gLastCompletedStarNum == 4) && (gCurrCourseNum == COURSE_JRB)) {
         star_dance_bound_yaw(c, 0x0, 0x4000);
     }
@@ -48,7 +48,7 @@ void cutscene_dance_closeup_fly_above(struct Camera *c) {
     s16 pitch, yaw;
     f32 dist;
     s16 goalPitch = 0x1800;
-#ifdef ENABLE_VANILLA_LEVEL_SPECIFIC_CHECKS
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
     if ((gLastCompletedStarNum == 6 && gCurrCourseNum == COURSE_SL) ||
         (gLastCompletedStarNum == 4 && gCurrCourseNum == COURSE_TTC)) {
         goalPitch = 0x800;
