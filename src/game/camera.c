@@ -1564,6 +1564,8 @@ void surface_type_modes_thi(struct Camera *c) {
     }
 }
 
+// HACKERSM64_DO, FAST64_DO: Split these CameraTriggers into src/camera/level_specific
+
 /**
  * Terminates a list of CameraTriggers.
  */
