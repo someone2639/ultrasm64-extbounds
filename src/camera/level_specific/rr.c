@@ -38,3 +38,19 @@ void cam_rr_enter_building_side(struct Camera *c) {
         c->mode = CAMERA_MODE_FIXED;
     }
 }
+
+/**
+ * The RR triggers are for changing between fixed and 8 direction mode when entering / leaving the building at
+ * the end of the ride.
+ */
+struct CameraTrigger sCamRR[] = {
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
+    { 1, cam_rr_exit_building_side, -4197, 3819, -3087, 1769, 1490, 342, 0 },
+    { 1, cam_rr_enter_building_side, -4197, 3819, -3771, 769, 490, 342, 0 },
+    { 1, cam_rr_enter_building_window, -5603, 4834, -5209, 300, 600, 591, 0 },
+    { 1, cam_rr_enter_building, -2609, 3730, -5463, 300, 650, 577, 0 },
+    { 1, cam_rr_exit_building_top, -4196, 7343, -5155, 4500, 1000, 4500, 0 },
+    { 1, cam_rr_enter_building, -4196, 6043, -5155, 500, 300, 500, 0 },
+#endif // ENABLE_VANILLA_CAM_PROCESSING
+    NULL_TRIGGER,
+};

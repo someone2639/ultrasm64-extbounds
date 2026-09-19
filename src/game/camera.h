@@ -66,22 +66,6 @@
 
 #define LEVEL_AREA_INDEX(levelNum, areaNum) (((levelNum) << 4) + (areaNum))
 
-/**
- * Helper macro for defining which areas of a level should zoom out the camera when the game is paused.
- * Because a mask is used by two levels, the pattern will repeat when more than 4 areas are used by a level.
- */
-#define ZOOMOUT_AREA_MASK(level1Area1, level1Area2, level1Area3, level1Area4, \
-                          level2Area1, level2Area2, level2Area3, level2Area4) \
-    ((level2Area4) << 7 |                                                     \
-     (level2Area3) << 6 |                                                     \
-     (level2Area2) << 5 |                                                     \
-     (level2Area1) << 4 |                                                     \
-     (level1Area4) << 3 |                                                     \
-     (level1Area3) << 2 |                                                     \
-     (level1Area2) << 1 |                                                     \
-     (level1Area1) << 0)
-
-
 #define AREA_BBH                LEVEL_AREA_INDEX(LEVEL_BBH, 1)
 #define AREA_CCM_OUTSIDE        LEVEL_AREA_INDEX(LEVEL_CCM, 1)
 #define AREA_CCM_SLIDE          LEVEL_AREA_INDEX(LEVEL_CCM, 2)
@@ -473,6 +457,11 @@ struct CameraTrigger {
     /// This angle rotates Mario's offset from the box's origin, before it is checked for being inside.
     s16 boundsYaw;
 };
+
+/**
+ * Terminates a list of CameraTriggers.
+ */
+#define NULL_TRIGGER { 0, NULL, 0, 0, 0, 0, 0, 0, 0 }
 
 /**
  * Info for the camera's field of view and the FOV shake effect.

@@ -42,3 +42,19 @@ void cam_hmc_elevator_lake(struct Camera *c) {
 void cam_hmc_elevator_maze(struct Camera *c) {
     move_camera_through_floor_while_descending(c, 1843.f);
 }
+
+/**
+ * The HMC triggers are mostly for warping the camera below platforms, but the second trigger is used to
+ * start the cutscene for entering the CotMC pool.
+ */
+struct CameraTrigger sCamHMC[] = {
+#ifdef ENABLE_VANILLA_CAM_PROCESSING
+    { 1, cam_hmc_enter_maze, 1996, 102, 0, 205, 100, 205, 0 },
+    { 1, cam_castle_hmc_start_pool_cutscene, 3350, -4689, 4800, 600, 50, 600, 0 },
+    { 1, cam_hmc_elevator_black_hole, -3278, 1236, 1379, 358, 200, 358, 0 },
+    { 1, cam_hmc_elevator_maze_emergency_exit, -2816, 2055, -2560, 358, 200, 358, 0 },
+    { 1, cam_hmc_elevator_lake, -3532, 1543, -7040, 358, 200, 358, 0 },
+    { 1, cam_hmc_elevator_maze, -972, 1543, -7347, 358, 200, 358, 0 },
+#endif // ENABLE_VANILLA_CAM_PROCESSING
+    NULL_TRIGGER
+};
