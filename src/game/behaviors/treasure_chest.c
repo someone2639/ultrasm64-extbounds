@@ -4,6 +4,7 @@
 #include "audio/external.h"
 #include "game/interaction.h"
 #include "game/object_helpers.h"
+#include "game/rumble_init.h"
 
 /* Treasure Chest */
 #define /*0x0F4*/ oTreasureChestNumOpenedChests OBJECT_FIELD_S32(0x1B)

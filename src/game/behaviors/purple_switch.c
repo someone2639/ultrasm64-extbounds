@@ -4,6 +4,7 @@
 #include "audio/external.h"
 #include "game/level_update.h"
 #include "game/object_helpers.h"
+#include "game/rumble_init.h"
 #include "game/spawn_sound.h"
 
 

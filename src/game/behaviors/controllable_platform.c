@@ -3,6 +3,7 @@
 #include "global_object_fields.h"
 #include "engine/math_util.h"
 #include "game/object_helpers.h"
+#include "game/rumble_init.h"
 #include "game/spawn_sound.h"
 
 /* Controllable Platform */

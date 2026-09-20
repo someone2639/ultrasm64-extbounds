@@ -5,6 +5,7 @@
 #include "engine/math_util.h"
 #include "game/level_update.h"
 #include "game/object_helpers.h"
+#include "game/rumble_init.h"
 
 /* Hidden 1-Up */
 #define /*0x0F4*/ o1UpHiddenTimesTriggered                      OBJECT_FIELD_S32(0x1B)

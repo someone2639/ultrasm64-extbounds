@@ -4,6 +4,7 @@
 #include "engine/math_util.h"
 #include "game/interaction.h"
 #include "game/object_helpers.h"
+#include "game/rumble_init.h"
 #include "game/spawn_sound.h"
 
 void star_door_update_pos(void) {

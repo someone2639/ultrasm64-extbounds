@@ -2,6 +2,7 @@
 #include "behavior_data.h"
 #include "global_object_fields.h"
 #include "game/object_helpers.h"
+#include "game/rumble_init.h"
 #include "game/save_file.h"
 #include "game/spawn_sound.h"
 
