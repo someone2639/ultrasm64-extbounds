@@ -1,6 +1,6 @@
 #include <ultra64.h>
 #include "actors/vanilla_actors/castle_inside/header.h"
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "game/object_helpers.h"
 
 void bhv_ddd_warp_loop(void) {

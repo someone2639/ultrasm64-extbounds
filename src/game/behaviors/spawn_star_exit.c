@@ -1,5 +1,5 @@
 #include <ultra64.h>
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "game/object_helpers.h"
 
 // spawn_star_exit.inc.c

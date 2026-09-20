@@ -1,5 +1,5 @@
 #include <ultra64.h>
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "game/object_helpers.h"
 
 // lll_volcano_flames.inc.c

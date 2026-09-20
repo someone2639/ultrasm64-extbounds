@@ -3,7 +3,7 @@
 #include "actors/vanilla_actors/bitfs/header.h"
 #include "actors/vanilla_actors/bits/header.h"
 #include "actors/vanilla_actors/rr/header.h"
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "game/object_helpers.h"
 
 /* Back-and-Forth Platform */

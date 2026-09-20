@@ -1,6 +1,6 @@
 #include <ultra64.h>
 #include "course_table.h"
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "game/object_helpers.h"
 #include "game/save_file.h"
 

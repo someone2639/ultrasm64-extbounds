@@ -1,6 +1,6 @@
 #include <ultra64.h>
 #include "behavior_data.h"
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "actors/common1.h"
 #include "actors/group13.h"
 #include "engine/math_util.h"

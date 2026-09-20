@@ -1,5 +1,5 @@
 #include <ultra64.h>
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "game/level_update.h"
 #include "game/object_helpers.h"
 #include "game/spawn_sound.h"

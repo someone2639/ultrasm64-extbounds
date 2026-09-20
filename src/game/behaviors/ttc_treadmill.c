@@ -1,6 +1,6 @@
 #include <ultra64.h>
 #include "actors/vanilla_actors/ttc/header.h"
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "engine/math_util.h"
 #include "game/object_helpers.h"
 #include "game/spawn_sound.h"

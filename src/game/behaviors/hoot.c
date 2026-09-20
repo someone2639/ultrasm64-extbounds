@@ -1,7 +1,7 @@
 #include <ultra64.h>
 #include "behavior_data.h"
 #include "dialog_ids.h"
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "engine/math_util.h"
 #include "engine/surface_collision.h"
 #include "game/interaction.h"

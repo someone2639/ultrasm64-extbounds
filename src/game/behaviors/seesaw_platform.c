@@ -5,7 +5,7 @@
 #include "actors/vanilla_actors/bob/header.h"
 #include "actors/vanilla_actors/rr/header.h"
 #include "actors/vanilla_actors/vcutm/header.h"
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "engine/math_util.h"
 #include "game/object_helpers.h"
 #include "game/spawn_sound.h"

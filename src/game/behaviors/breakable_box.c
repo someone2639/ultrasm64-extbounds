@@ -1,7 +1,7 @@
 #include <ultra64.h>
 #include "actors/vanilla_actors/wdw/header.h"
 #include "behavior_data.h"
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "engine/surface_load.h"
 #include "game/interaction.h"
 #include "game/object_helpers.h"

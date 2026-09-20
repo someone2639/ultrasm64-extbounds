@@ -1,5 +1,5 @@
 #include <ultra64.h>
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "audio/external.h"
 #include "engine/surface_load.h"
 #include "game/interaction.h"

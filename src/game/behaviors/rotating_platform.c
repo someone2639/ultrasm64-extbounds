@@ -1,7 +1,7 @@
 #include <ultra64.h>
 #include "actors/vanilla_actors/wf/header.h"
 #include "actors/vanilla_actors/wdw/header.h"
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "game/object_helpers.h"
 #include "game/spawn_sound.h"
 

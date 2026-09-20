@@ -1,7 +1,7 @@
 #include <ultra64.h>
 #include "behavior_data.h"
 #include "course_table.h"
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "audio/external.h"
 #include "engine/math_util.h"
 #include "game/interaction.h"

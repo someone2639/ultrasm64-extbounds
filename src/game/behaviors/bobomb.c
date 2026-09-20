@@ -5,7 +5,7 @@
 #include "model_ids.h"
 #include "object_constants.h"
 #include "sounds.h"
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "engine/math_util.h"
 #include "game/ingame_menu.h"
 #include "game/interaction.h"

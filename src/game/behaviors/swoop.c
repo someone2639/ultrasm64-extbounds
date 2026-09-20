@@ -1,5 +1,5 @@
 #include <ultra64.h>
-#include "global_object_fields.h"
+#include "object_fields.h"
 #include "engine/math_util.h"
 #include "game/game_init.h"
 #include "game/interaction.h"
