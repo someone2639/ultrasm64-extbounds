@@ -89,8 +89,6 @@ void d_add_net_with_subgroup(s32, DynObjName);
 void d_end_net_with_subgroup(DynObjName);
 void d_attach_joint_to_net(s32, DynObjName);
 void d_addto_group(DynObjName);
-void d_link_with(DynObjName);
-void d_link_with_ptr(void *);
 void d_set_normal(f32, f32, f32);
 void d_make_vertex(struct GdVec3f *);
 void d_set_rotation(f32, f32, f32);
@@ -98,10 +96,7 @@ void d_center_of_gravity(f32, f32, f32);
 void d_set_shape_offset(f32, f32, f32);
 void d_clear_flags(s32);
 void d_attach(DynObjName);
-void d_attach_to(s32, struct GdObj *);
-void d_attachto_dynid(s32, DynObjName);
 void d_set_att_offset(const struct GdVec3f *);
-void d_set_nodegroup(DynObjName);
 void d_set_matgroup(DynObjName);
 void d_set_skinshape(DynObjName);
 void d_set_planegroup(DynObjName);
@@ -111,7 +106,6 @@ void d_set_spring(f32);
 void d_set_ambient(f32, f32, f32);
 void d_set_control_type(s32);
 void d_set_skin_weight(s32, f32);
-void d_set_id(s32);
 void d_set_material(void *, s32);
 void d_map_materials(DynObjName);
 void d_map_vertices(DynObjName);
@@ -855,6 +849,10 @@ void alloc_animdata(struct ObjAnimator *animator) {
     UNUSED u8 filler2[4];
 
     start_memtracker("animdata");
+
+    if (animator == NULL) {
+        fatal_printf("NULL animator???");
+    }
 
     if ((animgrp = animator->animdataGrp) == NULL) {
         fatal_printf("no anim group");

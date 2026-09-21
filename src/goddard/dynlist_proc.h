@@ -57,9 +57,15 @@ enum DObjTypes {
 };
 
 // functions
+void d_set_id(s32 id);
+void d_link_with_ptr(void *);
+void d_link_with(DynObjName);
 void d_stash_dynobj(void);
+void d_set_nodegroup(DynObjName);
 void d_unstash_dynobj(void);
+void d_attach_to(s32, struct GdObj *);
 void reset_dynlist(void);
+void d_attachto_dynid(s32, DynObjName);
 struct GdObj *proc_dynlist(struct DynList *dylist);
 void d_set_name_suffix(char *str);
 struct GdObj *d_makeobj(enum DObjTypes type, DynObjName name);
