@@ -488,7 +488,7 @@ void fatal_printf(const char *fmt, ...) {
  * "I'm in"
  * Adds the function name to the stack trace
  */
-void imin(const char *routine) {
+void imin_impl(const char *routine) {
     sRoutineNames[sNumRoutinesInStack++] = routine;
     sRoutineNames[sNumRoutinesInStack] = NULL;  //! array bounds is checked after writing this.
 
