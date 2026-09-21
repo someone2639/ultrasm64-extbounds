@@ -213,10 +213,12 @@ static s32 sCurrDebugViewIndex = 0;             // @ 801A86F4; timing activate c
 UNUSED static u32 unref_801a86F8 = 0;
 static struct GdDisplayList *sCurrentGdDl = NULL; // @ 801A86FC
 static u32 sGdDlCount = 0;                        // @ 801A8700
+
 static struct DynListBankInfo sDynLists[] = {     // @ 801A8704
     { STD_LIST_BANK, dynlist_test_cube },
     { STD_LIST_BANK, dynlist_spot_shape },
     { STD_LIST_BANK, dynlist_mario_master },
+    { STD_LIST_BANK, dynlist_stars },
     { TABLE_END, NULL }
 };
 

@@ -1087,22 +1087,6 @@ struct DynList dynlist_mario_master[] = {
             SetNodeGroup(DYNOBJ_MARIO_HEAD_ANIMDATA_GROUP),
             LinkWith(DYNOBJ_MARIO_MAIN_NET),
 
-        // silver star animator
-        MakeDynObj(D_DATA_GRP, DYNOBJ_SILVER_STAR_ANIMDATA_GROUP),
-            LinkWithPtr(&anim_silver_star),
-        MakeDynObj(D_ANIMATOR, DYNOBJ_SILVER_STAR_ANIMATOR),
-            AttachTo(0x0, DYNOBJ_MARIO_MAIN_ANIMATOR),
-            SetNodeGroup(DYNOBJ_SILVER_STAR_ANIMDATA_GROUP),
-            LinkWith(DYNOBJ_SILVER_STAR_LIGHT),
-
-        // red star animator
-        MakeDynObj(D_DATA_GRP, DYNOBJ_RED_STAR_ANIMDATA_GROUP),
-            LinkWithPtr(&anim_red_star),
-        MakeDynObj(D_ANIMATOR, DYNOBJ_RED_STAR_ANIMATOR),
-            AttachTo(0x0, DYNOBJ_MARIO_MAIN_ANIMATOR),
-            SetNodeGroup(DYNOBJ_RED_STAR_ANIMDATA_GROUP),
-            LinkWith(DYNOBJ_RED_STAR_LIGHT),
-
     EndGroup(0x1),
 
     UseObj(0x1),

@@ -145,4 +145,6 @@ extern struct DynList dynlist_mario_eyebrow_left_shape[];
 extern struct DynList dynlist_mario_mustache_shape[];
 extern struct DynList dynlist_mario_master[];
 
+extern struct DynList dynlist_stars[];
+
 #endif // GD_DYNLISTS_H
