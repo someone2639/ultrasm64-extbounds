@@ -10,7 +10,7 @@ struct DynList dynlist_stars[] = {
     BeginList(),
     UseIntegerNames(TRUE),
 
-    StartGroup(234),
+    StartGroup(DYNOBJ_STARS_GROUP),
 
         MakeDynObj(D_LIGHT, DYNOBJ_SILVER_STAR_LIGHT),
             SetId(1),
@@ -39,9 +39,9 @@ struct DynList dynlist_stars[] = {
                 SetNodeGroup(DYNOBJ_RED_STAR_ANIMDATA_GROUP),
                 LinkWith(DYNOBJ_RED_STAR_LIGHT),
 
-    EndGroup(234),
+    EndGroup(DYNOBJ_STARS_GROUP),
 
-    UseObj(234),
+    UseObj(DYNOBJ_STARS_GROUP),
 
     UseIntegerNames(FALSE),
     EndList(),

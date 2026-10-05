@@ -1306,11 +1306,11 @@ s32 load_mario_head(void (*aniFn)(struct ObjAnimator *)) {
     // Main Face DL
     gMarioFaceGrp = (struct ObjGroup *) load_dynlist(dynlist_mario_master);
 
+    stop_memtracker("mario face");
+
     // The animated stars
     struct ObjGroup *starsGrp = (struct ObjGroup *) load_dynlist(dynlist_stars);
     addto_group(gMarioFaceGrp, &starsGrp->header);
-
-    stop_memtracker("mario face");
 
     // Make camera
 

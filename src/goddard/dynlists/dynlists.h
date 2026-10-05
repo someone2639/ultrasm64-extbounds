@@ -131,6 +131,7 @@ enum {
     DYNOBJ_RED_STAR_LIGHT                        = 231,  // "N231l"
     DYNOBJ_RED_STAR_ANIMDATA_GROUP               = 232,
     DYNOBJ_RED_STAR_ANIMATOR                     = 233,
+    DYNOBJ_STARS_GROUP                           = 234,
     DYNOBJ_MARIO_MAIN_SHAPES_GROUP               = 1000,  // "N1000l"
     DYNOBJ_MARIO_MAIN_ANIMATOR                   = 1001  // root animator
 };

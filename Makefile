@@ -161,7 +161,7 @@ endif
 # The general code optimization flag that governs the compiler's overall strategy.
 # Some valid values are: [-O0, -O1, -O2, -O3, -Ofast, -Os]
 # Set to -O0 (or comment out) to turn off code optimization, then run `make clean`
-GENERAL_OPTIMIZATION_LEVEL := -Os
+GENERAL_OPTIMIZATION_LEVEL := -O0
 
 # Default non-gcc opt flags
 DEFAULT_OPT_FLAGS += $(GENERAL_OPTIMIZATION_LEVEL) -ffinite-math-only -fno-signed-zeros -fno-math-errno
@@ -254,7 +254,7 @@ endif
 # allowing for usage of CEN64 (and possibly Project64) to print messages to terminal.
 #   1 - includes code in ROM
 #   0 - does not
-ISVPRINT ?= 0
+ISVPRINT ?= 1
 $(eval $(call validate-option,ISVPRINT,0 1))
 ifeq ($(ISVPRINT),1)
   DEFINES += ISVPRINT=1
