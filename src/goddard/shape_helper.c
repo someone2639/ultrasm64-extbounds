@@ -1196,12 +1196,36 @@ void animate_mario_head_gameover(struct ObjAnimator *self) {
     }
 }
 
+void printJointInfo(struct ObjJoint *j) {
+    osSyncPrintf("JOINT %d:%x\n", j->id, j->header.type);
+    for (int i = 0; i < 4; i++) {
+        osSyncPrintf("    [");
+        for (int k = 0; k < 4; k++) {
+            osSyncPrintf("%f, ", j->mat128[i][k]);
+        }
+        osSyncPrintf("]\n");
+    }
+
+    osSyncPrintf("\n");
+}
+
+void printObjInfo(struct ObjAnimator *a) {
+    osSyncPrintf("ANIMATOR %x\n", a->header.type);
+    struct ObjGroup *aniGrp = a->animatedPartsGrp;
+    apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) printJointInfo, aniGrp);
+}
+
 /**
  * Controls the normal animation of Mario's head. This functions like a state machine.
  */
 void animate_mario_head_normal(struct ObjAnimator *self) {
     s32 state = 0; // HACKERSM64_DO: label these states
     s32 aBtnPressed = gGdCtrl.dragging;
+
+    struct ObjGroup *aniGrp = self->attachedObjsGrp;
+    osSyncPrintf("--------------------- FRAME %f grp %x ------------------------\n", self->frame, aniGrp);
+    int result = apply_to_obj_types_in_group(OBJ_TYPE_ANIMATORS, (applyproc_t) printObjInfo, aniGrp);
+    osSyncPrintf("--------------------- result %d -----------------------\n", result);
 
     switch (self->state) {
         case 0:

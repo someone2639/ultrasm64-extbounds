@@ -959,14 +959,17 @@ s32 apply_to_obj_types_in_group(s32 types, applyproc_t func, struct ObjGroup *gr
     fnAppliedCount = 0;
 
     if (group == NULL) {
+        osSyncPrintf("null group\n");
         return fnAppliedCount;
     }
 
     if (group->linkType & 1) { // compressed data, not an Obj
+        osSyncPrintf("group is bin data\n");
         return fnAppliedCount;
     }
 
     if (!((group->memberTypes & OBJ_TYPE_GROUPS) | (group->memberTypes & types))) {
+        osSyncPrintf("group does not apply\n");
         return fnAppliedCount;
     }
 
