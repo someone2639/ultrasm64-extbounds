@@ -1085,8 +1085,8 @@ void d_set_nodegroup(DynObjName name) {
 
     switch (sDynListCurObj->type) {
         case OBJ_TYPE_NETS:
-            ((struct ObjNet *) sDynListCurObj)->unk1C8 = (struct ObjGroup *) info->obj;
-            ((struct ObjNet *) sDynListCurObj)->unk1D0 = (struct ObjGroup *) info->obj;
+            ((struct ObjNet *) sDynListCurObj)->nodeGroup = (struct ObjGroup *) info->obj;
+            ((struct ObjNet *) sDynListCurObj)->vertexGroup = (struct ObjGroup *) info->obj;
             break;
         case OBJ_TYPE_SHAPES:
             ((struct ObjShape *) sDynListCurObj)->vtxGroup = (struct ObjGroup *) info->obj;
@@ -1262,7 +1262,7 @@ void d_set_planegroup(DynObjName name) {
 
     switch (sDynListCurObj->type) {
         case OBJ_TYPE_NETS:
-            ((struct ObjNet *) sDynListCurObj)->unk1CC = (struct ObjGroup *) info->obj;
+            ((struct ObjNet *) sDynListCurObj)->planeGroup = (struct ObjGroup *) info->obj;
             break;
         case OBJ_TYPE_SHAPES:
             ((struct ObjShape *) sDynListCurObj)->faceGroup = (struct ObjGroup *) info->obj;
@@ -1620,14 +1620,14 @@ void d_get_init_rot(struct GdVec3f *dst) {
 
     switch (sDynListCurObj->type) {
         case OBJ_TYPE_JOINTS:
-            dst->x = ((struct ObjJoint *) dynobj)->unk6C.x;
-            dst->y = ((struct ObjJoint *) dynobj)->unk6C.y;
-            dst->z = ((struct ObjJoint *) dynobj)->unk6C.z;
+            dst->x = ((struct ObjJoint *) dynobj)->initRotation.x;
+            dst->y = ((struct ObjJoint *) dynobj)->initRotation.y;
+            dst->z = ((struct ObjJoint *) dynobj)->initRotation.z;
             break;
         case OBJ_TYPE_NETS:
-            dst->x = ((struct ObjNet *) dynobj)->unk68.x;
-            dst->y = ((struct ObjNet *) dynobj)->unk68.y;
-            dst->z = ((struct ObjNet *) dynobj)->unk68.z;
+            dst->x = ((struct ObjNet *) dynobj)->initRotation.x;
+            dst->y = ((struct ObjNet *) dynobj)->initRotation.y;
+            dst->z = ((struct ObjNet *) dynobj)->initRotation.z;
             break;
         case OBJ_TYPE_LIGHTS:
             dst->x = dst->y = dst->z = 0.0f;
@@ -2204,14 +2204,14 @@ void d_set_rotation(f32 x, f32 y, f32 z) {
     dynobj = sDynListCurObj;
     switch (sDynListCurObj->type) {
         case OBJ_TYPE_JOINTS:
-            ((struct ObjJoint *) dynobj)->unk6C.x = x;
-            ((struct ObjJoint *) dynobj)->unk6C.y = y;
-            ((struct ObjJoint *) dynobj)->unk6C.z = z;
+            ((struct ObjJoint *) dynobj)->initRotation.x = x;
+            ((struct ObjJoint *) dynobj)->initRotation.y = y;
+            ((struct ObjJoint *) dynobj)->initRotation.z = z;
             break;
         case OBJ_TYPE_NETS:
-            ((struct ObjNet *) dynobj)->unk68.x = x;
-            ((struct ObjNet *) dynobj)->unk68.y = y;
-            ((struct ObjNet *) dynobj)->unk68.z = z;
+            ((struct ObjNet *) dynobj)->initRotation.x = x;
+            ((struct ObjNet *) dynobj)->initRotation.y = y;
+            ((struct ObjNet *) dynobj)->initRotation.z = z;
             break;
         default:
             fatal_printf("%s: Object '%s'(%x) does not support this function.", "dSetRotation()",

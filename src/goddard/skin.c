@@ -25,11 +25,11 @@ static s32 sNetCount; // @ 801BAAF8
 /* 2406E0 -> 240894 */
 void compute_net_bounding_box(struct ObjNet *net) {
     reset_bounding_box();
-    if (net->unk1D0 != NULL) {
-        apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) add_obj_pos_to_bounding_box, net->unk1D0);
+    if (net->vertexGroup != NULL) {
+        apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) add_obj_pos_to_bounding_box, net->vertexGroup);
     }
-    if (net->unk1C8 != NULL) {
-        apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) add_obj_pos_to_bounding_box, net->unk1C8);
+    if (net->nodeGroup != NULL) {
+        apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) add_obj_pos_to_bounding_box, net->nodeGroup);
     }
     gSomeBoundingBox.minX *= net->scale.x;
     gSomeBoundingBox.maxX *= net->scale.x;
@@ -66,11 +66,11 @@ void reset_net(struct ObjNet *net) {
     D_801BAAF4 = 0;
     gd_set_identity_mat4(&net->mat168);
     gd_set_identity_mat4(&net->matE8);
-    gd_rot_mat_about_vec(&net->matE8, &net->unk68); // set rot mtx to initial rotation?
+    gd_rot_mat_about_vec(&net->matE8, &net->initRotation); // set rot mtx to initial rotation?
     gd_add_vec3f_to_mat4f_offset(&net->matE8, &net->worldPos); // set to initial position?
     gd_copy_mat4f(&net->matE8, &net->mat128);
 
-    if ((grp = net->unk1C8) != NULL) {
+    if ((grp = net->nodeGroup) != NULL) {
         apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) reset_joint, grp);
         apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191220, grp);
         apply_to_obj_types_in_group(OBJ_TYPE_BONES, (applyproc_t) func_8018FB58, grp);
@@ -101,7 +101,7 @@ void func_801922FC(struct ObjNet *net) {
             D_801B9E38 = &net->mat128;
             scale_verts(net->shapePtr->vtxGroup);
         }
-        if ((group = net->unk1C8) != NULL) {
+        if ((group = net->nodeGroup) != NULL) {
             apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) reset_joint_weights, group);
         }
     }
@@ -118,9 +118,9 @@ struct ObjNet *make_net(UNUSED s32 a0, struct ObjShape *shapedata, struct ObjGro
     net->id = ++sNetCount;
     net->scale.x = net->scale.y = net->scale.z = 1.0f;
     net->shapePtr = shapedata;
-    net->unk1C8 = a2;
-    net->unk1CC = a3;
-    net->unk1D0 = a4;
+    net->nodeGroup = a2;
+    net->planeGroup = a3;
+    net->vertexGroup = a4;
     net->netType = 0;
     net->ctrlType = 0;
     net->unk21C = NULL;
@@ -205,7 +205,7 @@ void func_80192AD0(struct ObjNet *net) {
     UNUSED u8 filler2[68];
     struct ObjNet *sp18;
 
-    if ((sp60 = net->unk1C8) == NULL) {
+    if ((sp60 = net->nodeGroup) == NULL) {
         return;
     }
 
@@ -235,7 +235,7 @@ void move_bonesnet(struct ObjNet *net) {
 
     imin("move_bonesnet");
     gd_set_identity_mat4(&D_801B9DC8);
-    if ((sp24 = net->unk1C8) != NULL) {
+    if ((sp24 = net->nodeGroup) != NULL) {
         apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_801913C0, sp24);
     }
     imout();
@@ -282,7 +282,7 @@ void func_80192CCC(struct ObjNet *net) {
     }
 
     func_80192528(net);
-    if ((group = net->unk1C8) != NULL) {
+    if ((group = net->nodeGroup) != NULL) {
         apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_80191220, group);
         apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) func_801913F0, group);
         apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) stub_joints_2, group);
@@ -404,7 +404,7 @@ static void move_joints_in_net(struct ObjNet *net) {
     register struct ListNode *link; // s0
     struct GdObj *obj;           // 24
 
-    if ((grp = net->unk1C8) != NULL) {
+    if ((grp = net->nodeGroup) != NULL) {
         for (link = grp->firstMember; link != NULL; link = link->next) {
             obj = link->obj;
             switch (obj->type) {
@@ -516,9 +516,9 @@ void gd_print_net(struct ObjNet *net) {
     gd_print_vec("Scale:", &net->scale);
     gd_printf("Mass: %f\n", net->unusedMass);
     gd_printf("NumModes: %d\n", net->numModes);
-    gd_printf("NodeGroup: %x\n", (u32) (uintptr_t) net->unk1C8);
-    gd_printf("PlaneGroup: %x\n", (u32) (uintptr_t) net->unk1CC);
-    gd_printf("VertexGroup: %x\n", (u32) (uintptr_t) net->unk1D0);
+    gd_printf("NodeGroup: %x\n", (u32) (uintptr_t) net->nodeGroup);
+    gd_printf("PlaneGroup: %x\n", (u32) (uintptr_t) net->planeGroup);
+    gd_printf("VertexGroup: %x\n", (u32) (uintptr_t) net->vertexGroup);
 }
 
 /* 2422E0 -> 2422F8; orig name: func_80193B10 */

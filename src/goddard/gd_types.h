@@ -192,7 +192,7 @@ struct ObjJoint {
     /* 0x048 */ struct GdVec3f unk48;
     /* 0x054 */ struct GdVec3f initPos;   // attached offset? (with +200 as well)
     /* 0x060 */ u8  filler1[12];
-    /* 0x06C */ struct GdVec3f unk6C;   // initial rotation vec
+    /* 0x06C */ struct GdVec3f initRotation;   // initial rotation vec
     /* 0x078 */ struct GdVec3f velocity;
     /* 0x084 */ struct GdVec3f unk84;
     /* 0x090 */ struct GdVec3f unk90;
@@ -314,7 +314,7 @@ struct ObjNet {
     /* 0x044 */ struct GdVec3f unusedForce;   // "force" (unused)
     /* 0x050 */ struct GdVec3f velocity;
     /* 0x05C */ struct GdVec3f rotation;
-    /* 0x068 */ struct GdVec3f unk68;   //initial rotation?
+    /* 0x068 */ struct GdVec3f initRotation;   //initial rotation?
     /* 0x074 */ struct GdVec3f collDisp;   // what is this?
     /* 0x080 */ struct GdVec3f collTorque;   // what is this?
     /* 0x08C */ struct GdVec3f unusedCollTorqueL;   // unused
@@ -334,9 +334,9 @@ struct ObjNet {
     /* 0x1BC */ s32 numModes;              // unused
     /* 0x1C0 */ struct ObjGroup *unk1C0;    // group of `ObjVertex` or `ObjParticle`
     /* 0x1C4 */ struct ObjGroup *skinGrp;   // SkinGroup (from reset_weight) (joints and bones)
-    /* 0x1C8 */ struct ObjGroup *unk1C8;    // "node group" (joints, weights?)
-    /* 0x1CC */ struct ObjGroup *unk1CC;    // plane group (only type 1?)
-    /* 0x1D0 */ struct ObjGroup *unk1D0;    // vertex group
+    /* 0x1C8 */ struct ObjGroup *nodeGroup;    // "node group" (joints, weights?)
+    /* 0x1CC */ struct ObjGroup *planeGroup;    // plane group (only type 1?)
+    /* 0x1D0 */ struct ObjGroup *vertexGroup;    // vertex group
     /* 0x1D4 */ struct ObjGroup *attachedObjsGrp;
     /* 0x1D8 */ struct GdVec3f attachOffset;
     /* 0x1E4 */ s32 attachFlags;                 // d_attach_to arg 0; "AttFlag"

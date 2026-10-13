@@ -609,8 +609,8 @@ void draw_net(struct ObjNet *self) {
                    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, netColor, &net->mat168);
     }
 
-    if (net->unk1C8 != NULL) {
-        draw_group(net->unk1C8);
+    if (net->nodeGroup != NULL) {
+        draw_group(net->nodeGroup);
     }
 }
 
@@ -682,8 +682,8 @@ void draw_camera(struct ObjCamera *cam) {
 void Unknown80179ACC(struct GdObj *obj) {
     switch (obj->type) {
         case OBJ_TYPE_NETS:
-            if (((struct ObjNet *) obj)->unk1C8 != NULL) {
-                func_80179B64(((struct ObjNet *) obj)->unk1C8);
+            if (((struct ObjNet *) obj)->nodeGroup != NULL) {
+                func_80179B64(((struct ObjNet *) obj)->nodeGroup);
             }
             break;
         default:

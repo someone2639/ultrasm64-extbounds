@@ -183,7 +183,7 @@ void func_801823A0(struct ObjNet *net) {
     gGdSkinNet = net;
     switch (net->unk3C) {
         case 1: // Shape; Are these flags the same as net->netType (+0x1EC)?
-            net->unk1C8 = net->shapePtr->vtxGroup;
+            net->nodeGroup = net->shapePtr->vtxGroup;
             net->unk1C0 = make_group(0);
             D_801B9EF0 = NULL;
 
@@ -199,8 +199,8 @@ void func_801823A0(struct ObjNet *net) {
                 func_80182088(cxn);
                 link = link->next;
             }
-            apply_to_obj_types_in_group(OBJ_TYPE_PARTICLES, (applyproc_t) move_particle, net->unk1C8);
-            apply_to_obj_types_in_group(OBJ_TYPE_PLANES, (applyproc_t) reset_plane, net->unk1CC);
+            apply_to_obj_types_in_group(OBJ_TYPE_PARTICLES, (applyproc_t) move_particle, net->nodeGroup);
+            apply_to_obj_types_in_group(OBJ_TYPE_PLANES, (applyproc_t) reset_plane, net->planeGroup);
             break;
     }
 }

@@ -1012,7 +1012,7 @@ void reset_joint(struct ObjJoint *j) {
 
     gd_set_identity_mat4(&j->mat168);
     gd_scale_mat4f_by_vec3f(&j->mat168, (struct GdVec3f *) &j->scale);
-    gd_rot_mat_about_vec(&j->mat168, (struct GdVec3f *) &j->unk6C);
+    gd_rot_mat_about_vec(&j->mat168, (struct GdVec3f *) &j->initRotation);
     gd_add_vec3f_to_mat4f_offset(&j->mat168, &j->attachOffset);
     gd_copy_mat4f(&j->mat168, &j->matE8);
 

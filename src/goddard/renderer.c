@@ -3881,7 +3881,7 @@ void func_801A71CC(struct ObjNet *net) {
         spA8 += sp64.z;
     }
 
-    for (link = net->unk1CC->firstMember; link != NULL; link = link->next) {
+    for (link = net->planeGroup->firstMember; link != NULL; link = link->next) {
         plane = (struct ObjPlane *) link->obj;
         plane->unk18 = FALSE;
     }
@@ -3893,7 +3893,7 @@ void func_801A71CC(struct ObjNet *net) {
         sp7C = 0;
         sp80 = 0;
 
-        for (link2 = net->unk1CC->firstMember; link2 != NULL; link2 = link2->next) {
+        for (link2 = net->planeGroup->firstMember; link2 != NULL; link2 = link2->next) {
             planeL2 = (struct ObjPlane *) link2->obj;
             sp7C++;
             if (gd_plane_point_within(&planeL2->boundingBox, &sp88->boundingBox)) {
@@ -3910,7 +3910,7 @@ void func_801A71CC(struct ObjNet *net) {
         }
     }
 
-    for (link3 = net->unk1CC->firstMember; link3 != NULL; link3 = link3->next) {
+    for (link3 = net->planeGroup->firstMember; link3 != NULL; link3 = link3->next) {
         planeL3 = (struct ObjPlane *) link3->obj;
 
         if (!planeL3->unk18) {
