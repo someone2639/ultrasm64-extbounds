@@ -1198,10 +1198,12 @@ void animate_mario_head_gameover(struct ObjAnimator *self) {
 
 void printJointInfo(struct ObjJoint *j) {
     osSyncPrintf("JOINT %d:%x\n", j->id, j->header.type);
+    set_cur_dynobj((struct GdObj *)j);
+    Mat4f *rotMtx = d_get_rot_mtx_ptr();
     for (int i = 0; i < 4; i++) {
         osSyncPrintf("    [");
         for (int k = 0; k < 4; k++) {
-            osSyncPrintf("%f, ", j->mat128[i][k]);
+            osSyncPrintf("%f, ", rotMtx[i][k]);
         }
         osSyncPrintf("]\n");
     }
@@ -1210,9 +1212,8 @@ void printJointInfo(struct ObjJoint *j) {
 }
 
 void printObjInfo(struct ObjAnimator *a) {
-    osSyncPrintf("ANIMATOR %x\n", a->header.type);
     struct ObjGroup *aniGrp = a->animatedPartsGrp;
-    apply_to_obj_types_in_group(OBJ_TYPE_ALL, (applyproc_t) printJointInfo, aniGrp);
+    apply_to_obj_types_in_group(OBJ_TYPE_JOINTS, (applyproc_t) printJointInfo, aniGrp);
 }
 
 /**
@@ -1222,10 +1223,10 @@ void animate_mario_head_normal(struct ObjAnimator *self) {
     s32 state = 0; // HACKERSM64_DO: label these states
     s32 aBtnPressed = gGdCtrl.dragging;
 
-    struct ObjGroup *aniGrp = self->attachedObjsGrp;
-    osSyncPrintf("--------------------- FRAME %f grp %x ------------------------\n", self->frame, aniGrp);
-    int result = apply_to_obj_types_in_group(OBJ_TYPE_ANIMATORS, (applyproc_t) printObjInfo, aniGrp);
-    osSyncPrintf("--------------------- result %d -----------------------\n", result);
+    // struct ObjGroup *aniGrp = self->attachedObjsGrp;
+    // osSyncPrintf("--------------------- FRAME %f grp %x ------------------------\n", self->frame, aniGrp);
+    // int result = apply_to_obj_types_in_group(OBJ_TYPE_ANIMATORS, (applyproc_t) printObjInfo, aniGrp);
+    // osSyncPrintf("--------------------- result %d -----------------------\n", result);
 
     switch (self->state) {
         case 0:

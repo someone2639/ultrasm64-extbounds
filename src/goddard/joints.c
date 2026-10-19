@@ -131,10 +131,9 @@ void grabbable_joint_update_func(struct ObjJoint *self) {
  * Update function for Mario's eye joints, which makes them follow the cursor
  */
 void eye_joint_update_func(struct ObjJoint *self) {
-    Mat4f *sp5C;
-    struct GdVec3f sp50;
-    struct GdVec3f sp44;
-    UNUSED u8 filler[24];
+    Mat4f *rotMtx;
+    struct GdVec3f cursorDistanceFromEye;
+    struct GdVec3f worldPosVec;
     register struct ListNode *att;
     struct GdObj *attobj;
 
@@ -149,31 +148,31 @@ void eye_joint_update_func(struct ObjJoint *self) {
     }
 
     set_cur_dynobj((struct GdObj *)self);
-    sp5C = d_get_rot_mtx_ptr();
-    sp44.x = (*sp5C)[3][0];
-    sp44.y = (*sp5C)[3][1];
-    sp44.z = (*sp5C)[3][2];
-    world_pos_to_screen_coords(&sp44, sCurrentMoveCamera, sCurrentMoveView);
+    rotMtx = d_get_rot_mtx_ptr();
+    worldPosVec.x = (*rotMtx)[3][0];
+    worldPosVec.y = (*rotMtx)[3][1];
+    worldPosVec.z = (*rotMtx)[3][2];
+    world_pos_to_screen_coords(&worldPosVec, sCurrentMoveCamera, sCurrentMoveView);
 
-    sp50.x = gGdCtrl.csrX - sp44.x;
-    sp50.y = -(gGdCtrl.csrY - sp44.y);
-    sp50.z = 0.0f;
+    cursorDistanceFromEye.x = gGdCtrl.csrX - worldPosVec.x;
+    cursorDistanceFromEye.y = -(gGdCtrl.csrY - worldPosVec.y);
+    cursorDistanceFromEye.z = 0.0f;
 
-    sp50.x *= 2.0; //?2.0f
-    sp50.y *= 2.0; //?2.0f
-    sp50.z *= 2.0; //?2.0f
-    if (gd_vec3f_magnitude(&sp50) > 30.0f) {
-        gd_normalize_vec3f(&sp50);
-        sp50.x *= 30.0f;
-        sp50.y *= 30.0f;
-        sp50.z *= 30.0f;
+    cursorDistanceFromEye.x *= 2.0; //?2.0f
+    cursorDistanceFromEye.y *= 2.0; //?2.0f
+    cursorDistanceFromEye.z *= 2.0; //?2.0f
+    if (gd_vec3f_magnitude(&cursorDistanceFromEye) > 30.0f) {
+        gd_normalize_vec3f(&cursorDistanceFromEye);
+        cursorDistanceFromEye.x *= 30.0f;
+        cursorDistanceFromEye.y *= 30.0f;
+        cursorDistanceFromEye.z *= 30.0f;
     }
 
     for (att = self->attachedObjsGrp->firstMember; att != NULL; att = att->next) {
         attobj = att->obj;
         set_cur_dynobj(attobj);
-        sp5C = d_get_rot_mtx_ptr();
-        gd_add_vec3f_to_mat4f_offset(sp5C, &sp50);
+        rotMtx = d_get_rot_mtx_ptr();
+        gd_add_vec3f_to_mat4f_offset(rotMtx, &cursorDistanceFromEye);
     }
 }
 
