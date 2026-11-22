@@ -1,0 +1,10 @@
+extern const GeoLayout verity_geo[];
+extern u8 verity_face16_ci4_rgba16[];
+extern u8 verity_face16_pal_ci4_rgba16[];
+extern Vtx verity_verity_mesh_layer_1_vtx_cull[8];
+extern Vtx verity_verity_mesh_layer_1_vtx_0[347];
+extern Gfx verity_verity_mesh_layer_1_tri_0[];
+extern Gfx mat_verity_f3dlite_material[];
+extern Gfx mat_revert_verity_f3dlite_material[];
+extern Gfx verity_verity_mesh_layer_1[];
+extern Gfx verity_final_revert_mesh_layer_1[];

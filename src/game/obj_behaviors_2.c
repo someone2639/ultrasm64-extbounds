@@ -820,3 +820,16 @@ void obj_spit_fire(s16 relativePosX, s16 relativePosY, s16 relativePosZ, f32 sca
 #include "behaviors/reds_star_marker.inc.c"
 #include "behaviors/triplet_butterfly.inc.c"
 #include "behaviors/bubba.inc.c"
+
+
+void bhv_verity_init() {
+    o->header.gfx.scale[0] = 0.5;
+    o->header.gfx.scale[1] = 0.5;
+    o->header.gfx.scale[2] = 0.5;
+}
+
+void bhv_verity_loop() {
+    obj_turn_toward_object(o, gMarioObject, O_MOVE_ANGLE_YAW_INDEX, 0x100);
+
+    // if (o->oDistanceToMario > 400.0f)
+}

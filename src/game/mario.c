@@ -1883,6 +1883,8 @@ void init_mario(void) {
         capObject->oForwardVel = 0;
         capObject->oMoveAngleYaw = 0;
     }
+
+    struct Object *verity = spawn_object(gMarioState->marioObj, MODEL_VERITY, bhvVerity);
 }
 
 void init_mario_from_save_file(void) {
