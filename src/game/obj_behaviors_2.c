@@ -822,14 +822,59 @@ void obj_spit_fire(s16 relativePosX, s16 relativePosY, s16 relativePosZ, f32 sca
 #include "behaviors/bubba.inc.c"
 
 
+typedef enum {
+    ST_IDLE = 0,
+    ST_JUMP_START,
+    ST_JUMP_AIR,
+    ST_JUMP_LAND,
+    ST_RESPONSE_START,
+    ST_RESPONSE_END,
+} STATEITY;
+
 void bhv_verity_init() {
     o->header.gfx.scale[0] = 0.5;
     o->header.gfx.scale[1] = 0.5;
     o->header.gfx.scale[2] = 0.5;
+    o->oAction = ST_IDLE;
+    o->oDistanceToMario = 0.0f;
 }
 
 void bhv_verity_loop() {
-    obj_turn_toward_object(o, gMarioObject, O_MOVE_ANGLE_YAW_INDEX, 0x100);
+    cur_obj_update_floor_and_walls();
 
-    // if (o->oDistanceToMario > 400.0f)
+    switch (o->oAction) {
+        case ST_IDLE:
+            obj_turn_toward_object(o, gMarioObject, O_MOVE_ANGLE_YAW_INDEX, 0x100);
+            if (o->oDistanceToMario > 400.0f) {
+                o->oAction = ST_JUMP_START;
+            }
+            break;
+        case ST_JUMP_START:
+            obj_turn_toward_object(o, gMarioObject, O_MOVE_ANGLE_YAW_INDEX, 0x2000);
+            o->header.gfx.scale[1] = approach_f32_asymptotic(o->header.gfx.scale[1], 0.25, 0.3f);
+
+            o->header.gfx.scale[0] = approach_f32_asymptotic(o->header.gfx.scale[0], 0.65, 0.3f);
+            o->header.gfx.scale[2] = approach_f32_asymptotic(o->header.gfx.scale[2], 0.65, 0.3f);
+            if (o->header.gfx.scale[1] < 0.26f) {
+                o->oForwardVel = 32.0f;
+                o->oVelY = 30.0f;
+                o->oAction = ST_JUMP_AIR;
+            }
+            break;
+        case ST_JUMP_AIR:
+            o->header.gfx.scale[0] = approach_f32_asymptotic(o->header.gfx.scale[0], 0.5, 0.3f);
+            o->header.gfx.scale[1] = approach_f32_asymptotic(o->header.gfx.scale[1], 0.5, 0.3f);
+            o->header.gfx.scale[2] = approach_f32_asymptotic(o->header.gfx.scale[2], 0.5, 0.3f);
+            if (o->oMoveFlags & OBJ_MOVE_MASK_ON_GROUND) {
+                o->oForwardVel = 0.0f;
+                o->oAction = ST_JUMP_LAND;
+            }
+            break;
+        case ST_JUMP_LAND:
+            o->header.gfx.scale[1] = 0.5f;
+            o->oAction = ST_IDLE;
+            break;
+    }
+
+    cur_obj_move_standard(-78);
 }

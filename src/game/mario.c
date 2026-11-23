@@ -1885,6 +1885,7 @@ void init_mario(void) {
     }
 
     struct Object *verity = spawn_object(gMarioState->marioObj, MODEL_VERITY, bhvVerity);
+    verity->oPosY += 100.0f;
 }
 
 void init_mario_from_save_file(void) {

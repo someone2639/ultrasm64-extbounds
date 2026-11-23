@@ -83,7 +83,7 @@
 /**
  * Includes vanilla debug functionality.
  */
-// #define VANILLA_DEBUG
+#define VANILLA_DEBUG
 
 /**
  * Intentionally crash the game whenever a runtime assertion fails (also invoked by the DEBUG define in the Makefile).
