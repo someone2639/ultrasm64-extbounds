@@ -14,7 +14,7 @@ typedef enum {
     VS_CAP,
     VS_ITEM,
     VS_ATTACK,
-
+    VS_ANIME,
 
     VS_MAX
 } VOICEITY;

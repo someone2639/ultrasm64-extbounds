@@ -8,6 +8,7 @@
 #include "object_list_processor.h"
 
 VOICEITY voiceState = VS_GENERAL;
+VOICEITY voiceStateNext = VS_GENERAL;
 
 #define TX (12)
 #define TY (12)
@@ -28,7 +29,11 @@ Wordity WordList[][8] = {
         // 
     },
     [VS_ATTACK] = {
-        
+        // shoot
+        // 
+    },
+    [VS_ANIME] = {
+        // Explosion!
     },
 }
 
@@ -48,11 +53,16 @@ void verity_engine_dispatch() {
         verity_engine_hud();
 
         if (gPlayer1Controller->buttonPressed & L_TRIG) {
-            voiceState++;
-            if (voiceState >= VS_MAX) {
-                voiceState = VS_GENERAL;
+            voiceStateNext++;
+            if (voiceStateNext >= VS_MAX) {
+                voiceStateNext = VS_GENERAL;
             }
         }
+    }
+
+
+    if (voiceStateNext != voiceState) {
+        // TODO: load dictionary here
     }
 }
 
